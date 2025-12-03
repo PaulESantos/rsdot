@@ -58,11 +58,15 @@ get_provincias()
 get_distritos()
 
 ### 📦 Instalación
+
 Instalar la versión de desarrollo desde GitHub:
 
-```{r}
+```{r eval=FALSE}
 install.packages("remotes")
 remotes::install_github("PaulESantos/rsdot")
+# or
+install.packages("pak")
+pak::pak("PaulESantos/rsdot")
 ```
 
 
