@@ -18,39 +18,140 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![CRAN status](https://www.r-pkg.org/badges/version/rsdot)](https://CRAN.R-project.org/package=rsdot)
+[![R-CMD-check](https://github.com/PaulESantos/rsdot/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/PaulESantos/rsdot/actions/workflows/R-CMD-check.yaml)
+[![Codecov test coverage](https://codecov.io/gh/PaulESantos/rsdot/graph/badge.svg)](https://app.codecov.io/gh/PaulESantos/rsdot)
 <!-- badges: end -->
 
-The goal of rsdot is to ...
 
-## Installation
+`rsdot` proporciona acceso programático a la información geográfica producida y recopilada por la Secretaría de Demarcación y Organización Territorial (SDOT) de la Presidencia del Consejo de Ministros (PCM) del Perú.
 
-You can install the development version of rsdot like so:
+El paquete facilita el acceso y manipulación de diversas capas vectoriales, incluyendo:
 
-``` r
-# FILL THIS IN! HOW CAN PEOPLE INSTALL YOUR DEV PACKAGE?
+- Límites censales INEI 2023
+
+- Provincias, distritos y departamentos
+
+- Información del modelo geográfico SDOT
+
+- Infraestructura, centros poblados, riesgos y peligros
+
+- Otras capas temáticas territoriales
+
+### ⚠️ Importante:
+Los límites censales del INEI provistos por este paquete son referenciales y no constituyen límites oficiales ni tienen efecto legal demarcatorio.
+
+### ✨ Características
+Acceso programático a datos espaciales del Perú.
+
+Descarga automática desde OSF con caché inteligente.
+
+Corrección robusta de caracteres especiales (Ñ, tildes).
+
+Compatible con sf, ggplot2, dplyr y herramientas SIG modernas.
+
+Funciones principales:
+
+get_departamentos()
+
+get_provincias()
+
+get_distritos()
+
+### 📦 Instalación
+Instalar la versión de desarrollo desde GitHub:
+
+```{r}
+install.packages("remotes")
+remotes::install_github("PaulESantos/rsdot")
 ```
 
-## Example
 
-This is a basic example which shows you how to solve a common problem:
+### 🚀 Ejemplos
 
-```{r example}
+Cargar el paquete
+```{r}
 library(rsdot)
-## basic example code
+library(sf)
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
-
-```{r cars}
-summary(cars)
+Obtener departamentos
+```{r}
+deps <- get_departamentos()
+deps
 ```
 
-You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date. `devtools::build_readme()` is handy for this.
+Visualización básica
 
-You can also embed plots, for example:
+```{r}
+library(ggplot2)
 
-```{r pressure, echo = FALSE}
-plot(pressure)
+ggplot(deps) +
+geom_sf(fill = "steelblue", color = "white") +
+theme_minimal() +
+labs(
+title = "Departamentos del Perú",
+caption = "Fuente: SDOT - PCM / INEI 2023"
+)
 ```
 
-In that case, don't forget to commit and push the resulting figure files, so they display on GitHub and CRAN.
+Obtener provincias de un departamento
+```{r}
+cusco_prov <- get_provincias(departamento = "CUSCO")
+head(cusco_prov)
+
+#Mapa de provincias
+
+ggplot(cusco_prov) +
+geom_sf(aes(fill = nombprov), color = "white", linewidth = 0.3) +
+scale_fill_viridis_d(option = "plasma") +
+theme_minimal() +
+labs(
+title = "Provincias del Departamento de Cusco",
+subtitle = "INEI 2023 | Referencial",
+fill = "Provincia"
+)
+```
+
+Obtener distritos
+Ejemplo: Cañete (Lima)
+```{r}
+
+canete <- get_distritos(
+provincia = "CAÑETE",
+departamento = "LIMA"
+)
+canete
+
+#Visualización
+
+ggplot(canete) +
+geom_sf(aes(fill = nombdist), color = "white", linewidth = 0.3) +
+theme_minimal() +
+labs(
+title = "Distritos de la Provincia de Cañete",
+subtitle = "Referencia Censal INEI 2023",
+fill = "Distrito"
+)
+```
+
+
+
+### 🤝 Contribuciones
+Las contribuciones son bienvenidas.
+
+Por favor abre un issue o pull request:
+
+> 👉 https://github.com/PaulESantos/rsdot/issues
+
+###  📄 Licencia
+Este paquete utiliza la licencia MIT.
+Consulta LICENSE para más detalles.
+
+### 👤 Autor
+Paul Efren Santos Andrade
+ORCID: 0000-0002-6635-0375
+mailto:paulefrens@gmail.com
+
+### 🌐 Sitio web del paquete
+Documentación ampliada:
+> 👉 https://paulesantos.github.io/rsdot/

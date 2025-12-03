@@ -1,15 +1,37 @@
 Package: rsdot
-Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9000
+Title: Acceso Programático a Datos Espaciales de la SDOT-PCM Perú
+Version: 0.1.0
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
+    person("Paul Efren", "Santos Andrade", 
+           email = "paulefrens@gmail.com", 
+           role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-6635-0375"))
+Description: Proporciona acceso programático a la información geográfica oficial de la
+    Secretaría de Demarcación y Organización Territorial (SDOT) de la
+    Presidencia del Consejo de Ministros (PCM) del Perú. Facilita la descarga,
+    lectura y manipulación en R de capas vectoriales sobre modelamiento geográfico,
+    límites censales del INEI, centros poblados, infraestructura, riesgos y peligros.
+    IMPORTANTE: La información de límites censales (INEI) es de carácter referencial
+    y no constituye límites territoriales oficiales ni tiene efecto demarcatorio legal.
 License: MIT + file LICENSE
-Suggests: 
-    testthat (>= 3.0.0)
-Config/testthat/edition: 3
 Encoding: UTF-8
+LazyData: true
+Depends:
+    R (>= 4.1.0)
+Imports: 
+    sf (>= 1.0.0),
+    utils
+Suggests: 
+    terra,
+    ggplot2,
+    testthat (>= 3.0.0),
+    knitr,
+    rmarkdown,
+    dplyr
+VignetteBuilder: knitr
+Config/testthat/edition: 3
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
-URL: https://github.com/PaulESantos/rsdot
+URL: https://github.com/PaulESantos/rsdot, https://paulesantos.github.io/rsdot/
 BugReports: https://github.com/PaulESantos/rsdot/issues
+Language: es
