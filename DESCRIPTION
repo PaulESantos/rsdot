@@ -19,7 +19,7 @@ LazyData: true
 Depends:
     R (>= 4.1.0)
 Imports: 
-    sf (>= 1.0.0),
+    sf,
     utils
 Suggests: 
     terra,

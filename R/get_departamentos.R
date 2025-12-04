@@ -89,33 +89,34 @@
 #' @export
 #' @importFrom utils download.file unzip
 #' @importFrom sf read_sf
+#' @importFrom utils head
 get_departamentos <- function(departamento = NULL,
                               show_progress = TRUE,
                               force_update = FALSE) {
 
   # ==========================================================================
-  # 1. CONFIGURACIÓN Y VALIDACIÓN DE PARÁMETROS
+  # 1. CONFIGURACI\u00d3N Y VALIDACI\u00d3N DE PAR\u00c1METROS
   # ==========================================================================
 
-  # Validar tipos de parámetros
+  # Validar tipos de par\u00e1metros
   if (!is.logical(show_progress) || length(show_progress) != 1) {
-    stop("El parámetro 'show_progress' debe ser TRUE o FALSE", call. = FALSE)
+    stop("El par\u00e1metro 'show_progress' debe ser TRUE o FALSE", call. = FALSE)
   }
 
   if (!is.logical(force_update) || length(force_update) != 1) {
-    stop("El parámetro 'force_update' debe ser TRUE o FALSE", call. = FALSE)
+    stop("El par\u00e1metro 'force_update' debe ser TRUE o FALSE", call. = FALSE)
   }
 
   if (!is.null(departamento) && !is.character(departamento)) {
-    stop("El parámetro 'departamento' debe ser un vector de caracteres o NULL",
+    stop("El par\u00e1metro 'departamento' debe ser un vector de caracteres o NULL",
          call. = FALSE)
   }
 
-  # Configuración de URLs y rutas
+  # Configuraci\u00f3n de URLs y rutas
   id_archivo_osf <- "grhe3"
   url_descarga <- paste0("https://osf.io/", id_archivo_osf, "/download")
 
-  # Configurar directorio de caché
+  # Configurar directorio de cach\u00e9
   ruta_cache_dir <- file.path(tempdir(), "DEMARCA_cache")
   if (!dir.exists(ruta_cache_dir)) {
     dir.create(ruta_cache_dir, recursive = TRUE)
@@ -124,13 +125,13 @@ get_departamentos <- function(departamento = NULL,
   archivo_zip <- file.path(ruta_cache_dir, "v_departamentos_2023.zip")
 
   # ==========================================================================
-  # 2. GESTIÓN DE DESCARGA CON CACHÉ
+  # 2. GESTI\u00d3N DE DESCARGA CON CACH\u00c9
   # ==========================================================================
 
-  # Descargar solo si no existe o si se fuerza actualización
+  # Descargar solo si no existe o si se fuerza actualizaci\u00f3n
   if (!file.exists(archivo_zip) || force_update) {
     if (show_progress) {
-      message("Descargando: Límites Censales Departamentales (INEI 2023)...")
+      message("Descargando: L\u00edmites Censales Departamentales (INEI 2023)...")
       message("Fuente: OSF - Repositorio DEMARCA")
     }
 
@@ -159,7 +160,7 @@ get_departamentos <- function(departamento = NULL,
   }
 
   # ==========================================================================
-  # 3. GESTIÓN DE DESCOMPRESIÓN
+  # 3. GESTI\u00d3N DE DESCOMPRESI\u00d3N
   # ==========================================================================
 
   # Buscar shapefile ya descomprimido
@@ -183,7 +184,7 @@ get_departamentos <- function(departamento = NULL,
       )
     })
 
-    # Buscar nuevamente después de descomprimir
+    # Buscar nuevamente despu\u00e9s de descomprimir
     archivo_shp_existente <- list.files(
       path = ruta_cache_dir,
       pattern = ".*departamento.*\\.shp$",
@@ -235,7 +236,7 @@ get_departamentos <- function(departamento = NULL,
     return(datos_sf)
   }
 
-  # Normalizar nombres de columnas a minúsculas
+  # Normalizar nombres de columnas a min\u00fasculas
   colnames(datos_sf) <- tolower(colnames(datos_sf))
 
   # Verificar que existe la columna de nombres
@@ -247,7 +248,7 @@ get_departamentos <- function(departamento = NULL,
     return(datos_sf)
   }
 
-  # Normalizar nombres de departamentos (a mayúsculas para comparación)
+  # Normalizar nombres de departamentos (a may\u00fasculas para comparaci\u00f3n)
   dep_input <- toupper(trimws(departamento))
 
   # Filtrar departamentos

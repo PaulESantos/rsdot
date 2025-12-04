@@ -114,41 +114,42 @@
 #' @export
 #' @importFrom utils download.file unzip
 #' @importFrom sf read_sf
+#' @importFrom utils head
 get_provincias <- function(provincia = NULL,
                            departamento = NULL,
                            show_progress = TRUE,
                            force_update = FALSE) {
 
   # ==========================================================================
-  # 1. CONFIGURACIÓN Y VALIDACIÓN DE PARÁMETROS
+  # 1. CONFIGURACI\u00d3N Y VALIDACI\u00d3N DE PAR\u00c1METROS
   # ==========================================================================
 
-  # Validar tipos de parámetros
+  # Validar tipos de par\u00e1metros
   if (!is.logical(show_progress) || length(show_progress) != 1) {
-    stop("El parámetro 'show_progress' debe ser TRUE o FALSE",
+    stop("El par\u00e1metro 'show_progress' debe ser TRUE o FALSE",
          call. = FALSE)
   }
 
   if (!is.logical(force_update) || length(force_update) != 1) {
-    stop("El parámetro 'force_update' debe ser TRUE o FALSE",
+    stop("El par\u00e1metro 'force_update' debe ser TRUE o FALSE",
          call. = FALSE)
   }
 
   if (!is.null(provincia) && !is.character(provincia)) {
-    stop("El parámetro 'provincia' debe ser un vector de caracteres o NULL",
+    stop("El par\u00e1metro 'provincia' debe ser un vector de caracteres o NULL",
          call. = FALSE)
   }
 
   if (!is.null(departamento) && !is.character(departamento)) {
-    stop("El parámetro 'departamento' debe ser un vector de caracteres o NULL",
+    stop("El par\u00e1metro 'departamento' debe ser un vector de caracteres o NULL",
          call. = FALSE)
   }
 
-  # Configuración de URLs y rutas
+  # Configuraci\u00f3n de URLs y rutas
   id_archivo_osf <- "t36aj"
   url_descarga   <- paste0("https://osf.io/", id_archivo_osf, "/download")
 
-  # Configurar directorio de caché
+  # Configurar directorio de cach\u00e9
   ruta_cache_dir <- file.path(tempdir(), "DEMARCA_cache")
   if (!dir.exists(ruta_cache_dir)) {
     dir.create(ruta_cache_dir, recursive = TRUE)
@@ -157,12 +158,12 @@ get_provincias <- function(provincia = NULL,
   archivo_zip <- file.path(ruta_cache_dir, "v_provincias_2023.zip")
 
   # ==========================================================================
-  # 2. GESTIÓN DE DESCARGA CON CACHÉ
+  # 2. GESTI\u00d3N DE DESCARGA CON CACH\u00c9
   # ==========================================================================
 
   if (!file.exists(archivo_zip) || force_update) {
     if (show_progress) {
-      message("Descargando: Límites Censales Provinciales (INEI 2023)...")
+      message("Descargando: L\u00edmites Censales Provinciales (INEI 2023)...")
       message("Fuente: OSF - Repositorio DEMARCA")
     }
 
@@ -175,11 +176,11 @@ get_provincias <- function(provincia = NULL,
           quiet    = !show_progress
         )
 
-        if (show_progress) message("✓ Descarga completada")
+        if (show_progress) message("\u2713 Descarga completada")
       },
       error = function(e) {
         stop(
-          "Error al descargar desde OSF. Verifique su conexión a internet.\n",
+          "Error al descargar desde OSF. Verifique su conexi\u00f3n a internet.\n",
           "URL: ", url_descarga, "\n",
           "Detalles: ", e$message,
           call. = FALSE
@@ -187,11 +188,11 @@ get_provincias <- function(provincia = NULL,
       }
     )
   } else {
-    if (show_progress) message("✓ Usando datos provinciales en caché local")
+    if (show_progress) message("\u2713 Usando datos provinciales en cach\u00e9 local")
   }
 
   # ==========================================================================
-  # 3. GESTIÓN DE DESCOMPRESIÓN
+  # 3. GESTI\u00d3N DE DESCOMPRESI\u00d3N
   # ==========================================================================
 
   archivo_shp_existente <- list.files(
@@ -224,17 +225,17 @@ get_provincias <- function(provincia = NULL,
 
   if (length(archivo_shp_existente) == 0) {
     stop(
-      "Error: No se encontró archivo .shp válido en el ZIP descargado.\n",
+      "Error: No se encontr\u00f3 archivo .shp v\u00e1lido en el ZIP descargado.\n",
       "Ruta buscada: ", ruta_cache_dir,
       call. = FALSE
     )
   }
 
   # ==========================================================================
-  # 4. LECTURA Y CORRECCIÓN DE CODIFICACIÓN
+  # 4. LECTURA Y CORRECCI\u00d3N DE CODIFICACI\u00d3N
   # ==========================================================================
 
-  if (show_progress) message("Cargando geometrías...")
+  if (show_progress) message("Cargando geometr\u00edas...")
 
   datos_sf <- tryCatch(
     {
@@ -250,13 +251,13 @@ get_provincias <- function(provincia = NULL,
     }
   )
 
-  # Normalizar nombres de columnas a minúsculas
+  # Normalizar nombres de columnas a min\u00fasculas
   colnames(datos_sf) <- tolower(colnames(datos_sf))
 
-  # ---- NUEVA CORRECCIÓN DE CODIFICACIÓN ----
-  # El shapefile original trae la Ñ como 'ÃÑ' / 'Ãñ' u otros artefactos.
+  # ---- NUEVA CORRECCI\u00d3N DE CODIFICACI\u00d3N ----
+  # El shapefile original trae la \u00d1 como '\u00c3\u00d1' / '\u00c3\u00f1' u otros artefactos.
   # 1) Forzamos todas las columnas de texto a UTF-8 desde latin1 (donde suele venir el DBF)
-  # 2) Corregimos patrones típicos de mala representación de la Ñ.
+  # 2) Corregimos patrones t\u00edpicos de mala representaci\u00f3n de la \u00d1.
 
   cols_char <- names(datos_sf)[sapply(datos_sf, is.character)]
 
@@ -266,16 +267,16 @@ get_provincias <- function(provincia = NULL,
     # Paso 1: asegurar UTF-8 desde latin1 (DBF del INEI suele venir en latin1/CP1252)
     x <- iconv(x, from = "latin1", to = "UTF-8", sub = "")
 
-    # Paso 2: corregir Ñ mal representada como 'ÃÑ' / 'Ãñ'
-    # (esto se ve muchas veces como CAÃÑETE en lugar de CAÑETE)
-    x <- gsub("ÃÑ", "Ñ", x, fixed = TRUE)
-    x <- gsub("Ãñ", "ñ", x, fixed = TRUE)
+    # Paso 2: corregir \u00d1 mal representada como '\u00c3\u00d1' / '\u00c3\u00f1'
+    # (esto se ve muchas veces como CA\u00c3\u00d1ETE en lugar de CA\u00d1ETE)
+    x <- gsub("\u00c3\u00d1", "\u00d1", x, fixed = TRUE)
+    x <- gsub("\u00c3\u00f1", "\u00f1", x, fixed = TRUE)
 
-    # Si quisieras ser aún más agresivo, podrías añadir patrones extras aquí.
+    # Si quisieras ser a\u00fan m\u00e1s agresivo, podr\u00edas a\u00f1adir patrones extras aqu\u00ed.
 
     datos_sf[[col]] <- x
   }
-  # ---- FIN DE CORRECCIÓN DE CODIFICACIÓN ----
+  # ---- FIN DE CORRECCI\u00d3N DE CODIFICACI\u00d3N ----
 
   # ==========================================================================
   # 5. FILTRADO POR DEPARTAMENTO Y PROVINCIA
@@ -298,7 +299,7 @@ get_provincias <- function(provincia = NULL,
 
       if (show_progress) {
         message(
-          "✓ Filtrado por departamento: ",
+          "\u2713 Filtrado por departamento: ",
           nrow(datos_sf),
           " provincia(s) en ",
           paste(departamento, collapse = ", ")
@@ -306,7 +307,7 @@ get_provincias <- function(provincia = NULL,
       }
     } else {
       warning(
-        "No se encontró la columna 'nombdep' para filtrar por departamento.",
+        "No se encontr\u00f3 la columna 'nombdep' para filtrar por departamento.",
         call. = FALSE
       )
     }
@@ -335,7 +336,7 @@ get_provincias <- function(provincia = NULL,
       datos_sf <- datos_sf_filtrado
     } else {
       warning(
-        "No se encontró la columna 'nombprov' para filtrar por provincia.",
+        "No se encontr\u00f3 la columna 'nombprov' para filtrar por provincia.",
         call. = FALSE
       )
     }
@@ -343,7 +344,7 @@ get_provincias <- function(provincia = NULL,
 
   if (show_progress) {
     message(
-      "✓ Datos cargados: ",
+      "\u2713 Datos cargados: ",
       nrow(datos_sf),
       " provincia(s)"
     )
