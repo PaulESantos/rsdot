@@ -46,56 +46,95 @@
 </nav><div class="container template-home">
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
-<div class="page-header"><h1 id="rsdot">rsdot<a class="anchor" aria-label="anchor" href="#rsdot"></a>
+<div class="page-header"><h1 id="rsdot-">rsdot <a href="https://github.com/PaulESantos/ppendemic" class="external-link"><img src="reference/figures/rsdot_logo.png" align="right" height="280" width="260"></a>
+<a class="anchor" aria-label="anchor" href="#rsdot-"></a>
 </h1></div>
 <!-- badges: start -->
 
 <p><code>rsdot</code> proporciona acceso programático a la información geográfica producida y recopilada por la Secretaría de Demarcación y Organización Territorial (SDOT) de la Presidencia del Consejo de Ministros (PCM) del Perú.</p>
 <p>El paquete facilita el acceso y manipulación de diversas capas vectoriales, incluyendo:</p>
 <ul>
-<li><p>Límites censales INEI 2023</p></li>
-<li><p>Provincias, distritos y departamentos</p></li>
-<li><p>Información del modelo geográfico SDOT</p></li>
-<li><p>Infraestructura, centros poblados, riesgos y peligros</p></li>
-<li><p>Otras capas temáticas territoriales</p></li>
+<li>
+<strong>Límites censales INEI 2023</strong>: Departamentos, provincias y distritos</li>
+<li>
+<strong>Tiempos de desplazamiento</strong>: Accesibilidad territorial a capitales departamentales</li>
+<li>
+<strong>Densidad y crecimiento poblacional</strong>: Interpolación espacial de censos 2007-2017</li>
+<li>
+<strong>Información del modelo geográfico SDOT</strong>: Infraestructura, centros poblados, riesgos y peligros</li>
+<li><strong>Otras capas temáticas territoriales</strong></li>
 </ul>
 <div class="section level3">
-<h3 id="id_️-importante">⚠️ Importante:<a class="anchor" aria-label="anchor" href="#id_%EF%B8%8F-importante"></a>
+<h3 id="id_️-importante">⚠️ Importante<a class="anchor" aria-label="anchor" href="#id_%EF%B8%8F-importante"></a>
 </h3>
-<p>Los límites censales del INEI provistos por este paquete son referenciales y no constituyen límites oficiales ni tienen efecto legal demarcatorio.</p>
+<p>Los límites censales del INEI provistos por este paquete son <strong>referenciales</strong> y no constituyen límites oficiales ni tienen efecto legal demarcatorio.</p>
 </div>
+<div class="section level2">
+<h2 id="id_-características">✨ Características<a class="anchor" aria-label="anchor" href="#id_-caracter%C3%ADsticas"></a>
+</h2>
+<ul>
+<li>✅ <strong>Acceso programático</strong> a datos espaciales oficiales del Perú</li>
+<li>✅ <strong>Descarga automática</strong> desde OSF con caché inteligente</li>
+<li>✅ <strong>Compatible</strong> con <code>sf</code>, <code>ggplot2</code>, <code>dplyr</code> y herramientas SIG modernas</li>
+<li>✅ <strong>Validación de geometrías</strong> automática para operaciones espaciales</li>
+</ul>
 <div class="section level3">
-<h3 id="id_-características">✨ Características<a class="anchor" aria-label="anchor" href="#id_-caracter%C3%ADsticas"></a>
+<h3 id="id_-funciones-principales">📦 Funciones principales<a class="anchor" aria-label="anchor" href="#id_-funciones-principales"></a>
 </h3>
-<p>Acceso programático a datos espaciales del Perú.</p>
-<p>Descarga automática desde OSF con caché inteligente.</p>
-<p>Corrección robusta de caracteres especiales (Ñ, tildes).</p>
-<p>Compatible con sf, ggplot2, dplyr y herramientas SIG modernas.</p>
-<p>Funciones principales:</p>
-<p>get_departamentos()</p>
-<p>get_provincias()</p>
-<p>get_distritos()</p>
+<ul>
+<li>
+<code><a href="reference/get_departamentos.html">get_departamentos()</a></code> - Límites censales departamentales</li>
+<li>
+<code><a href="reference/get_provincias.html">get_provincias()</a></code> - Límites censales provinciales</li>
+<li>
+<code><a href="reference/get_distritos.html">get_distritos()</a></code> - Límites censales distritales</li>
+<li>
+<code>get_tiempos_desplazamiento()</code> - Tiempos de desplazamiento a capitales</li>
+<li>
+<code><a href="reference/get_densidad_poblacional.html">get_densidad_poblacional()</a></code> - Densidad y crecimiento poblacional intercensal</li>
+</ul>
 </div>
-<div class="section level3">
-<h3 id="id_-instalación">📦 Instalación<a class="anchor" aria-label="anchor" href="#id_-instalaci%C3%B3n"></a>
-</h3>
+</div>
+<div class="section level2">
+<h2 id="id_-instalación">📦 Instalación<a class="anchor" aria-label="anchor" href="#id_-instalaci%C3%B3n"></a>
+</h2>
 <p>Instalar la versión de desarrollo desde GitHub:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># Usando remotes</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"PaulESantos/rsdot"</span><span class="op">)</span></span>
-<span><span class="co"># or</span></span>
+<span></span>
+<span><span class="co"># O usando pak (recomendado)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"pak"</span><span class="op">)</span></span>
 <span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"PaulESantos/rsdot"</span><span class="op">)</span></span></code></pre></div>
 </div>
+<div class="section level2">
+<h2 id="id_-ejemplos-de-uso">🚀 Ejemplos de uso<a class="anchor" aria-label="anchor" href="#id_-ejemplos-de-uso"></a>
+</h2>
 <div class="section level3">
-<h3 id="id_-ejemplos">🚀 Ejemplos<a class="anchor" aria-label="anchor" href="#id_-ejemplos"></a>
+<h3 id="cargar-el-paquete">Cargar el paquete<a class="anchor" aria-label="anchor" href="#cargar-el-paquete"></a>
 </h3>
-<p>Cargar el paquete</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/PaulESantos/rsdot" class="external-link">rsdot</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; Linking to GEOS 3.13.1, GDAL 3.10.2, PROJ 9.5.1; sf_use_s2() is TRUE</span></span></code></pre></div>
-<p>Obtener departamentos</p>
+<span><span class="co">#&gt; Linking to GEOS 3.13.1, GDAL 3.10.2, PROJ 9.5.1; sf_use_s2() is TRUE</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Adjuntando el paquete: 'dplyr'</span></span>
+<span><span class="co">#&gt; The following objects are masked from 'package:stats':</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     filter, lag</span></span>
+<span><span class="co">#&gt; The following objects are masked from 'package:base':</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     intersect, setdiff, setequal, union</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="id_1-límites-censales">1. Límites censales<a class="anchor" aria-label="anchor" href="#id_1-l%C3%ADmites-censales"></a>
+</h3>
+<div class="section level4">
+<h4 id="obtener-departamentos">Obtener departamentos<a class="anchor" aria-label="anchor" href="#obtener-departamentos"></a>
+</h4>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">deps</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_departamentos.html">get_departamentos</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Descargando: Límites Censales Departamentales (INEI 2023)...</span></span>
@@ -124,21 +163,22 @@
 <span><span class="co">#&gt;  9     9 09     HUANCAVELICA HUANCAVELICA LEY        S/N    1857-01-02</span></span>
 <span><span class="co">#&gt; 10    10 10     HUANUCO      HUANUCO      LEY        S/N    1869-01-24</span></span>
 <span><span class="co">#&gt; # ℹ 15 more rows</span></span>
-<span><span class="co">#&gt; # ℹ 1 more variable: geometry &lt;MULTIPOLYGON [°]&gt;</span></span></code></pre></div>
-<p>Visualización básica</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; # ℹ 1 more variable: geometry &lt;MULTIPOLYGON [°]&gt;</span></span>
 <span></span>
+<span><span class="co"># Visualización básica</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">deps</span><span class="op">)</span> <span class="op">+</span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"steelblue"</span>, color <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span> <span class="op">+</span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
-<span>title <span class="op">=</span> <span class="st">"Departamentos del Perú"</span>,</span>
-<span>caption <span class="op">=</span> <span class="st">"Fuente: SDOT - PCM / INEI 2023"</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-unnamed-chunk-5-1.png" width="100%"></p>
-<p>Obtener provincias de un departamento</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"steelblue"</span>, color <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>    title <span class="op">=</span> <span class="st">"Departamentos del Perú"</span>,</span>
+<span>    caption <span class="op">=</span> <span class="st">"Fuente: SDOT - PCM / INEI 2023"</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-unnamed-chunk-3-1.png" width="100%"></p>
+</div>
+<div class="section level4">
+<h4 id="obtener-provincias-de-un-departamento">Obtener provincias de un departamento<a class="anchor" aria-label="anchor" href="#obtener-provincias-de-un-departamento"></a>
+</h4>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cusco_prov</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_provincias.html">get_provincias</a></span><span class="op">(</span>departamento <span class="op">=</span> <span class="st">"CUSCO"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Descargando: Límites Censales Provinciales (INEI 2023)...</span></span>
 <span><span class="co">#&gt; Fuente: OSF - Repositorio DEMARCA</span></span>
@@ -164,24 +204,26 @@
 <span><span class="co">#&gt; 6    54 08     CUSCO   0807   CHUMBIVILCAS SANTO T… Reglament… S/N    1825-06-21</span></span>
 <span><span class="co">#&gt; # ℹ 1 more variable: geometry &lt;MULTIPOLYGON [°]&gt;</span></span>
 <span></span>
-<span><span class="co">#Mapa de provincias</span></span>
-<span></span>
+<span><span class="co"># Mapa de provincias</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">cusco_prov</span><span class="op">)</span> <span class="op">+</span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="va">nombprov</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"white"</span>, linewidth <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span> <span class="op">+</span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html" class="external-link">scale_fill_viridis_d</a></span><span class="op">(</span>option <span class="op">=</span> <span class="st">"plasma"</span><span class="op">)</span> <span class="op">+</span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
-<span>title <span class="op">=</span> <span class="st">"Provincias del Departamento de Cusco"</span>,</span>
-<span>subtitle <span class="op">=</span> <span class="st">"INEI 2023 | Referencial"</span>,</span>
-<span>fill <span class="op">=</span> <span class="st">"Provincia"</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-unnamed-chunk-6-1.png" width="100%"></p>
-<p>Obtener distritos Ejemplo: Cañete (Lima)</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="va">canete</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_distritos.html">get_distritos</a></span><span class="op">(</span></span>
-<span>provincia <span class="op">=</span> <span class="st">"CAÑETE"</span>,</span>
-<span>departamento <span class="op">=</span> <span class="st">"LIMA"</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="va">nombprov</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"white"</span>, linewidth <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html" class="external-link">scale_fill_viridis_d</a></span><span class="op">(</span>option <span class="op">=</span> <span class="st">"plasma"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>    title <span class="op">=</span> <span class="st">"Provincias del Departamento de Cusco"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"INEI 2023 | Referencial"</span>,</span>
+<span>    fill <span class="op">=</span> <span class="st">"Provincia"</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-unnamed-chunk-4-1.png" width="100%"></p>
+</div>
+<div class="section level4">
+<h4 id="obtener-distritos">Obtener distritos<a class="anchor" aria-label="anchor" href="#obtener-distritos"></a>
+</h4>
+<p>Ejemplo: Cañete (Lima)</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">canete</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_distritos.html">get_distritos</a></span><span class="op">(</span></span>
+<span>  provincia <span class="op">=</span> <span class="st">"CAÑETE"</span>,</span>
+<span>  departamento <span class="op">=</span> <span class="st">"LIMA"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Descargando: Límites Censales Distritales (INEI 2023)...</span></span>
 <span><span class="co">#&gt; Fuente: OSF - Repositorio DEMARCA</span></span>
@@ -192,69 +234,344 @@
 <span><span class="co">#&gt; ✓ Filtrado por departamento: 171 distrito(s) en LIMA</span></span>
 <span><span class="co">#&gt; ✓ Filtrado por provincia: 16 distrito(s) en CAÑETE</span></span>
 <span><span class="co">#&gt; ✓ Filtrado completado por departamento &gt; provincia: 16 distrito(s)</span></span>
-<span><span class="va">canete</span></span>
-<span><span class="co">#&gt; Simple feature collection with 16 features and 11 fields</span></span>
+<span></span>
+<span><span class="co"># Visualización</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">canete</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="va">nombdist</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"white"</span>, linewidth <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html" class="external-link">scale_fill_viridis_d</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>    title <span class="op">=</span> <span class="st">"Distritos de la Provincia de Cañete"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Referencia Censal INEI 2023"</span>,</span>
+<span>    fill <span class="op">=</span> <span class="st">"Distrito"</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-unnamed-chunk-5-1.png" width="100%"></p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="id_2-tiempos-de-desplazamiento">2. Tiempos de desplazamiento<a class="anchor" aria-label="anchor" href="#id_2-tiempos-de-desplazamiento"></a>
+</h3>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Cargar límites de Cusco</span></span>
+<span><span class="va">cusco</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_departamentos.html">get_departamentos</a></span><span class="op">(</span>departamento <span class="op">=</span> <span class="st">"CUSCO"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Obtener tiempos de desplazamiento</span></span>
+<span><span class="va">tiempos_cusco</span> <span class="op">&lt;-</span> <span class="fu">get_tiempos_desplazamiento</span><span class="op">(</span>area_interes <span class="op">=</span> <span class="va">cusco</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Visualizar accesibilidad territorial</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">tiempos_cusco</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="va">cat_tiempo</span><span class="op">)</span>, color <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">cusco</span>, fill <span class="op">=</span> <span class="cn">NA</span>, color <span class="op">=</span> <span class="st">"black"</span>, linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html" class="external-link">scale_fill_brewer</a></span><span class="op">(</span>palette <span class="op">=</span> <span class="st">"YlOrRd"</span>, name <span class="op">=</span> <span class="st">"Tiempo"</span>, direction <span class="op">=</span> <span class="op">-</span><span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>    title <span class="op">=</span> <span class="st">"Tiempo de Desplazamiento a Capital más Cercana"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Departamento de Cusco"</span>,</span>
+<span>    caption <span class="op">=</span> <span class="st">"Fuente: INEI - MTC | Visor - SDOT"</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_void</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="id_3-densidad-y-crecimiento-poblacional">3. Densidad y crecimiento poblacional<a class="anchor" aria-label="anchor" href="#id_3-densidad-y-crecimiento-poblacional"></a>
+</h3>
+<div class="section level4">
+<h4 id="ver-departamentos-disponibles">Ver departamentos disponibles<a class="anchor" aria-label="anchor" href="#ver-departamentos-disponibles"></a>
+</h4>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Listar departamentos con datos disponibles</span></span>
+<span><span class="fu"><a href="reference/get_densidad_poblacional.html">get_densidad_poblacional</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Departamentos disponibles:</span></span>
+<span><span class="co">#&gt;   - AMAZONAS</span></span>
+<span><span class="co">#&gt;   - ANCASH</span></span>
+<span><span class="co">#&gt;   - APURIMAC</span></span>
+<span><span class="co">#&gt;   - AREQUIPA</span></span>
+<span><span class="co">#&gt;   - AYACUCHO</span></span>
+<span><span class="co">#&gt;   - CAJAMARCA</span></span>
+<span><span class="co">#&gt;   - CALLAO</span></span>
+<span><span class="co">#&gt;   - CUSCO</span></span>
+<span><span class="co">#&gt;   - HUANCAVELICA</span></span>
+<span><span class="co">#&gt;   - HUANUCO</span></span>
+<span><span class="co">#&gt;   - ICA</span></span>
+<span><span class="co">#&gt;   - JUNIN</span></span>
+<span><span class="co">#&gt;   - LA LIBERTAD</span></span>
+<span><span class="co">#&gt;   - LAMBAYEQUE</span></span>
+<span><span class="co">#&gt;   - LIMA</span></span>
+<span><span class="co">#&gt;   - LORETO</span></span>
+<span><span class="co">#&gt;   - MADRE DE DIOS</span></span>
+<span><span class="co">#&gt;   - MOQUEGUA</span></span>
+<span><span class="co">#&gt;   - PASCO</span></span>
+<span><span class="co">#&gt;   - PIURA</span></span>
+<span><span class="co">#&gt;   - PUNO</span></span>
+<span><span class="co">#&gt;   - SAN MARTIN</span></span>
+<span><span class="co">#&gt;   - TACNA</span></span>
+<span><span class="co">#&gt;   - TUMBES</span></span>
+<span><span class="co">#&gt;   - UCAYALI</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Uso: get_densidad_poblacional(departamento = 'CUSCO')</span></span></code></pre></div>
+</div>
+<div class="section level4">
+<h4 id="cargar-datos-de-un-departamento">Cargar datos de un departamento<a class="anchor" aria-label="anchor" href="#cargar-datos-de-un-departamento"></a>
+</h4>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">densidad_cusco</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_densidad_poblacional.html">get_densidad_poblacional</a></span><span class="op">(</span>departamento <span class="op">=</span> <span class="st">"CUSCO"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Descargando: CUSCO...</span></span>
+<span><span class="co">#&gt; ✓ Descarga completada: CUSCO</span></span>
+<span><span class="co">#&gt; Cargando datos: CUSCO...</span></span>
+<span><span class="co">#&gt; Validando geometrías...</span></span>
+<span><span class="co">#&gt; ✓ Cargado: CUSCO (649 registros)</span></span>
+<span><span class="co">#&gt; ✓ Datos cargados exitosamente: 649 registros</span></span>
+<span><span class="va">densidad_cusco</span></span>
+<span><span class="co">#&gt; Simple feature collection with 649 features and 11 fields</span></span>
 <span><span class="co">#&gt; Geometry type: MULTIPOLYGON</span></span>
 <span><span class="co">#&gt; Dimension:     XY</span></span>
-<span><span class="co">#&gt; Bounding box:  xmin: -76.79125 ymin: -13.32351 xmax: -75.94078 ymax: -12.27573</span></span>
+<span><span class="co">#&gt; Bounding box:  xmin: -73.9811 ymin: -15.45829 xmax: -70.34507 ymax: -11.21229</span></span>
 <span><span class="co">#&gt; Geodetic CRS:  WGS 84</span></span>
-<span><span class="co">#&gt; # A tibble: 16 × 12</span></span>
-<span><span class="co">#&gt;      gid ubigeo nombdep nombprov nombdist   capital region_nat tipo_norma numero</span></span>
-<span><span class="co">#&gt;    &lt;int&gt; &lt;chr&gt;  &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;      &lt;chr&gt;   &lt;chr&gt;      &lt;chr&gt;      &lt;chr&gt; </span></span>
-<span><span class="co">#&gt;  1   825 150501 LIMA    CAÑETE   SAN VICEN… SAN VI… COSTA      Ley        S/N   </span></span>
-<span><span class="co">#&gt;  2   826 150502 LIMA    CAÑETE   ASIA       ASIA    COSTA      Ley        15112 </span></span>
-<span><span class="co">#&gt;  3   827 150505 LIMA    CAÑETE   CHILCA     CHILCA  COSTA      Ley        S/N   </span></span>
-<span><span class="co">#&gt;  4   828 150507 LIMA    CAÑETE   IMPERIAL   IMPERI… COSTA      Ley        1170  </span></span>
-<span><span class="co">#&gt;  5   829 150509 LIMA    CAÑETE   MALA       MALA    COSTA      Ley        S/N   </span></span>
-<span><span class="co">#&gt;  6   830 150512 LIMA    CAÑETE   QUILMANA   QUILMA… COSTA      Ley        9962  </span></span>
-<span><span class="co">#&gt;  7   831 150515 LIMA    CAÑETE   SANTA CRU… SANTA … COSTA      Ley        4611  </span></span>
-<span><span class="co">#&gt;  8   895 150503 LIMA    CAÑETE   CALANGO    CALANGO COSTA      Ley        S/N   </span></span>
-<span><span class="co">#&gt;  9   896 150504 LIMA    CAÑETE   CERRO AZUL CERRO … COSTA      Ley Regio… 464   </span></span>
-<span><span class="co">#&gt; 10   897 150506 LIMA    CAÑETE   COAYLLO    COAYLLO COSTA      Ley        S/N   </span></span>
-<span><span class="co">#&gt; 11   898 150508 LIMA    CAÑETE   LUNAHUANA  LUNAHU… COSTA      Ley        S/N   </span></span>
-<span><span class="co">#&gt; 12   899 150510 LIMA    CAÑETE   NUEVO IMP… NUEVO … COSTA      Ley        14154 </span></span>
-<span><span class="co">#&gt; 13   900 150511 LIMA    CAÑETE   PACARAN    PACARAN COSTA      Ley        S/N   </span></span>
-<span><span class="co">#&gt; 14   901 150513 LIMA    CAÑETE   SAN ANTON… SAN AN… COSTA      Ley        4611  </span></span>
-<span><span class="co">#&gt; 15   902 150514 LIMA    CAÑETE   SAN LUIS   SAN LU… COSTA      Ley        S/N   </span></span>
-<span><span class="co">#&gt; 16   903 150516 LIMA    CAÑETE   ZUÑIGA     ZUÑIGA  COSTA      Ley        9674  </span></span>
-<span><span class="co">#&gt; # ℹ 3 more variables: fecha_fin &lt;date&gt;, comentario &lt;chr&gt;,</span></span>
-<span><span class="co">#&gt; #   geometry &lt;MULTIPOLYGON [°]&gt;</span></span>
+<span><span class="co">#&gt; # A tibble: 649 × 12</span></span>
+<span><span class="co">#&gt;    ubigeo nombdep nombprov     nombdist   capital nivel rango descrip shape_leng</span></span>
+<span><span class="co">#&gt;  * &lt;chr&gt;  &lt;chr&gt;   &lt;chr&gt;        &lt;chr&gt;      &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;        &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 080703 CUSCO   CHUMBIVILCAS CHAMACA    CHAMACA Muy … &lt;= -… Tasa m…    0.0302 </span></span>
+<span><span class="co">#&gt;  2 080707 CUSCO   CHUMBIVILCAS QUIÑOTA    QUIÑOTA Muy … &lt;= -… Tasa m…    0.00842</span></span>
+<span><span class="co">#&gt;  3 080202 CUSCO   ACOMAYO      ACOPIA     ACOPIA  Muy … &lt;= -… Tasa m…    0.0154 </span></span>
+<span><span class="co">#&gt;  4 080701 CUSCO   CHUMBIVILCAS SANTO TOM… SANTO … Muy … &lt;= -… Tasa m…    0.118  </span></span>
+<span><span class="co">#&gt;  5 081002 CUSCO   PARURO       ACCHA      ACCHA   Muy … &lt;= -… Tasa m…    0.0240 </span></span>
+<span><span class="co">#&gt;  6 080501 CUSCO   CANAS        YANAOCA    YANAOCA Muy … &lt;= -… Tasa m…    0.0302 </span></span>
+<span><span class="co">#&gt;  7 080506 CUSCO   CANAS        PAMPAMARCA PAMPAM… Muy … &lt;= -… Tasa m…    0.00743</span></span>
+<span><span class="co">#&gt;  8 080601 CUSCO   CANCHIS      SICUANI    SICUANI Muy … &lt;= -… Tasa m…    0.0347 </span></span>
+<span><span class="co">#&gt;  9 081207 CUSCO   QUISPICANCHI HUARO      HUARO   Muy … &lt;= -… Tasa m…    0.0232 </span></span>
+<span><span class="co">#&gt; 10 080806 CUSCO   ESPINAR      PICHIGUA   PICHIG… Muy … &lt;= -… Tasa m…    0.0273 </span></span>
+<span><span class="co">#&gt; # ℹ 639 more rows</span></span>
+<span><span class="co">#&gt; # ℹ 3 more variables: shape_area &lt;dbl&gt;, geom &lt;MULTIPOLYGON [°]&gt;,</span></span>
+<span><span class="co">#&gt; #   departamento &lt;chr&gt;</span></span>
 <span></span>
-<span><span class="co">#Visualización</span></span>
-<span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">canete</span><span class="op">)</span> <span class="op">+</span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="va">nombdist</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"white"</span>, linewidth <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span> <span class="op">+</span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
-<span>title <span class="op">=</span> <span class="st">"Distritos de la Provincia de Cañete"</span>,</span>
-<span>subtitle <span class="op">=</span> <span class="st">"Referencia Censal INEI 2023"</span>,</span>
-<span>fill <span class="op">=</span> <span class="st">"Distrito"</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span><span class="co"># Mapa de nivel de crecimiento</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">densidad_cusco</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="va">nivel</span><span class="op">)</span>, color <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html" class="external-link">scale_fill_brewer</a></span><span class="op">(</span></span>
+<span>    palette <span class="op">=</span> <span class="st">"RdYlGn"</span>,</span>
+<span>    name <span class="op">=</span> <span class="st">"Nivel de\nCrecimiento"</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>    title <span class="op">=</span> <span class="st">"Crecimiento Poblacional por Nivel"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Departamento de Cusco (2007-2017)"</span>,</span>
+<span>    caption <span class="op">=</span> <span class="st">"Fuente: INEI | Visor - SDOT"</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-7-1.png" width="100%"></p>
 </div>
-<div class="section level3">
-<h3 id="id_-contribuciones">🤝 Contribuciones<a class="anchor" aria-label="anchor" href="#id_-contribuciones"></a>
-</h3>
-<p>Las contribuciones son bienvenidas.</p>
-<p>Por favor abre un issue o pull request:</p>
-<blockquote>
+<div class="section level4">
+<h4 id="filtrado-por-provincia-y-distrito">Filtrado por provincia y distrito<a class="anchor" aria-label="anchor" href="#filtrado-por-provincia-y-distrito"></a>
+</h4>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Cargar solo una provincia</span></span>
+<span><span class="va">densidad_prov_cusco</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_densidad_poblacional.html">get_densidad_poblacional</a></span><span class="op">(</span></span>
+<span>  departamento <span class="op">=</span> <span class="st">"CUSCO"</span>,</span>
+<span>  provincia <span class="op">=</span> <span class="st">"CUSCO"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; ✓ Usando caché: CUSCO</span></span>
+<span><span class="co">#&gt; Cargando datos: CUSCO...</span></span>
+<span><span class="co">#&gt; Validando geometrías...</span></span>
+<span><span class="co">#&gt; ✓ Cargado: CUSCO (649 registros)</span></span>
+<span><span class="co">#&gt; ✓ Filtrado por provincia: 36 registros</span></span>
+<span><span class="co">#&gt; ✓ Datos cargados exitosamente: 36 registros</span></span>
+<span></span>
+<span><span class="co"># Cargar distrito específico</span></span>
+<span><span class="va">densidad_wanchaq</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_densidad_poblacional.html">get_densidad_poblacional</a></span><span class="op">(</span></span>
+<span>  departamento <span class="op">=</span> <span class="st">"CUSCO"</span>,</span>
+<span>  provincia <span class="op">=</span> <span class="st">"CUSCO"</span>,</span>
+<span>  distrito <span class="op">=</span> <span class="st">"WANCHAQ"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; ✓ Usando caché: CUSCO</span></span>
+<span><span class="co">#&gt; Cargando datos: CUSCO...</span></span>
+<span><span class="co">#&gt; Validando geometrías...</span></span>
+<span><span class="co">#&gt; ✓ Cargado: CUSCO (649 registros)</span></span>
+<span><span class="co">#&gt; ✓ Filtrado por provincia: 36 registros</span></span>
+<span><span class="co">#&gt; ✓ Filtrado por distrito: 3 registros</span></span>
+<span><span class="co">#&gt; ✓ Datos cargados exitosamente: 3 registros</span></span></code></pre></div>
+</div>
+<div class="section level4">
+<h4 id="análisis-avanzado-mapa-con-etiquetas-de-distritos">Análisis avanzado: Mapa con etiquetas de distritos<a class="anchor" aria-label="anchor" href="#an%C3%A1lisis-avanzado-mapa-con-etiquetas-de-distritos"></a>
+</h4>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">prov_anta</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_densidad_poblacional.html">get_densidad_poblacional</a></span><span class="op">(</span></span>
+<span>  departamento <span class="op">=</span> <span class="st">"CUSCO"</span>,</span>
+<span>  provincia <span class="op">=</span> <span class="st">"ANTA"</span>, </span>
+<span>  distrito <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CACHIMAYO"</span>, <span class="st">"PUCYURA"</span>, <span class="st">"ANTA"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ✓ Usando caché: CUSCO</span></span>
+<span><span class="co">#&gt; Cargando datos: CUSCO...</span></span>
+<span><span class="co">#&gt; Validando geometrías...</span></span>
+<span><span class="co">#&gt; ✓ Cargado: CUSCO (649 registros)</span></span>
+<span><span class="co">#&gt; ✓ Filtrado por provincia: 43 registros</span></span>
+<span><span class="co">#&gt; ✓ Filtrado por distrito: 14 registros</span></span>
+<span><span class="co">#&gt; ✓ Datos cargados exitosamente: 14 registros</span></span>
+<span></span>
+<span><span class="va">distritos_anta</span> <span class="op">&lt;-</span> <span class="va">prov_anta</span> <span class="op">|&gt;</span></span>
+<span>   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">ubigeo</span>, <span class="va">nombdist</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>.groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span></span>
+<span> <span class="va">distritos_anta</span></span>
+<span><span class="co">#&gt; Simple feature collection with 3 features and 2 fields</span></span>
+<span><span class="co">#&gt; Geometry type: POLYGON</span></span>
+<span><span class="co">#&gt; Dimension:     XY</span></span>
+<span><span class="co">#&gt; Bounding box:  xmin: -72.25564 ymin: -13.58002 xmax: -72.00001 ymax: -13.38918</span></span>
+<span><span class="co">#&gt; Geodetic CRS:  WGS 84</span></span>
+<span><span class="co">#&gt; # A tibble: 3 × 3</span></span>
+<span><span class="co">#&gt;   ubigeo nombdist                                                           geom</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;  &lt;chr&gt;                                                     &lt;POLYGON [°]&gt;</span></span>
+<span><span class="co">#&gt; 1 080301 ANTA      ((-72.23544 -13.49333, -72.23555 -13.49369, -72.23601 -13.49…</span></span>
+<span><span class="co">#&gt; 2 080303 CACHIMAYO ((-72.07001 -13.43834, -72.07265 -13.43639, -72.07554 -13.43…</span></span>
+<span><span class="co">#&gt; 3 080308 PUCYURA   ((-72.06076 -13.50311, -72.0618 -13.50156, -72.06236 -13.501…</span></span>
+<span><span class="co"># Calcular centroides para etiquetas</span></span>
+<span><span class="va">distritos_centroides</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html" class="external-link">st_point_on_surface</a></span><span class="op">(</span><span class="va">distritos_anta</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: st_point_on_surface assumes attributes are constant over geometries</span></span>
+<span><span class="co">#&gt; Warning in st_point_on_surface.sfc(st_geometry(x)): st_point_on_surface may not</span></span>
+<span><span class="co">#&gt; give correct results for longitude/latitude data</span></span>
+<span></span>
+<span><span class="co"># Mapa completo</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="co"># 1. Celdas con el nivel de crecimiento</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span></span>
+<span>    data <span class="op">=</span> <span class="va">prov_anta</span>,</span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="va">nivel</span><span class="op">)</span>,</span>
+<span>    color <span class="op">=</span> <span class="cn">NA</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="co"># 2. Contorno de distritos</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span></span>
+<span>    data <span class="op">=</span> <span class="va">distritos_anta</span>,</span>
+<span>    fill  <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>    color <span class="op">=</span> <span class="st">"grey20"</span>,</span>
+<span>    linewidth <span class="op">=</span> <span class="fl">0.4</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="co"># 3. Nombres de los distritos</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf_text</a></span><span class="op">(</span></span>
+<span>    data <span class="op">=</span> <span class="va">distritos_centroides</span>,</span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>label <span class="op">=</span> <span class="va">nombdist</span><span class="op">)</span>,</span>
+<span>    size <span class="op">=</span> <span class="fl">3</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html" class="external-link">scale_fill_brewer</a></span><span class="op">(</span></span>
+<span>    palette <span class="op">=</span> <span class="st">"RdYlGn"</span>,</span>
+<span>    name <span class="op">=</span> <span class="st">"Nivel de\ncrecimiento"</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>    title <span class="op">=</span> <span class="st">"Crecimiento Poblacional"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Provincia de Anta (2007-2017)"</span>,</span>
+<span>    caption <span class="op">=</span> <span class="st">"Fuente: INEI | Visor SDOT"</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span></span>
+<span>    legend.position <span class="op">=</span> <span class="st">"right"</span>,</span>
+<span>    panel.grid.major <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.2</span>, colour <span class="op">=</span> <span class="st">"grey90"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in st_point_on_surface.sfc(sf::st_zm(x)): st_point_on_surface may not</span></span>
+<span><span class="co">#&gt; give correct results for longitude/latitude data</span></span></code></pre></div>
+<p><img src="reference/figures/README-unnamed-chunk-9-1.png" width="100%"></p>
+</div>
+<div class="section level4">
+<h4 id="cargar-múltiples-departamentos">Cargar múltiples departamentos<a class="anchor" aria-label="anchor" href="#cargar-m%C3%BAltiples-departamentos"></a>
+</h4>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Cargar varios departamentos del sur</span></span>
+<span><span class="va">densidad_sur</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_densidad_poblacional.html">get_densidad_poblacional</a></span><span class="op">(</span></span>
+<span>  departamento <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CUSCO"</span>, <span class="st">"PUNO"</span>, <span class="st">"AREQUIPA"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; Descargando: AREQUIPA...</span></span>
+<span><span class="co">#&gt; ✓ Descarga completada: AREQUIPA</span></span>
+<span><span class="co">#&gt; Cargando datos: AREQUIPA...</span></span>
+<span><span class="co">#&gt; Validando geometrías...</span></span>
+<span><span class="co">#&gt; ✓ Cargado: AREQUIPA (516 registros)</span></span>
+<span><span class="co">#&gt; ✓ Usando caché: CUSCO</span></span>
+<span><span class="co">#&gt; Cargando datos: CUSCO...</span></span>
+<span><span class="co">#&gt; Validando geometrías...</span></span>
+<span><span class="co">#&gt; ✓ Cargado: CUSCO (649 registros)</span></span>
+<span><span class="co">#&gt; Descargando: PUNO...</span></span>
+<span><span class="co">#&gt; ✓ Descarga completada: PUNO</span></span>
+<span><span class="co">#&gt; Cargando datos: PUNO...</span></span>
+<span><span class="co">#&gt; Validando geometrías...</span></span>
+<span><span class="co">#&gt; ✓ Cargado: PUNO (631 registros)</span></span>
+<span><span class="co">#&gt; Combinando datos de múltiples departamentos...</span></span>
+<span><span class="co">#&gt; ✓ Datos cargados exitosamente: 1796 registros</span></span>
+<span></span>
+<span><span class="co"># Análisis estadístico por departamento</span></span>
+<span><span class="va">densidad_sur</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_drop_geometry</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html" class="external-link">count</a></span><span class="op">(</span><span class="va">nombdep</span>, <span class="va">nivel</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">nombdep</span>, y <span class="op">=</span> <span class="va">n</span>, fill <span class="op">=</span> <span class="va">nivel</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html" class="external-link">geom_col</a></span><span class="op">(</span>position <span class="op">=</span> <span class="st">"fill"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_continuous</a></span><span class="op">(</span>labels <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="va"><a href="https://scales.r-lib.org/reference/percent_format.html" class="external-link">percent</a></span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html" class="external-link">scale_fill_brewer</a></span><span class="op">(</span>palette <span class="op">=</span> <span class="st">"RdYlGn"</span>, name <span class="op">=</span> <span class="st">"Nivel"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>    title <span class="op">=</span> <span class="st">"Distribución de Niveles de Crecimiento Poblacional"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Departamentos del Sur del Perú (2007-2017)"</span>,</span>
+<span>    x <span class="op">=</span> <span class="st">"Departamento"</span>,</span>
+<span>    y <span class="op">=</span> <span class="st">"Porcentaje"</span>,</span>
+<span>    caption <span class="op">=</span> <span class="st">"Fuente: INEI"</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_flip.html" class="external-link">coord_flip</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-unnamed-chunk-10-1.png" width="100%"></p>
+</div>
+</div>
+</div>
+<div class="section level2">
+<h2 id="id_-fuentes-de-datos">📊 Fuentes de datos<a class="anchor" aria-label="anchor" href="#id_-fuentes-de-datos"></a>
+</h2>
+<p>Los datos provistos por este paquete provienen de:</p>
+<ul>
+<li>
+<strong>SDOT-PCM</strong> - Secretaría de Demarcación y Organización Territorial
+<ul>
+<li><a href="https://geosdot.servicios.gob.pe/visor/" class="external-link uri">https://geosdot.servicios.gob.pe/visor/</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section level2">
+<h2 id="id_-contribuciones">🤝 Contribuciones<a class="anchor" aria-label="anchor" href="#id_-contribuciones"></a>
+</h2>
+<p>Las contribuciones son bienvenidas. Por favor abre un issue o pull request:</p>
 <p>👉 <a href="https://github.com/PaulESantos/rsdot/issues" class="external-link uri">https://github.com/PaulESantos/rsdot/issues</a></p>
-</blockquote>
 </div>
-<div class="section level3">
-<h3 id="id_-licencia">📄 Licencia<a class="anchor" aria-label="anchor" href="#id_-licencia"></a>
-</h3>
-<p>Este paquete utiliza la licencia MIT. Consulta LICENSE para más detalles.</p>
+<div class="section level2">
+<h2 id="id_-licencia">📄 Licencia<a class="anchor" aria-label="anchor" href="#id_-licencia"></a>
+</h2>
+<p>Este paquete utiliza la licencia MIT. Consulta <code>LICENSE</code> para más detalles.</p>
 </div>
-<div class="section level3">
-<h3 id="id_-autor">👤 Autor<a class="anchor" aria-label="anchor" href="#id_-autor"></a>
-</h3>
-<p>Paul Efren Santos Andrade ORCID: 0000-0002-6635-0375 <a href="mailto:paulefrens@gmail.com" class="uri">mailto:paulefrens@gmail.com</a></p>
+<div class="section level2">
+<h2 id="id_-autor">👤 Autor<a class="anchor" aria-label="anchor" href="#id_-autor"></a>
+</h2>
+<p><strong>Paul Efren Santos Andrade</strong></p>
+<ul>
+<li>ORCID: <a href="https://orcid.org/0000-0002-6635-0375" class="external-link">0000-0002-6635-0375</a>
+</li>
+<li>Email: <a href="mailto:paulefrens@gmail.com" class="email">paulefrens@gmail.com</a>
+</li>
+</ul>
 </div>
-<div class="section level3">
-<h3 id="id_-sitio-web-del-paquete">🌐 Sitio web del paquete<a class="anchor" aria-label="anchor" href="#id_-sitio-web-del-paquete"></a>
-</h3>
-<p>Documentación ampliada: &gt; 👉 <a href="https://paulesantos.github.io/rsdot/" class="uri">https://paulesantos.github.io/rsdot/</a></p>
+<div class="section level2">
+<h2 id="id_-sitio-web-del-paquete">🌐 Sitio web del paquete<a class="anchor" aria-label="anchor" href="#id_-sitio-web-del-paquete"></a>
+</h2>
+<p>Documentación ampliada y viñetas:</p>
+<p>👉 <a href="https://paulesantos.github.io/rsdot/" class="uri">https://paulesantos.github.io/rsdot/</a></p>
+</div>
+<div class="section level2">
+<h2 id="id_-citación">📚 Citación<a class="anchor" aria-label="anchor" href="#id_-citaci%C3%B3n"></a>
+</h2>
+<p>Si utilizas este paquete en tus publicaciones, por favor cítalo como:</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"rsdot"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; To cite package 'rsdot' in publications use:</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   Santos Andrade P (2025). _rsdot: Acceso Programático a Datos</span></span>
+<span><span class="co">#&gt;   Espaciales de la SDOT-PCM Perú_. R package version 0.1.0, commit</span></span>
+<span><span class="co">#&gt;   24c8a524a71cfefcf5255671f14a2a23d6864ab6,</span></span>
+<span><span class="co">#&gt;   &lt;https://github.com/PaulESantos/rsdot&gt;.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; A BibTeX entry for LaTeX users is</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   @Manual{,</span></span>
+<span><span class="co">#&gt;     title = {rsdot: Acceso Programático a Datos Espaciales de la SDOT-PCM Perú},</span></span>
+<span><span class="co">#&gt;     author = {Paul Efren {Santos Andrade}},</span></span>
+<span><span class="co">#&gt;     year = {2025},</span></span>
+<span><span class="co">#&gt;     note = {R package version 0.1.0, commit 24c8a524a71cfefcf5255671f14a2a23d6864ab6},</span></span>
+<span><span class="co">#&gt;     url = {https://github.com/PaulESantos/rsdot},</span></span>
+<span><span class="co">#&gt;   }</span></span></code></pre></div>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">

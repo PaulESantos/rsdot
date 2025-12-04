@@ -1,4 +1,4 @@
-# rsdot
+# rsdot [![](reference/figures/rsdot_logo.png)](https://github.com/PaulESantos/ppendemic)
 
 `rsdot` proporciona acceso programático a la información geográfica
 producida y recopilada por la Secretaría de Demarcación y Organización
@@ -8,63 +8,78 @@ Perú.
 El paquete facilita el acceso y manipulación de diversas capas
 vectoriales, incluyendo:
 
-- Límites censales INEI 2023
+- **Límites censales INEI 2023**: Departamentos, provincias y distritos
+- **Tiempos de desplazamiento**: Accesibilidad territorial a capitales
+  departamentales
+- **Densidad y crecimiento poblacional**: Interpolación espacial de
+  censos 2007-2017
+- **Información del modelo geográfico SDOT**: Infraestructura, centros
+  poblados, riesgos y peligros
+- **Otras capas temáticas territoriales**
 
-- Provincias, distritos y departamentos
-
-- Información del modelo geográfico SDOT
-
-- Infraestructura, centros poblados, riesgos y peligros
-
-- Otras capas temáticas territoriales
-
-### ⚠️ Importante:
+### ⚠️ Importante
 
 Los límites censales del INEI provistos por este paquete son
-referenciales y no constituyen límites oficiales ni tienen efecto legal
-demarcatorio.
+**referenciales** y no constituyen límites oficiales ni tienen efecto
+legal demarcatorio.
 
-### ✨ Características
+## ✨ Características
 
-Acceso programático a datos espaciales del Perú.
+- ✅ **Acceso programático** a datos espaciales oficiales del Perú
+- ✅ **Descarga automática** desde OSF con caché inteligente
+- ✅ **Compatible** con `sf`, `ggplot2`, `dplyr` y herramientas SIG
+  modernas
+- ✅ **Validación de geometrías** automática para operaciones espaciales
 
-Descarga automática desde OSF con caché inteligente.
+### 📦 Funciones principales
 
-Corrección robusta de caracteres especiales (Ñ, tildes).
+- [`get_departamentos()`](https://paulesantos.github.io/rsdot/reference/get_departamentos.md) -
+  Límites censales departamentales
+- [`get_provincias()`](https://paulesantos.github.io/rsdot/reference/get_provincias.md) -
+  Límites censales provinciales
+- [`get_distritos()`](https://paulesantos.github.io/rsdot/reference/get_distritos.md) -
+  Límites censales distritales
+- `get_tiempos_desplazamiento()` - Tiempos de desplazamiento a capitales
+- [`get_densidad_poblacional()`](https://paulesantos.github.io/rsdot/reference/get_densidad_poblacional.md) -
+  Densidad y crecimiento poblacional intercensal
 
-Compatible con sf, ggplot2, dplyr y herramientas SIG modernas.
-
-Funciones principales:
-
-get_departamentos()
-
-get_provincias()
-
-get_distritos()
-
-### 📦 Instalación
+## 📦 Instalación
 
 Instalar la versión de desarrollo desde GitHub:
 
 ``` r
+# Usando remotes
 install.packages("remotes")
 remotes::install_github("PaulESantos/rsdot")
-# or
+
+# O usando pak (recomendado)
 install.packages("pak")
 pak::pak("PaulESantos/rsdot")
 ```
 
-### 🚀 Ejemplos
+## 🚀 Ejemplos de uso
 
-Cargar el paquete
+### Cargar el paquete
 
 ``` r
 library(rsdot)
 library(sf)
 #> Linking to GEOS 3.13.1, GDAL 3.10.2, PROJ 9.5.1; sf_use_s2() is TRUE
+library(ggplot2)
+library(dplyr)
+#> 
+#> Adjuntando el paquete: 'dplyr'
+#> The following objects are masked from 'package:stats':
+#> 
+#>     filter, lag
+#> The following objects are masked from 'package:base':
+#> 
+#>     intersect, setdiff, setequal, union
 ```
 
-Obtener departamentos
+### 1. Límites censales
+
+#### Obtener departamentos
 
 ``` r
 deps <- get_departamentos()
@@ -95,25 +110,20 @@ deps
 #> 10    10 10     HUANUCO      HUANUCO      LEY        S/N    1869-01-24
 #> # ℹ 15 more rows
 #> # ℹ 1 more variable: geometry <MULTIPOLYGON [°]>
-```
 
-Visualización básica
-
-``` r
-library(ggplot2)
-
+# Visualización básica
 ggplot(deps) +
-geom_sf(fill = "steelblue", color = "white") +
-theme_minimal() +
-labs(
-title = "Departamentos del Perú",
-caption = "Fuente: SDOT - PCM / INEI 2023"
-)
+  geom_sf(fill = "steelblue", color = "white") +
+  theme_minimal() +
+  labs(
+    title = "Departamentos del Perú",
+    caption = "Fuente: SDOT - PCM / INEI 2023"
+  )
 ```
 
-![](reference/figures/README-unnamed-chunk-5-1.png)
+![](reference/figures/README-unnamed-chunk-3-1.png)
 
-Obtener provincias de un departamento
+#### Obtener provincias de un departamento
 
 ``` r
 cusco_prov <- get_provincias(departamento = "CUSCO")
@@ -141,28 +151,28 @@ head(cusco_prov)
 #> 6    54 08     CUSCO   0807   CHUMBIVILCAS SANTO T… Reglament… S/N    1825-06-21
 #> # ℹ 1 more variable: geometry <MULTIPOLYGON [°]>
 
-#Mapa de provincias
-
+# Mapa de provincias
 ggplot(cusco_prov) +
-geom_sf(aes(fill = nombprov), color = "white", linewidth = 0.3) +
-scale_fill_viridis_d(option = "plasma") +
-theme_minimal() +
-labs(
-title = "Provincias del Departamento de Cusco",
-subtitle = "INEI 2023 | Referencial",
-fill = "Provincia"
-)
+  geom_sf(aes(fill = nombprov), color = "white", linewidth = 0.3) +
+  scale_fill_viridis_d(option = "plasma") +
+  theme_minimal() +
+  labs(
+    title = "Provincias del Departamento de Cusco",
+    subtitle = "INEI 2023 | Referencial",
+    fill = "Provincia"
+  )
 ```
 
-![](reference/figures/README-unnamed-chunk-6-1.png)
+![](reference/figures/README-unnamed-chunk-4-1.png)
 
-Obtener distritos Ejemplo: Cañete (Lima)
+#### Obtener distritos
+
+Ejemplo: Cañete (Lima)
 
 ``` r
-
 canete <- get_distritos(
-provincia = "CAÑETE",
-departamento = "LIMA"
+  provincia = "CAÑETE",
+  departamento = "LIMA"
 )
 #> Descargando: Límites Censales Distritales (INEI 2023)...
 #> Fuente: OSF - Repositorio DEMARCA
@@ -173,66 +183,334 @@ departamento = "LIMA"
 #> ✓ Filtrado por departamento: 171 distrito(s) en LIMA
 #> ✓ Filtrado por provincia: 16 distrito(s) en CAÑETE
 #> ✓ Filtrado completado por departamento > provincia: 16 distrito(s)
-canete
-#> Simple feature collection with 16 features and 11 fields
+
+# Visualización
+ggplot(canete) +
+  geom_sf(aes(fill = nombdist), color = "white", linewidth = 0.3) +
+  scale_fill_viridis_d() +
+  theme_minimal() +
+  labs(
+    title = "Distritos de la Provincia de Cañete",
+    subtitle = "Referencia Censal INEI 2023",
+    fill = "Distrito"
+  )
+```
+
+![](reference/figures/README-unnamed-chunk-5-1.png)
+
+### 2. Tiempos de desplazamiento
+
+``` r
+# Cargar límites de Cusco
+cusco <- get_departamentos(departamento = "CUSCO")
+
+# Obtener tiempos de desplazamiento
+tiempos_cusco <- get_tiempos_desplazamiento(area_interes = cusco)
+
+# Visualizar accesibilidad territorial
+ggplot() +
+  geom_sf(data = tiempos_cusco, aes(fill = cat_tiempo), color = NA) +
+  geom_sf(data = cusco, fill = NA, color = "black", linewidth = 1) +
+  scale_fill_brewer(palette = "YlOrRd", name = "Tiempo", direction = -1) +
+  labs(
+    title = "Tiempo de Desplazamiento a Capital más Cercana",
+    subtitle = "Departamento de Cusco",
+    caption = "Fuente: INEI - MTC | Visor - SDOT"
+  ) +
+  theme_void()
+```
+
+### 3. Densidad y crecimiento poblacional
+
+#### Ver departamentos disponibles
+
+``` r
+# Listar departamentos con datos disponibles
+get_densidad_poblacional()
+#> Departamentos disponibles:
+#>   - AMAZONAS
+#>   - ANCASH
+#>   - APURIMAC
+#>   - AREQUIPA
+#>   - AYACUCHO
+#>   - CAJAMARCA
+#>   - CALLAO
+#>   - CUSCO
+#>   - HUANCAVELICA
+#>   - HUANUCO
+#>   - ICA
+#>   - JUNIN
+#>   - LA LIBERTAD
+#>   - LAMBAYEQUE
+#>   - LIMA
+#>   - LORETO
+#>   - MADRE DE DIOS
+#>   - MOQUEGUA
+#>   - PASCO
+#>   - PIURA
+#>   - PUNO
+#>   - SAN MARTIN
+#>   - TACNA
+#>   - TUMBES
+#>   - UCAYALI
+#> 
+#> Uso: get_densidad_poblacional(departamento = 'CUSCO')
+```
+
+#### Cargar datos de un departamento
+
+``` r
+densidad_cusco <- get_densidad_poblacional(departamento = "CUSCO")
+#> Descargando: CUSCO...
+#> ✓ Descarga completada: CUSCO
+#> Cargando datos: CUSCO...
+#> Validando geometrías...
+#> ✓ Cargado: CUSCO (649 registros)
+#> ✓ Datos cargados exitosamente: 649 registros
+densidad_cusco
+#> Simple feature collection with 649 features and 11 fields
 #> Geometry type: MULTIPOLYGON
 #> Dimension:     XY
-#> Bounding box:  xmin: -76.79125 ymin: -13.32351 xmax: -75.94078 ymax: -12.27573
+#> Bounding box:  xmin: -73.9811 ymin: -15.45829 xmax: -70.34507 ymax: -11.21229
 #> Geodetic CRS:  WGS 84
-#> # A tibble: 16 × 12
-#>      gid ubigeo nombdep nombprov nombdist   capital region_nat tipo_norma numero
-#>    <int> <chr>  <chr>   <chr>    <chr>      <chr>   <chr>      <chr>      <chr> 
-#>  1   825 150501 LIMA    CAÑETE   SAN VICEN… SAN VI… COSTA      Ley        S/N   
-#>  2   826 150502 LIMA    CAÑETE   ASIA       ASIA    COSTA      Ley        15112 
-#>  3   827 150505 LIMA    CAÑETE   CHILCA     CHILCA  COSTA      Ley        S/N   
-#>  4   828 150507 LIMA    CAÑETE   IMPERIAL   IMPERI… COSTA      Ley        1170  
-#>  5   829 150509 LIMA    CAÑETE   MALA       MALA    COSTA      Ley        S/N   
-#>  6   830 150512 LIMA    CAÑETE   QUILMANA   QUILMA… COSTA      Ley        9962  
-#>  7   831 150515 LIMA    CAÑETE   SANTA CRU… SANTA … COSTA      Ley        4611  
-#>  8   895 150503 LIMA    CAÑETE   CALANGO    CALANGO COSTA      Ley        S/N   
-#>  9   896 150504 LIMA    CAÑETE   CERRO AZUL CERRO … COSTA      Ley Regio… 464   
-#> 10   897 150506 LIMA    CAÑETE   COAYLLO    COAYLLO COSTA      Ley        S/N   
-#> 11   898 150508 LIMA    CAÑETE   LUNAHUANA  LUNAHU… COSTA      Ley        S/N   
-#> 12   899 150510 LIMA    CAÑETE   NUEVO IMP… NUEVO … COSTA      Ley        14154 
-#> 13   900 150511 LIMA    CAÑETE   PACARAN    PACARAN COSTA      Ley        S/N   
-#> 14   901 150513 LIMA    CAÑETE   SAN ANTON… SAN AN… COSTA      Ley        4611  
-#> 15   902 150514 LIMA    CAÑETE   SAN LUIS   SAN LU… COSTA      Ley        S/N   
-#> 16   903 150516 LIMA    CAÑETE   ZUÑIGA     ZUÑIGA  COSTA      Ley        9674  
-#> # ℹ 3 more variables: fecha_fin <date>, comentario <chr>,
-#> #   geometry <MULTIPOLYGON [°]>
+#> # A tibble: 649 × 12
+#>    ubigeo nombdep nombprov     nombdist   capital nivel rango descrip shape_leng
+#>  * <chr>  <chr>   <chr>        <chr>      <chr>   <chr> <chr> <chr>        <dbl>
+#>  1 080703 CUSCO   CHUMBIVILCAS CHAMACA    CHAMACA Muy … <= -… Tasa m…    0.0302 
+#>  2 080707 CUSCO   CHUMBIVILCAS QUIÑOTA    QUIÑOTA Muy … <= -… Tasa m…    0.00842
+#>  3 080202 CUSCO   ACOMAYO      ACOPIA     ACOPIA  Muy … <= -… Tasa m…    0.0154 
+#>  4 080701 CUSCO   CHUMBIVILCAS SANTO TOM… SANTO … Muy … <= -… Tasa m…    0.118  
+#>  5 081002 CUSCO   PARURO       ACCHA      ACCHA   Muy … <= -… Tasa m…    0.0240 
+#>  6 080501 CUSCO   CANAS        YANAOCA    YANAOCA Muy … <= -… Tasa m…    0.0302 
+#>  7 080506 CUSCO   CANAS        PAMPAMARCA PAMPAM… Muy … <= -… Tasa m…    0.00743
+#>  8 080601 CUSCO   CANCHIS      SICUANI    SICUANI Muy … <= -… Tasa m…    0.0347 
+#>  9 081207 CUSCO   QUISPICANCHI HUARO      HUARO   Muy … <= -… Tasa m…    0.0232 
+#> 10 080806 CUSCO   ESPINAR      PICHIGUA   PICHIG… Muy … <= -… Tasa m…    0.0273 
+#> # ℹ 639 more rows
+#> # ℹ 3 more variables: shape_area <dbl>, geom <MULTIPOLYGON [°]>,
+#> #   departamento <chr>
 
-#Visualización
-
-ggplot(canete) +
-geom_sf(aes(fill = nombdist), color = "white", linewidth = 0.3) +
-theme_minimal() +
-labs(
-title = "Distritos de la Provincia de Cañete",
-subtitle = "Referencia Censal INEI 2023",
-fill = "Distrito"
-)
+# Mapa de nivel de crecimiento
+ggplot(densidad_cusco) +
+  geom_sf(aes(fill = nivel), color = NA) +
+  scale_fill_brewer(
+    palette = "RdYlGn",
+    name = "Nivel de\nCrecimiento"
+  ) +
+  labs(
+    title = "Crecimiento Poblacional por Nivel",
+    subtitle = "Departamento de Cusco (2007-2017)",
+    caption = "Fuente: INEI | Visor - SDOT"
+  ) +
+  theme_minimal()
 ```
 
 ![](reference/figures/README-unnamed-chunk-7-1.png)
 
-### 🤝 Contribuciones
+#### Filtrado por provincia y distrito
 
-Las contribuciones son bienvenidas.
+``` r
+# Cargar solo una provincia
+densidad_prov_cusco <- get_densidad_poblacional(
+  departamento = "CUSCO",
+  provincia = "CUSCO"
+)
+#> ✓ Usando caché: CUSCO
+#> Cargando datos: CUSCO...
+#> Validando geometrías...
+#> ✓ Cargado: CUSCO (649 registros)
+#> ✓ Filtrado por provincia: 36 registros
+#> ✓ Datos cargados exitosamente: 36 registros
 
-Por favor abre un issue o pull request:
+# Cargar distrito específico
+densidad_wanchaq <- get_densidad_poblacional(
+  departamento = "CUSCO",
+  provincia = "CUSCO",
+  distrito = "WANCHAQ"
+)
+#> ✓ Usando caché: CUSCO
+#> Cargando datos: CUSCO...
+#> Validando geometrías...
+#> ✓ Cargado: CUSCO (649 registros)
+#> ✓ Filtrado por provincia: 36 registros
+#> ✓ Filtrado por distrito: 3 registros
+#> ✓ Datos cargados exitosamente: 3 registros
+```
 
-> 👉 <https://github.com/PaulESantos/rsdot/issues>
+#### Análisis avanzado: Mapa con etiquetas de distritos
 
-### 📄 Licencia
+``` r
+prov_anta <- get_densidad_poblacional(
+  departamento = "CUSCO",
+  provincia = "ANTA", 
+  distrito = c("CACHIMAYO", "PUCYURA", "ANTA"))
+#> ✓ Usando caché: CUSCO
+#> Cargando datos: CUSCO...
+#> Validando geometrías...
+#> ✓ Cargado: CUSCO (649 registros)
+#> ✓ Filtrado por provincia: 43 registros
+#> ✓ Filtrado por distrito: 14 registros
+#> ✓ Datos cargados exitosamente: 14 registros
 
-Este paquete utiliza la licencia MIT. Consulta LICENSE para más
+distritos_anta <- prov_anta |>
+   group_by(ubigeo, nombdist) |>
+   summarise(.groups = "drop")
+ distritos_anta
+#> Simple feature collection with 3 features and 2 fields
+#> Geometry type: POLYGON
+#> Dimension:     XY
+#> Bounding box:  xmin: -72.25564 ymin: -13.58002 xmax: -72.00001 ymax: -13.38918
+#> Geodetic CRS:  WGS 84
+#> # A tibble: 3 × 3
+#>   ubigeo nombdist                                                           geom
+#>   <chr>  <chr>                                                     <POLYGON [°]>
+#> 1 080301 ANTA      ((-72.23544 -13.49333, -72.23555 -13.49369, -72.23601 -13.49…
+#> 2 080303 CACHIMAYO ((-72.07001 -13.43834, -72.07265 -13.43639, -72.07554 -13.43…
+#> 3 080308 PUCYURA   ((-72.06076 -13.50311, -72.0618 -13.50156, -72.06236 -13.501…
+# Calcular centroides para etiquetas
+distritos_centroides <- st_point_on_surface(distritos_anta)
+#> Warning: st_point_on_surface assumes attributes are constant over geometries
+#> Warning in st_point_on_surface.sfc(st_geometry(x)): st_point_on_surface may not
+#> give correct results for longitude/latitude data
+
+# Mapa completo
+ggplot() +
+  # 1. Celdas con el nivel de crecimiento
+  geom_sf(
+    data = prov_anta,
+    aes(fill = nivel),
+    color = NA
+  ) +
+  # 2. Contorno de distritos
+  geom_sf(
+    data = distritos_anta,
+    fill  = NA,
+    color = "grey20",
+    linewidth = 0.4
+  ) +
+  # 3. Nombres de los distritos
+  geom_sf_text(
+    data = distritos_centroides,
+    aes(label = nombdist),
+    size = 3
+  ) +
+  scale_fill_brewer(
+    palette = "RdYlGn",
+    name = "Nivel de\ncrecimiento"
+  ) +
+  labs(
+    title = "Crecimiento Poblacional",
+    subtitle = "Provincia de Anta (2007-2017)",
+    caption = "Fuente: INEI | Visor SDOT"
+  ) +
+  theme_minimal() +
+  theme(
+    legend.position = "right",
+    panel.grid.major = element_line(linewidth = 0.2, colour = "grey90")
+  )
+#> Warning in st_point_on_surface.sfc(sf::st_zm(x)): st_point_on_surface may not
+#> give correct results for longitude/latitude data
+```
+
+![](reference/figures/README-unnamed-chunk-9-1.png)
+
+#### Cargar múltiples departamentos
+
+``` r
+# Cargar varios departamentos del sur
+densidad_sur <- get_densidad_poblacional(
+  departamento = c("CUSCO", "PUNO", "AREQUIPA")
+)
+#> Descargando: AREQUIPA...
+#> ✓ Descarga completada: AREQUIPA
+#> Cargando datos: AREQUIPA...
+#> Validando geometrías...
+#> ✓ Cargado: AREQUIPA (516 registros)
+#> ✓ Usando caché: CUSCO
+#> Cargando datos: CUSCO...
+#> Validando geometrías...
+#> ✓ Cargado: CUSCO (649 registros)
+#> Descargando: PUNO...
+#> ✓ Descarga completada: PUNO
+#> Cargando datos: PUNO...
+#> Validando geometrías...
+#> ✓ Cargado: PUNO (631 registros)
+#> Combinando datos de múltiples departamentos...
+#> ✓ Datos cargados exitosamente: 1796 registros
+
+# Análisis estadístico por departamento
+densidad_sur %>%
+  st_drop_geometry() %>%
+  count(nombdep, nivel) %>%
+  ggplot(aes(x = nombdep, y = n, fill = nivel)) +
+  geom_col(position = "fill") +
+  scale_y_continuous(labels = scales::percent) +
+  scale_fill_brewer(palette = "RdYlGn", name = "Nivel") +
+  labs(
+    title = "Distribución de Niveles de Crecimiento Poblacional",
+    subtitle = "Departamentos del Sur del Perú (2007-2017)",
+    x = "Departamento",
+    y = "Porcentaje",
+    caption = "Fuente: INEI"
+  ) +
+  coord_flip() +
+  theme_minimal()
+```
+
+![](reference/figures/README-unnamed-chunk-10-1.png)
+
+## 📊 Fuentes de datos
+
+Los datos provistos por este paquete provienen de:
+
+- **SDOT-PCM** - Secretaría de Demarcación y Organización Territorial
+  - <https://geosdot.servicios.gob.pe/visor/>
+
+## 🤝 Contribuciones
+
+Las contribuciones son bienvenidas. Por favor abre un issue o pull
+request:
+
+👉 <https://github.com/PaulESantos/rsdot/issues>
+
+## 📄 Licencia
+
+Este paquete utiliza la licencia MIT. Consulta `LICENSE` para más
 detalles.
 
-### 👤 Autor
+## 👤 Autor
 
-Paul Efren Santos Andrade ORCID: 0000-0002-6635-0375
-[mailto:paulefrens@gmail.com](mailto:paulefrens@gmail.com)
+**Paul Efren Santos Andrade**
 
-### 🌐 Sitio web del paquete
+- ORCID: [0000-0002-6635-0375](https://orcid.org/0000-0002-6635-0375)
+- Email: <paulefrens@gmail.com>
 
-Documentación ampliada: \> 👉 <https://paulesantos.github.io/rsdot/>
+## 🌐 Sitio web del paquete
+
+Documentación ampliada y viñetas:
+
+👉 <https://paulesantos.github.io/rsdot/>
+
+## 📚 Citación
+
+Si utilizas este paquete en tus publicaciones, por favor cítalo como:
+
+``` r
+citation("rsdot")
+#> To cite package 'rsdot' in publications use:
+#> 
+#>   Santos Andrade P (2025). _rsdot: Acceso Programático a Datos
+#>   Espaciales de la SDOT-PCM Perú_. R package version 0.1.0, commit
+#>   24c8a524a71cfefcf5255671f14a2a23d6864ab6,
+#>   <https://github.com/PaulESantos/rsdot>.
+#> 
+#> A BibTeX entry for LaTeX users is
+#> 
+#>   @Manual{,
+#>     title = {rsdot: Acceso Programático a Datos Espaciales de la SDOT-PCM Perú},
+#>     author = {Paul Efren {Santos Andrade}},
+#>     year = {2025},
+#>     note = {R package version 0.1.0, commit 24c8a524a71cfefcf5255671f14a2a23d6864ab6},
+#>     url = {https://github.com/PaulESantos/rsdot},
+#>   }
+```
