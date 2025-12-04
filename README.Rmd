@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# rsdot
+# rsdot  <a href='https://github.com/PaulESantos/ppendemic'><img src='man/figures/rsdot_logo.png' align="right" height="280" width="260" /></a>
 
 <!-- badges: start -->
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
@@ -27,135 +27,283 @@ knitr::opts_chunk$set(
 
 El paquete facilita el acceso y manipulación de diversas capas vectoriales, incluyendo:
 
-- Límites censales INEI 2023
+- **Límites censales INEI 2023**: Departamentos, provincias y distritos
+- **Tiempos de desplazamiento**: Accesibilidad territorial a capitales departamentales
+- **Densidad y crecimiento poblacional**: Interpolación espacial de censos 2007-2017
+- **Información del modelo geográfico SDOT**: Infraestructura, centros poblados, riesgos y peligros
+- **Otras capas temáticas territoriales**
 
-- Provincias, distritos y departamentos
+### ⚠️ Importante
 
-- Información del modelo geográfico SDOT
+Los límites censales del INEI provistos por este paquete son **referenciales** y no constituyen límites oficiales ni tienen efecto legal demarcatorio.
 
-- Infraestructura, centros poblados, riesgos y peligros
+## ✨ Características
 
-- Otras capas temáticas territoriales
+- ✅ **Acceso programático** a datos espaciales oficiales del Perú
+- ✅ **Descarga automática** desde OSF con caché inteligente
+- ✅ **Compatible** con `sf`, `ggplot2`, `dplyr` y herramientas SIG modernas
+- ✅ **Validación de geometrías** automática para operaciones espaciales
 
-### ⚠️ Importante:
-Los límites censales del INEI provistos por este paquete son referenciales y no constituyen límites oficiales ni tienen efecto legal demarcatorio.
+### 📦 Funciones principales
 
-### ✨ Características
-Acceso programático a datos espaciales del Perú.
+- `get_departamentos()` - Límites censales departamentales
+- `get_provincias()` - Límites censales provinciales
+- `get_distritos()` - Límites censales distritales
+- `get_tiempos_desplazamiento()` - Tiempos de desplazamiento a capitales
+- `get_densidad_poblacional()` - Densidad y crecimiento poblacional intercensal
 
-Descarga automática desde OSF con caché inteligente.
-
-Corrección robusta de caracteres especiales (Ñ, tildes).
-
-Compatible con sf, ggplot2, dplyr y herramientas SIG modernas.
-
-Funciones principales:
-
-get_departamentos()
-
-get_provincias()
-
-get_distritos()
-
-### 📦 Instalación
-
+## 📦 Instalación
 Instalar la versión de desarrollo desde GitHub:
-
-```{r eval=FALSE}
+```r
+# Usando remotes
 install.packages("remotes")
 remotes::install_github("PaulESantos/rsdot")
-# or
+
+# O usando pak (recomendado)
 install.packages("pak")
 pak::pak("PaulESantos/rsdot")
 ```
 
+## 🚀 Ejemplos de uso
 
-### 🚀 Ejemplos
-
-Cargar el paquete
-```{r}
+### Cargar el paquete
+```{r }
 library(rsdot)
 library(sf)
+library(ggplot2)
+library(dplyr)
 ```
 
-Obtener departamentos
+### 1. Límites censales
+
+#### Obtener departamentos
 ```{r}
 deps <- get_departamentos()
 deps
-```
 
-Visualización básica
-
-```{r}
-library(ggplot2)
-
+# Visualización básica
 ggplot(deps) +
-geom_sf(fill = "steelblue", color = "white") +
-theme_minimal() +
-labs(
-title = "Departamentos del Perú",
-caption = "Fuente: SDOT - PCM / INEI 2023"
-)
+  geom_sf(fill = "steelblue", color = "white") +
+  theme_minimal() +
+  labs(
+    title = "Departamentos del Perú",
+    caption = "Fuente: SDOT - PCM / INEI 2023"
+  )
 ```
 
-Obtener provincias de un departamento
+#### Obtener provincias de un departamento
 ```{r}
 cusco_prov <- get_provincias(departamento = "CUSCO")
 head(cusco_prov)
 
-#Mapa de provincias
-
+# Mapa de provincias
 ggplot(cusco_prov) +
-geom_sf(aes(fill = nombprov), color = "white", linewidth = 0.3) +
-scale_fill_viridis_d(option = "plasma") +
-theme_minimal() +
-labs(
-title = "Provincias del Departamento de Cusco",
-subtitle = "INEI 2023 | Referencial",
-fill = "Provincia"
-)
+  geom_sf(aes(fill = nombprov), color = "white", linewidth = 0.3) +
+  scale_fill_viridis_d(option = "plasma") +
+  theme_minimal() +
+  labs(
+    title = "Provincias del Departamento de Cusco",
+    subtitle = "INEI 2023 | Referencial",
+    fill = "Provincia"
+  )
 ```
 
-Obtener distritos
+#### Obtener distritos
+
 Ejemplo: Cañete (Lima)
 ```{r}
-
 canete <- get_distritos(
-provincia = "CAÑETE",
-departamento = "LIMA"
+  provincia = "CAÑETE",
+  departamento = "LIMA"
 )
-canete
 
-#Visualización
-
+# Visualización
 ggplot(canete) +
-geom_sf(aes(fill = nombdist), color = "white", linewidth = 0.3) +
-theme_minimal() +
-labs(
-title = "Distritos de la Provincia de Cañete",
-subtitle = "Referencia Censal INEI 2023",
-fill = "Distrito"
+  geom_sf(aes(fill = nombdist), color = "white", linewidth = 0.3) +
+  scale_fill_viridis_d() +
+  theme_minimal() +
+  labs(
+    title = "Distritos de la Provincia de Cañete",
+    subtitle = "Referencia Censal INEI 2023",
+    fill = "Distrito"
+  )
+```
+
+### 2. Tiempos de desplazamiento
+```r
+# Cargar límites de Cusco
+cusco <- get_departamentos(departamento = "CUSCO")
+
+# Obtener tiempos de desplazamiento
+tiempos_cusco <- get_tiempos_desplazamiento(area_interes = cusco)
+
+# Visualizar accesibilidad territorial
+ggplot() +
+  geom_sf(data = tiempos_cusco, aes(fill = cat_tiempo), color = NA) +
+  geom_sf(data = cusco, fill = NA, color = "black", linewidth = 1) +
+  scale_fill_brewer(palette = "YlOrRd", name = "Tiempo", direction = -1) +
+  labs(
+    title = "Tiempo de Desplazamiento a Capital más Cercana",
+    subtitle = "Departamento de Cusco",
+    caption = "Fuente: INEI - MTC | Visor - SDOT"
+  ) +
+  theme_void()
+```
+
+### 3. Densidad y crecimiento poblacional
+
+#### Ver departamentos disponibles
+```{r}
+# Listar departamentos con datos disponibles
+get_densidad_poblacional()
+```
+
+#### Cargar datos de un departamento
+```{r}
+densidad_cusco <- get_densidad_poblacional(departamento = "CUSCO")
+densidad_cusco
+
+# Mapa de nivel de crecimiento
+ggplot(densidad_cusco) +
+  geom_sf(aes(fill = nivel), color = NA) +
+  scale_fill_brewer(
+    palette = "RdYlGn",
+    name = "Nivel de\nCrecimiento"
+  ) +
+  labs(
+    title = "Crecimiento Poblacional por Nivel",
+    subtitle = "Departamento de Cusco (2007-2017)",
+    caption = "Fuente: INEI | Visor - SDOT"
+  ) +
+  theme_minimal()
+```
+
+#### Filtrado por provincia y distrito
+```{r}
+# Cargar solo una provincia
+densidad_prov_cusco <- get_densidad_poblacional(
+  departamento = "CUSCO",
+  provincia = "CUSCO"
+)
+
+# Cargar distrito específico
+densidad_wanchaq <- get_densidad_poblacional(
+  departamento = "CUSCO",
+  provincia = "CUSCO",
+  distrito = "WANCHAQ"
 )
 ```
 
+#### Análisis avanzado: Mapa con etiquetas de distritos
+```{r}
+prov_anta <- get_densidad_poblacional(
+  departamento = "CUSCO",
+  provincia = "ANTA", 
+  distrito = c("CACHIMAYO", "PUCYURA", "ANTA"))
 
+distritos_anta <- prov_anta |>
+   group_by(ubigeo, nombdist) |>
+   summarise(.groups = "drop")
+ distritos_anta
+# Calcular centroides para etiquetas
+distritos_centroides <- st_point_on_surface(distritos_anta)
 
-### 🤝 Contribuciones
-Las contribuciones son bienvenidas.
+# Mapa completo
+ggplot() +
+  # 1. Celdas con el nivel de crecimiento
+  geom_sf(
+    data = prov_anta,
+    aes(fill = nivel),
+    color = NA
+  ) +
+  # 2. Contorno de distritos
+  geom_sf(
+    data = distritos_anta,
+    fill  = NA,
+    color = "grey20",
+    linewidth = 0.4
+  ) +
+  # 3. Nombres de los distritos
+  geom_sf_text(
+    data = distritos_centroides,
+    aes(label = nombdist),
+    size = 3
+  ) +
+  scale_fill_brewer(
+    palette = "RdYlGn",
+    name = "Nivel de\ncrecimiento"
+  ) +
+  labs(
+    title = "Crecimiento Poblacional",
+    subtitle = "Provincia de Anta (2007-2017)",
+    caption = "Fuente: INEI | Visor SDOT"
+  ) +
+  theme_minimal() +
+  theme(
+    legend.position = "right",
+    panel.grid.major = element_line(linewidth = 0.2, colour = "grey90")
+  )
+```
 
-Por favor abre un issue o pull request:
+#### Cargar múltiples departamentos
+```{r}
+# Cargar varios departamentos del sur
+densidad_sur <- get_densidad_poblacional(
+  departamento = c("CUSCO", "PUNO", "AREQUIPA")
+)
 
-> 👉 https://github.com/PaulESantos/rsdot/issues
+# Análisis estadístico por departamento
+densidad_sur %>%
+  st_drop_geometry() %>%
+  count(nombdep, nivel) %>%
+  ggplot(aes(x = nombdep, y = n, fill = nivel)) +
+  geom_col(position = "fill") +
+  scale_y_continuous(labels = scales::percent) +
+  scale_fill_brewer(palette = "RdYlGn", name = "Nivel") +
+  labs(
+    title = "Distribución de Niveles de Crecimiento Poblacional",
+    subtitle = "Departamentos del Sur del Perú (2007-2017)",
+    x = "Departamento",
+    y = "Porcentaje",
+    caption = "Fuente: INEI"
+  ) +
+  coord_flip() +
+  theme_minimal()
+```
 
-###  📄 Licencia
-Este paquete utiliza la licencia MIT.
-Consulta LICENSE para más detalles.
+## 📊 Fuentes de datos
 
-### 👤 Autor
-Paul Efren Santos Andrade
-ORCID: 0000-0002-6635-0375
-mailto:paulefrens@gmail.com
+Los datos provistos por este paquete provienen de:
 
-### 🌐 Sitio web del paquete
-Documentación ampliada:
-> 👉 https://paulesantos.github.io/rsdot/
+- **SDOT-PCM** - Secretaría de Demarcación y Organización Territorial
+  - https://geosdot.servicios.gob.pe/visor/
+
+## 🤝 Contribuciones
+
+Las contribuciones son bienvenidas. Por favor abre un issue o pull request:
+
+👉 https://github.com/PaulESantos/rsdot/issues
+
+## 📄 Licencia
+
+Este paquete utiliza la licencia MIT. Consulta `LICENSE` para más detalles.
+
+## 👤 Autor
+
+**Paul Efren Santos Andrade**
+
+- ORCID: [0000-0002-6635-0375](https://orcid.org/0000-0002-6635-0375)
+- Email: paulefrens@gmail.com
+
+## 🌐 Sitio web del paquete
+
+Documentación ampliada y viñetas:
+
+👉 https://paulesantos.github.io/rsdot/
+
+## 📚 Citación
+
+Si utilizas este paquete en tus publicaciones, por favor cítalo como:
+```{r}
+citation("rsdot")
+```
