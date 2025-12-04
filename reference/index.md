@@ -2,6 +2,8 @@
 
 ## All functions
 
+- [`get_densidad_poblacional()`](https://paulesantos.github.io/rsdot/reference/get_densidad_poblacional.md)
+  : Obtener Densidad y Crecimiento Poblacional por Departamento
 - [`get_departamentos()`](https://paulesantos.github.io/rsdot/reference/get_departamentos.md)
   : Obtener Límites Censales Departamentales del Perú
 - [`get_distritos()`](https://paulesantos.github.io/rsdot/reference/get_distritos.md)
