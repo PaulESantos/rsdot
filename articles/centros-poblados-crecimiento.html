@@ -102,7 +102,8 @@ intercensal</li>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org" class="external-link">tidyr</a></span><span class="op">)</span></span></code></pre></div>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org" class="external-link">tidyr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://stringr.tidyverse.org" class="external-link">stringr</a></span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="uso-básico">Uso básico<a class="anchor" aria-label="anchor" href="#uso-b%C3%A1sico"></a>
@@ -126,7 +127,24 @@ Cusco:</p>
 <code class="sourceCode R"><span><span class="va">ccpp_cusco</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_centros_poblados_crecimiento.html">get_centros_poblados_crecimiento</a></span><span class="op">(</span>departamento <span class="op">=</span> <span class="st">"CUSCO"</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Explorar la estructura de los datos</span></span>
-<span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="va">ccpp_cusco</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="va">ccpp_cusco</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Rows: 837</span></span>
+<span><span class="co">#&gt; Columns: 15</span></span>
+<span><span class="co">#&gt; $ nro        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "4,869"<span style="color: #949494;">, </span>"5,108"<span style="color: #949494;">, </span>"5,428"<span style="color: #949494;">, </span>"5,290"<span style="color: #949494;">, </span>"5,431"<span style="color: #949494;">, </span>"4,839"<span style="color: #949494;">, </span>"4,79…</span></span>
+<span><span class="co">#&gt; $ codccpp    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "0804010043"<span style="color: #949494;">, </span>"0807070055"<span style="color: #949494;">, </span>"0812070001"<span style="color: #949494;">, </span>"0810060001"<span style="color: #949494;">, </span>"08…</span></span>
+<span><span class="co">#&gt; $ ubigeo     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "080401"<span style="color: #949494;">, </span>"080707"<span style="color: #949494;">, </span>"081207"<span style="color: #949494;">, </span>"081006"<span style="color: #949494;">, </span>"081207"<span style="color: #949494;">, </span>"080304"<span style="color: #949494;">,</span>…</span></span>
+<span><span class="co">#&gt; $ dep        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "CUSCO"<span style="color: #949494;">, </span>"CUSCO"<span style="color: #949494;">, </span>"CUSCO"<span style="color: #949494;">, </span>"CUSCO"<span style="color: #949494;">, </span>"CUSCO"<span style="color: #949494;">, </span>"CUSCO"<span style="color: #949494;">, </span>"CUSC…</span></span>
+<span><span class="co">#&gt; $ prov       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "CALCA"<span style="color: #949494;">, </span>"CHUMBIVILCAS"<span style="color: #949494;">, </span>"QUISPICANCHI"<span style="color: #949494;">, </span>"PARURO"<span style="color: #949494;">, </span>"QUISPIC…</span></span>
+<span><span class="co">#&gt; $ distrito   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "CALCA"<span style="color: #949494;">, </span>"QUIÑOTA"<span style="color: #949494;">, </span>"HUARO"<span style="color: #949494;">, </span>"OMACHA"<span style="color: #949494;">, </span>"HUARO"<span style="color: #949494;">, </span>"CHINCHAYPU…</span></span>
+<span><span class="co">#&gt; $ centro_pob <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "YANAHUAYLLA"<span style="color: #949494;">, </span>"CENTRO"<span style="color: #949494;">, </span>"HUARO"<span style="color: #949494;">, </span>"OMACHA"<span style="color: #949494;">, </span>"URPAY"<span style="color: #949494;">, </span>"SUMAR…</span></span>
+<span><span class="co">#&gt; $ pob_2007   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "209"<span style="color: #949494;">, </span>"202"<span style="color: #949494;">, </span>"1,420"<span style="color: #949494;">, </span>"398"<span style="color: #949494;">, </span>"404"<span style="color: #949494;">, </span>"237"<span style="color: #949494;">, </span>"6,652"<span style="color: #949494;">, </span>"147"<span style="color: #949494;">,</span>…</span></span>
+<span><span class="co">#&gt; $ pob_2017   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "211"<span style="color: #949494;">, </span>"210"<span style="color: #949494;">, </span>"1,833"<span style="color: #949494;">, </span>"391"<span style="color: #949494;">, </span>"402"<span style="color: #949494;">, </span>"237"<span style="color: #949494;">, </span>"10,182"<span style="color: #949494;">, </span>"155"…</span></span>
+<span><span class="co">#&gt; $ tasa       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 0.10<span style="color: #949494;">, </span>0.39<span style="color: #949494;">, </span>2.59<span style="color: #949494;">, </span>-0.18<span style="color: #949494;">, </span>-0.05<span style="color: #949494;">, </span>0.00<span style="color: #949494;">, </span>4.35<span style="color: #949494;">, </span>0.53<span style="color: #949494;">, </span>0.65<span style="color: #949494;">, </span>-1.…</span></span>
+<span><span class="co">#&gt; $ capital    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "No es capital"<span style="color: #949494;">, </span>"No es capital"<span style="color: #949494;">, </span>"Distrital"<span style="color: #949494;">, </span>"Distrital"<span style="color: #949494;">,</span>…</span></span>
+<span><span class="co">#&gt; $ region     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "Sierra"<span style="color: #949494;">, </span>"Sierra"<span style="color: #949494;">, </span>"Sierra"<span style="color: #949494;">, </span>"Sierra"<span style="color: #949494;">, </span>"Sierra"<span style="color: #949494;">, </span>"Sierra"<span style="color: #949494;">,</span>…</span></span>
+<span><span class="co">#&gt; $ urb_rural  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "RURAL"<span style="color: #949494;">, </span>"RURAL"<span style="color: #949494;">, </span>"RURAL"<span style="color: #949494;">, </span>"RURAL"<span style="color: #949494;">, </span>"RURAL"<span style="color: #949494;">, </span>"RURAL"<span style="color: #949494;">, </span>"URBA…</span></span>
+<span><span class="co">#&gt; $ tc_catg    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "POSITIVO"<span style="color: #949494;">, </span>"POSITIVO"<span style="color: #949494;">, </span>"POSITIVO"<span style="color: #949494;">, </span>"NEGATIVO"<span style="color: #949494;">, </span>"NEGATIVO"<span style="color: #949494;">,</span>…</span></span>
+<span><span class="co">#&gt; $ geom       <span style="color: #949494; font-style: italic;">&lt;POINT [°]&gt;</span> POINT (-71.93249 -13.29263)<span style="color: #949494;">, </span>POINT (-72.11369 -14.285…</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="estructura-de-los-datos">Estructura de los datos<a class="anchor" aria-label="anchor" href="#estructura-de-los-datos"></a>
@@ -181,7 +199,8 @@ NEGATIVO)</li>
 <span>  provincia <span class="op">=</span> <span class="st">"CUSCO"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">ccpp_prov_cusco</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">ccpp_prov_cusco</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 37</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="filtrado-por-distrito">Filtrado por distrito<a class="anchor" aria-label="anchor" href="#filtrado-por-distrito"></a>
@@ -205,7 +224,16 @@ NEGATIVO)</li>
 <span><span class="co"># Ver distribución por departamento y categoría</span></span>
 <span><span class="va">ccpp_sur</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_drop_geometry</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html" class="external-link">count</a></span><span class="op">(</span><span class="va">dep</span>, <span class="va">tc_catg</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html" class="external-link">count</a></span><span class="op">(</span><span class="va">dep</span>, <span class="va">tc_catg</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 3</span></span></span>
+<span><span class="co">#&gt;   dep      tc_catg      n</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> AREQUIPA NEGATIVO   144</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> AREQUIPA POSITIVO   151</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> CUSCO    NEGATIVO   412</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> CUSCO    POSITIVO   425</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> PUNO     NEGATIVO   597</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> PUNO     POSITIVO   322</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -217,9 +245,13 @@ NEGATIVO)</li>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Resumen de tasas de crecimiento</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">ccpp_cusco</span><span class="op">$</span><span class="va">tasa</span><span class="op">)</span></span>
+<span><span class="co">#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </span></span>
+<span><span class="co">#&gt; -10.540  -1.950   0.090   1.007   1.950  58.910</span></span>
 <span></span>
 <span><span class="co"># Resumen de población 2017</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">ccpp_cusco</span><span class="op">$</span><span class="va">pob_2017</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">ccpp_cusco</span><span class="op">$</span><span class="va">pob_2017</span><span class="op">)</span></span>
+<span><span class="co">#&gt;    Length     Class      Mode </span></span>
+<span><span class="co">#&gt;       837 character character</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="centros-poblados-con-crecimiento-negativo">Centros poblados con crecimiento negativo<a class="anchor" aria-label="anchor" href="#centros-poblados-con-crecimiento-negativo"></a>
@@ -229,7 +261,9 @@ NEGATIVO)</li>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">tc_catg</span> <span class="op">==</span> <span class="st">"NEGATIVO"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Centros con crecimiento negativo:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">ccpp_negativo</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Tasa promedio:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">ccpp_negativo</span><span class="op">$</span><span class="va">tasa</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span>, <span class="st">"%\n"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co">#&gt; Centros con crecimiento negativo: 412</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Tasa promedio:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">ccpp_negativo</span><span class="op">$</span><span class="va">tasa</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span>, <span class="st">"%\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Tasa promedio: -2.27 %</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="top-10-por-crecimiento">Top 10 por crecimiento<a class="anchor" aria-label="anchor" href="#top-10-por-crecimiento"></a>
@@ -242,7 +276,20 @@ NEGATIVO)</li>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_drop_geometry</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">centro_pob</span>, <span class="va">distrito</span>, <span class="va">pob_2007</span>, <span class="va">pob_2017</span>, <span class="va">tasa</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">top_crecimiento</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">top_crecimiento</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 10 × 5</span></span></span>
+<span><span class="co">#&gt;    centro_pob                      distrito       pob_2007 pob_2017  tasa</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> SANFORTUNIA                     VELILLE        15       1,540     58.9</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> HUARCA                          ESPINAR        10       244       37.6</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> SAN MIGUEL                      QUELLOUNO      15       239       31.9</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> SAN LUIS                        PISAC          11       150       29.9</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> QQUECHASNIYOC                   ANDAHUAYLILLAS 19       259       29.8</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> CCANCCAU                        LARES          18       238       29.5</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> ROYAL INCA                      PISAC          18       222       28.6</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> CONDEBAMBA ALTA-CONDEBAMBA BAJA SAYLLA         96       1,182     28.5</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> LLAYCHU                         PAUCARTAMBO    29       342       28.0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> JANAC CHUQUIBAMBA               LAMAY          19       218       27.6</span></span></code></pre></div>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Centros poblados con mayor decrecimiento</span></span>
 <span><span class="va">top_decrecimiento</span> <span class="op">&lt;-</span> <span class="va">ccpp_cusco</span> <span class="op">|&gt;</span></span>
@@ -251,7 +298,20 @@ NEGATIVO)</li>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_drop_geometry</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">centro_pob</span>, <span class="va">distrito</span>, <span class="va">pob_2007</span>, <span class="va">pob_2017</span>, <span class="va">tasa</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">top_decrecimiento</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">top_decrecimiento</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 10 × 5</span></span></span>
+<span><span class="co">#&gt;    centro_pob            distrito    pob_2007 pob_2017   tasa</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> PUERTO MAYO           PICHARI     460      151      -<span style="color: #BB0000;">10.5</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> POYENTIMARI           ECHARATE    645      265       -<span style="color: #BB0000;">8.51</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> HUALLA                YANATILE    667      280       -<span style="color: #BB0000;">8.31</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> SELVA ALEGRE          VILCABAMBA  366      154       -<span style="color: #BB0000;">8.29</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> TIRINCAVINI           PICHARI     370      160       -<span style="color: #BB0000;">8.04</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> PUCUTO                HUARO       533      241       -<span style="color: #BB0000;">7.63</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> SUYO                  YANATILE    460      213       -<span style="color: #BB0000;">7.41</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> ANTIGUO SAN CRISTOBAL PICHARI     353      166       -<span style="color: #BB0000;">7.27</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> CCOYO                 SANTO TOMAS 396      187       -<span style="color: #BB0000;">7.23</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> URAYPAMPA PAMPA ANZA  SICUANI     401      193       -<span style="color: #BB0000;">7.05</span></span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -264,8 +324,8 @@ NEGATIVO)</li>
 <code class="sourceCode R"><span><span class="va">ccpp_cusco</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_drop_geometry</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
-<span>    pob_2007 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu">str_remove</span><span class="op">(</span><span class="va">pob_2007</span>, <span class="st">","</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>    pob_2017 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu">str_remove</span><span class="op">(</span><span class="va">pob_2017</span>, <span class="st">","</span><span class="op">)</span><span class="op">)</span></span>
+<span>    pob_2007 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_remove.html" class="external-link">str_remove</a></span><span class="op">(</span><span class="va">pob_2007</span>, <span class="st">","</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    pob_2017 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_remove.html" class="external-link">str_remove</a></span><span class="op">(</span><span class="va">pob_2017</span>, <span class="st">","</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">capital</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
@@ -273,7 +333,14 @@ NEGATIVO)</li>
 <span>    pob_total_2017 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">pob_2017</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    tasa_promedio <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">tasa</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    tasa_mediana <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">tasa</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span>  <span class="op">)</span></span></code></pre></div>
+<span>  <span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 5</span></span></span>
+<span><span class="co">#&gt;   capital       n_centros pob_total_2017 tasa_promedio tasa_mediana</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Departamental         1         <span style="text-decoration: underline;">111</span>930         0.51          0.51</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Distrital            99         <span style="text-decoration: underline;">466</span>653         1.33          1.03</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> No es capital       725         <span style="text-decoration: underline;">225</span>847         0.949        -<span style="color: #BB0000;">0.22</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> Provincial           12         <span style="text-decoration: underline;">164</span>388         1.87          1.62</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="por-clasificación-urbano-rural">Por clasificación urbano-rural<a class="anchor" aria-label="anchor" href="#por-clasificaci%C3%B3n-urbano-rural"></a>
@@ -282,8 +349,8 @@ NEGATIVO)</li>
 <code class="sourceCode R"><span><span class="va">ccpp_cusco</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_drop_geometry</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
-<span>    pob_2007 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu">str_remove</span><span class="op">(</span><span class="va">pob_2007</span>, <span class="st">","</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>    pob_2017 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu">str_remove</span><span class="op">(</span><span class="va">pob_2017</span>, <span class="st">","</span><span class="op">)</span><span class="op">)</span></span>
+<span>    pob_2007 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_remove.html" class="external-link">str_remove</a></span><span class="op">(</span><span class="va">pob_2007</span>, <span class="st">","</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    pob_2017 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_remove.html" class="external-link">str_remove</a></span><span class="op">(</span><span class="va">pob_2017</span>, <span class="st">","</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">urb_rural</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
@@ -291,7 +358,12 @@ NEGATIVO)</li>
 <span>    pob_total_2017 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">pob_2017</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    tasa_promedio <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">tasa</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    tasa_mediana <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">tasa</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span>  <span class="op">)</span></span></code></pre></div>
+<span>  <span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 5</span></span></span>
+<span><span class="co">#&gt;   urb_rural n_centros pob_total_2017 tasa_promedio tasa_mediana</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> RURAL           794         <span style="text-decoration: underline;">290</span>491         0.898        -<span style="color: #BB0000;">0.09</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> URBANA           43         <span style="text-decoration: underline;">678</span>327         3.02          2.06</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="por-región-natural">Por región natural<a class="anchor" aria-label="anchor" href="#por-regi%C3%B3n-natural"></a>
@@ -300,8 +372,8 @@ NEGATIVO)</li>
 <code class="sourceCode R"><span><span class="va">ccpp_cusco</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_drop_geometry</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
-<span>    pob_2007 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu">str_remove</span><span class="op">(</span><span class="va">pob_2007</span>, <span class="st">","</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>    pob_2017 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu">str_remove</span><span class="op">(</span><span class="va">pob_2017</span>, <span class="st">","</span><span class="op">)</span><span class="op">)</span></span>
+<span>    pob_2007 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_remove.html" class="external-link">str_remove</a></span><span class="op">(</span><span class="va">pob_2007</span>, <span class="st">","</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    pob_2017 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_remove.html" class="external-link">str_remove</a></span><span class="op">(</span><span class="va">pob_2017</span>, <span class="st">","</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">region</span>, <span class="va">tc_catg</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
@@ -309,7 +381,14 @@ NEGATIVO)</li>
 <span>    pob_total_2017 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">pob_2017</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    tasa_promedio <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">tasa</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    .groups <span class="op">=</span> <span class="st">"drop"</span></span>
-<span>  <span class="op">)</span></span></code></pre></div>
+<span>  <span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 5</span></span></span>
+<span><span class="co">#&gt;   region tc_catg  n_centros pob_total_2017 tasa_promedio</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Selva  NEGATIVO        70          <span style="text-decoration: underline;">45</span>942         -<span style="color: #BB0000;">3.20</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Selva  POSITIVO        57          <span style="text-decoration: underline;">49</span>275          6.28</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> Sierra NEGATIVO       342         <span style="text-decoration: underline;">161</span>791         -<span style="color: #BB0000;">2.07</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> Sierra POSITIVO       368         <span style="text-decoration: underline;">711</span>810          3.85</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -321,8 +400,8 @@ NEGATIVO)</li>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ccpp_cusco</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
-<span>    pob_2007 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu">str_remove</span><span class="op">(</span><span class="va">pob_2007</span>, <span class="st">","</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>    pob_2017 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu">str_remove</span><span class="op">(</span><span class="va">pob_2017</span>, <span class="st">","</span><span class="op">)</span><span class="op">)</span></span>
+<span>    pob_2007 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_remove.html" class="external-link">str_remove</a></span><span class="op">(</span><span class="va">pob_2007</span>, <span class="st">","</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    pob_2017 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_remove.html" class="external-link">str_remove</a></span><span class="op">(</span><span class="va">pob_2017</span>, <span class="st">","</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>color <span class="op">=</span> <span class="va">tc_catg</span>, size <span class="op">=</span> <span class="va">pob_2017</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="fl">0.6</span><span class="op">)</span> <span class="op">+</span></span>
@@ -346,6 +425,12 @@ NEGATIVO)</li>
 <span>    plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>face <span class="op">=</span> <span class="st">"bold"</span>, size <span class="op">=</span> <span class="fl">14</span><span class="op">)</span>,</span>
 <span>    plot.subtitle <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">11</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
+<div class="figure">
+<img src="centros-poblados-crecimiento_files/figure-html/map-basic-1.png" class="r-plt" alt="Centros poblados del departamento de Cusco coloreados por categoría de crecimiento (positivo/negativo)" width="672"><p class="caption">
+Centros poblados del departamento de Cusco coloreados por categoría de
+crecimiento (positivo/negativo)
+</p>
+</div>
 </div>
 <div class="section level3">
 <h3 id="centros-poblados-urbanos">Centros poblados urbanos<a class="anchor" aria-label="anchor" href="#centros-poblados-urbanos"></a>
@@ -355,8 +440,8 @@ NEGATIVO)</li>
 <span></span>
 <span><span class="va">ccpp_urbanos</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
-<span>    pob_2007 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu">str_remove</span><span class="op">(</span><span class="va">pob_2007</span>, <span class="st">","</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>    pob_2017 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu">str_remove</span><span class="op">(</span><span class="va">pob_2017</span>, <span class="st">","</span><span class="op">)</span><span class="op">)</span></span>
+<span>    pob_2007 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_remove.html" class="external-link">str_remove</a></span><span class="op">(</span><span class="va">pob_2007</span>, <span class="st">","</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    pob_2017 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_remove.html" class="external-link">str_remove</a></span><span class="op">(</span><span class="va">pob_2017</span>, <span class="st">","</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>color <span class="op">=</span> <span class="va">tasa</span>, size <span class="op">=</span> <span class="va">pob_2017</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
@@ -378,6 +463,12 @@ NEGATIVO)</li>
 <span>    caption <span class="op">=</span> <span class="st">"Fuente: INEI | Visor - SDOT"</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<div class="figure">
+<img src="centros-poblados-crecimiento_files/figure-html/map-urban-1.png" class="r-plt" alt="Centros poblados urbanos con gradiente de color según tasa de crecimiento" width="672"><p class="caption">
+Centros poblados urbanos con gradiente de color según tasa de
+crecimiento
+</p>
+</div>
 </div>
 <div class="section level3">
 <h3 id="top-20-por-población">Top 20 por población<a class="anchor" aria-label="anchor" href="#top-20-por-poblaci%C3%B3n"></a>
@@ -385,8 +476,8 @@ NEGATIVO)</li>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">top_poblados</span> <span class="op">&lt;-</span> <span class="va">ccpp_cusco</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
-<span>    pob_2007 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu">str_remove</span><span class="op">(</span><span class="va">pob_2007</span>, <span class="st">","</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>    pob_2017 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu">str_remove</span><span class="op">(</span><span class="va">pob_2017</span>, <span class="st">","</span><span class="op">)</span><span class="op">)</span></span>
+<span>    pob_2007 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_remove.html" class="external-link">str_remove</a></span><span class="op">(</span><span class="va">pob_2007</span>, <span class="st">","</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    pob_2017 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_remove.html" class="external-link">str_remove</a></span><span class="op">(</span><span class="va">pob_2017</span>, <span class="st">","</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">pob_2017</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fl">20</span><span class="op">)</span></span>
@@ -417,6 +508,11 @@ NEGATIVO)</li>
 <span>    caption <span class="op">=</span> <span class="st">"Fuente: INEI | Visor - SDOT"</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<div class="figure">
+<img src="centros-poblados-crecimiento_files/figure-html/map-top20-1.png" class="r-plt" alt="Los 20 centros poblados más grandes de Cusco" width="672"><p class="caption">
+Los 20 centros poblados más grandes de Cusco
+</p>
+</div>
 </div>
 <div class="section level3">
 <h3 id="boxplot-por-clasificación-urbano-rural">Boxplot por clasificación urbano-rural<a class="anchor" aria-label="anchor" href="#boxplot-por-clasificaci%C3%B3n-urbano-rural"></a>
@@ -434,6 +530,11 @@ NEGATIVO)</li>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></code></pre></div>
+<div class="figure">
+<img src="centros-poblados-crecimiento_files/figure-html/boxplot-urban-1.png" class="r-plt" alt="Distribución de tasas de crecimiento por clasificación urbano/rural" width="672"><p class="caption">
+Distribución de tasas de crecimiento por clasificación urbano/rural
+</p>
+</div>
 </div>
 <div class="section level3">
 <h3 id="histograma-de-tasas">Histograma de tasas<a class="anchor" aria-label="anchor" href="#histograma-de-tasas"></a>
@@ -453,6 +554,11 @@ NEGATIVO)</li>
 <span>    caption <span class="op">=</span> <span class="st">"Fuente: INEI | Visor - SDOT"</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<div class="figure">
+<img src="centros-poblados-crecimiento_files/figure-html/histogram-1.png" class="r-plt" alt="Distribución de frecuencias de las tasas de crecimiento" width="672"><p class="caption">
+Distribución de frecuencias de las tasas de crecimiento
+</p>
+</div>
 </div>
 <div class="section level3">
 <h3 id="evolución-poblacional-2007-2017">Evolución poblacional 2007-2017<a class="anchor" aria-label="anchor" href="#evoluci%C3%B3n-poblacional-2007-2017"></a>
@@ -460,8 +566,8 @@ NEGATIVO)</li>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ccpp_cusco</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
-<span>    pob_2007 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu">str_remove</span><span class="op">(</span><span class="va">pob_2007</span>, <span class="st">","</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>    pob_2017 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu">str_remove</span><span class="op">(</span><span class="va">pob_2017</span>, <span class="st">","</span><span class="op">)</span><span class="op">)</span></span>
+<span>    pob_2007 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_remove.html" class="external-link">str_remove</a></span><span class="op">(</span><span class="va">pob_2007</span>, <span class="st">","</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    pob_2017 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_remove.html" class="external-link">str_remove</a></span><span class="op">(</span><span class="va">pob_2017</span>, <span class="st">","</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">pob_2007</span>, y <span class="op">=</span> <span class="va">pob_2017</span>, color <span class="op">=</span> <span class="va">tc_catg</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">0.5</span>, size <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">+</span></span>
@@ -480,6 +586,11 @@ NEGATIVO)</li>
 <span>    caption <span class="op">=</span> <span class="st">"Fuente: INEI | Visor - SDOT"</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<div class="figure">
+<img src="centros-poblados-crecimiento_files/figure-html/scatter-1.png" class="r-plt" alt="Relación entre población 2007 y 2017 (escala logarítmica)" width="672"><p class="caption">
+Relación entre población 2007 y 2017 (escala logarítmica)
+</p>
+</div>
 <p><strong>Interpretación</strong>: Los puntos por encima de la línea
 diagonal representan centros poblados que crecieron, mientras que los
 puntos por debajo perdieron población.</p>
@@ -503,8 +614,8 @@ integrar fácilmente diferentes capas de información espacial:</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span></span>
 <span>    data <span class="op">=</span> <span class="va">ccpp_cusco</span> <span class="op">|&gt;</span></span>
 <span>      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
-<span>        pob_2007 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu">str_remove</span><span class="op">(</span><span class="va">pob_2007</span>, <span class="st">","</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>        pob_2017 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu">str_remove</span><span class="op">(</span><span class="va">pob_2017</span>, <span class="st">","</span><span class="op">)</span><span class="op">)</span></span>
+<span>        pob_2007 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_remove.html" class="external-link">str_remove</a></span><span class="op">(</span><span class="va">pob_2007</span>, <span class="st">","</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>        pob_2017 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_remove.html" class="external-link">str_remove</a></span><span class="op">(</span><span class="va">pob_2017</span>, <span class="st">","</span><span class="op">)</span><span class="op">)</span></span>
 <span>      <span class="op">)</span>,</span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>color <span class="op">=</span> <span class="va">tc_catg</span>, size <span class="op">=</span> <span class="va">pob_2017</span><span class="op">)</span>,</span>
 <span>    alpha <span class="op">=</span> <span class="fl">0.6</span></span>
@@ -524,6 +635,11 @@ integrar fácilmente diferentes capas de información espacial:</p>
 <span>    caption <span class="op">=</span> <span class="st">"Fuente: INEI | Visor - SDOT"</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<div class="figure">
+<img src="centros-poblados-crecimiento_files/figure-html/integration-1.png" class="r-plt" alt="Centros poblados sobre límites distritales de Cusco" width="672"><p class="caption">
+Centros poblados sobre límites distritales de Cusco
+</p>
+</div>
 </div>
 </div>
 <div class="section level2">
@@ -535,8 +651,8 @@ integrar fácilmente diferentes capas de información espacial:</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ccpp_por_distrito</span> <span class="op">&lt;-</span> <span class="va">ccpp_cusco</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
-<span>    pob_2007 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu">str_remove</span><span class="op">(</span><span class="va">pob_2007</span>, <span class="st">","</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>    pob_2017 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu">str_remove</span><span class="op">(</span><span class="va">pob_2017</span>, <span class="st">","</span><span class="op">)</span><span class="op">)</span></span>
+<span>    pob_2007 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_remove.html" class="external-link">str_remove</a></span><span class="op">(</span><span class="va">pob_2007</span>, <span class="st">","</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    pob_2017 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_remove.html" class="external-link">str_remove</a></span><span class="op">(</span><span class="va">pob_2017</span>, <span class="st">","</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_drop_geometry</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">distrito</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -550,7 +666,21 @@ integrar fácilmente diferentes capas de información espacial:</p>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">pob_total_2017</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">ccpp_por_distrito</span>, <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">ccpp_por_distrito</span>, <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 10 × 7</span></span></span>
+<span><span class="co">#&gt;    distrito      n_centros_poblados pob_total_2017 pob_total_2007 tasa_promedio</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> CUSCO                          6         <span style="text-decoration: underline;">113</span>359         <span style="text-decoration: underline;">107</span>506         2.23 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> SAN SEBASTIAN                  7         <span style="text-decoration: underline;">112</span>365          <span style="text-decoration: underline;">91</span>597         2.73 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> SANTIAGO                       6          <span style="text-decoration: underline;">94</span>258          <span style="text-decoration: underline;">65</span>516         0.492</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> WANCHAQ                        1          <span style="text-decoration: underline;">58</span>541          <span style="text-decoration: underline;">59</span>134        -<span style="color: #BB0000;">0.1</span>  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> SAN JERONIMO                   4          <span style="text-decoration: underline;">56</span>157          <span style="text-decoration: underline;">30</span>439         2.06 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> SICUANI                       18          <span style="text-decoration: underline;">50</span>765          <span style="text-decoration: underline;">46</span>227        -<span style="color: #BB0000;">0.263</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> ESPINAR                        3          <span style="text-decoration: underline;">30</span>935          <span style="text-decoration: underline;">24</span>576        16.5  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> SANTA ANA                      6          <span style="text-decoration: underline;">25</span>229          <span style="text-decoration: underline;">28</span>088        -<span style="color: #BB0000;">2.63</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> PICHARI                       16          <span style="text-decoration: underline;">20</span>124          <span style="text-decoration: underline;">10</span>078         2.03 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> ANTA                          30          <span style="text-decoration: underline;">19</span>918          <span style="text-decoration: underline;">15</span>118         1.57 </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 2 more variables: n_positivo &lt;int&gt;, n_negativo &lt;int&gt;</span></span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="mapa-coroplético-por-distrito">Mapa coroplético por distrito<a class="anchor" aria-label="anchor" href="#mapa-coropl%C3%A9tico-por-distrito"></a>
@@ -573,6 +703,11 @@ integrar fácilmente diferentes capas de información espacial:</p>
 <span>    caption <span class="op">=</span> <span class="st">"Fuente: INEI | Visor - SDOT"</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<div class="figure">
+<img src="centros-poblados-crecimiento_files/figure-html/choropleth-map-1.png" class="r-plt" alt="Número de centros poblados por distrito en Cusco" width="672"><p class="caption">
+Número de centros poblados por distrito en Cusco
+</p>
+</div>
 </div>
 </div>
 <div class="section level2">
@@ -584,11 +719,12 @@ integrar fácilmente diferentes capas de información espacial:</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Centros poblados con más de 5,000 habitantes</span></span>
 <span><span class="va">grandes_centros</span> <span class="op">&lt;-</span> <span class="va">ccpp_cusco</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>pob_2017 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu">str_remove</span><span class="op">(</span><span class="va">pob_2017</span>, <span class="st">","</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>pob_2017 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_remove.html" class="external-link">str_remove</a></span><span class="op">(</span><span class="va">pob_2017</span>, <span class="st">","</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">pob_2017</span> <span class="op">&gt;</span> <span class="fl">5000</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">pob_2017</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Centros poblados con más de 5,000 habitantes:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">grandes_centros</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Centros poblados con más de 5,000 habitantes:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">grandes_centros</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Centros poblados con más de 5,000 habitantes: 15</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="análisis-de-centros-poblados-candidatos-para-creación-distrital">Análisis de centros poblados candidatos para creación distrital<a class="anchor" aria-label="anchor" href="#an%C3%A1lisis-de-centros-poblados-candidatos-para-creaci%C3%B3n-distrital"></a>
@@ -598,8 +734,8 @@ candidatos para análisis de creación distrital:</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">candidatos</span> <span class="op">&lt;-</span> <span class="va">ccpp_cusco</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
-<span>    pob_2007 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu">str_remove</span><span class="op">(</span><span class="va">pob_2007</span>, <span class="st">","</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>    pob_2017 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu">str_remove</span><span class="op">(</span><span class="va">pob_2017</span>, <span class="st">","</span><span class="op">)</span><span class="op">)</span></span>
+<span>    pob_2007 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_remove.html" class="external-link">str_remove</a></span><span class="op">(</span><span class="va">pob_2007</span>, <span class="st">","</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    pob_2017 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_remove.html" class="external-link">str_remove</a></span><span class="op">(</span><span class="va">pob_2017</span>, <span class="st">","</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span></span>
 <span>    <span class="va">tc_catg</span> <span class="op">==</span> <span class="st">"POSITIVO"</span>,</span>
@@ -610,7 +746,20 @@ candidatos para análisis de creación distrital:</p>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">centro_pob</span>, <span class="va">distrito</span>, <span class="va">pob_2007</span>, <span class="va">pob_2017</span>, <span class="va">tasa</span>, <span class="va">capital</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">tasa</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">candidatos</span>, <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">candidatos</span>, <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 10 × 6</span></span></span>
+<span><span class="co">#&gt;    centro_pob   distrito     pob_2007 pob_2017  tasa capital   </span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> PICHARI      PICHARI          <span style="text-decoration: underline;">5</span>236    <span style="text-decoration: underline;">12</span>050  8.69 Distrital </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> SAN JERONIMO SAN JERONIMO    <span style="text-decoration: underline;">29</span>678    <span style="text-decoration: underline;">55</span>335  6.43 Distrital </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> ANTA         ANTA             <span style="text-decoration: underline;">6</span>652    <span style="text-decoration: underline;">10</span>182  4.35 Provincial</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> OROPESA      OROPESA          <span style="text-decoration: underline;">3</span>001     <span style="text-decoration: underline;">4</span>411  3.93 Distrital </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> SANTIAGO     SANTIAGO        <span style="text-decoration: underline;">64</span>075    <span style="text-decoration: underline;">92</span>729  3.77 Distrital </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> YANAOCA      YANAOCA          <span style="text-decoration: underline;">2</span>308     <span style="text-decoration: underline;">3</span>307  3.66 Provincial</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> CHINCHERO    CHINCHERO        <span style="text-decoration: underline;">2</span>664     <span style="text-decoration: underline;">3</span>765  3.52 Distrital </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> KIMBIRI      KIMBIRI          <span style="text-decoration: underline;">4</span>369     <span style="text-decoration: underline;">5</span>913  3.07 Distrital </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> SANTO TOMAS  SANTO TOMAS      <span style="text-decoration: underline;">7</span>575    <span style="text-decoration: underline;">10</span>170  2.99 Provincial</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> CALCA        CALCA           <span style="text-decoration: underline;">10</span>413    <span style="text-decoration: underline;">13</span>519  2.64 Provincial</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="comparación-entre-capitales-y-no-capitales">Comparación entre capitales y no capitales<a class="anchor" aria-label="anchor" href="#comparaci%C3%B3n-entre-capitales-y-no-capitales"></a>
@@ -619,7 +768,7 @@ candidatos para análisis de creación distrital:</p>
 <code class="sourceCode R"><span><span class="va">ccpp_cusco</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
 <span>    es_capital <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">capital</span> <span class="op">==</span> <span class="st">"No es capital"</span>, <span class="st">"No"</span>, <span class="st">"Sí"</span><span class="op">)</span>,</span>
-<span>    pob_2017 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu">str_remove</span><span class="op">(</span><span class="va">pob_2017</span>, <span class="st">","</span><span class="op">)</span><span class="op">)</span></span>
+<span>    pob_2017 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_remove.html" class="external-link">str_remove</a></span><span class="op">(</span><span class="va">pob_2017</span>, <span class="st">","</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_drop_geometry</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">es_capital</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -628,7 +777,12 @@ candidatos para análisis de creación distrital:</p>
 <span>    tasa_promedio <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">tasa</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    pob_promedio <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">pob_2017</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    .groups <span class="op">=</span> <span class="st">"drop"</span></span>
-<span>  <span class="op">)</span></span></code></pre></div>
+<span>  <span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 4</span></span></span>
+<span><span class="co">#&gt;   es_capital     n tasa_promedio pob_promedio</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> No           725         0.949         312.</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Sí           112         1.38         <span style="text-decoration: underline;">6</span>634.</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -643,8 +797,8 @@ numéricas correctamente:</p>
 <code class="sourceCode R"><span><span class="co"># Convertir población de character a numeric</span></span>
 <span><span class="va">ccpp_clean</span> <span class="op">&lt;-</span> <span class="va">ccpp_cusco</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
-<span>    pob_2007 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu">str_remove</span><span class="op">(</span><span class="va">pob_2007</span>, <span class="st">","</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>    pob_2017 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu">str_remove</span><span class="op">(</span><span class="va">pob_2017</span>, <span class="st">","</span><span class="op">)</span><span class="op">)</span></span>
+<span>    pob_2007 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_remove.html" class="external-link">str_remove</a></span><span class="op">(</span><span class="va">pob_2007</span>, <span class="st">","</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    pob_2017 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_remove.html" class="external-link">str_remove</a></span><span class="op">(</span><span class="va">pob_2017</span>, <span class="st">","</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">

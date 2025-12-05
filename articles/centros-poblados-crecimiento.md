@@ -29,6 +29,7 @@ library(sf)
 library(dplyr)
 library(ggplot2)
 library(tidyr)
+library(stringr)
 ```
 
 ## Uso básico
@@ -55,6 +56,23 @@ ccpp_cusco <- get_centros_poblados_crecimiento(departamento = "CUSCO")
 ``` r
 # Explorar la estructura de los datos
 glimpse(ccpp_cusco)
+#> Rows: 837
+#> Columns: 15
+#> $ nro        <chr> "4,869", "5,108", "5,428", "5,290", "5,431", "4,839", "4,79…
+#> $ codccpp    <chr> "0804010043", "0807070055", "0812070001", "0810060001", "08…
+#> $ ubigeo     <chr> "080401", "080707", "081207", "081006", "081207", "080304",…
+#> $ dep        <chr> "CUSCO", "CUSCO", "CUSCO", "CUSCO", "CUSCO", "CUSCO", "CUSC…
+#> $ prov       <chr> "CALCA", "CHUMBIVILCAS", "QUISPICANCHI", "PARURO", "QUISPIC…
+#> $ distrito   <chr> "CALCA", "QUIÑOTA", "HUARO", "OMACHA", "HUARO", "CHINCHAYPU…
+#> $ centro_pob <chr> "YANAHUAYLLA", "CENTRO", "HUARO", "OMACHA", "URPAY", "SUMAR…
+#> $ pob_2007   <chr> "209", "202", "1,420", "398", "404", "237", "6,652", "147",…
+#> $ pob_2017   <chr> "211", "210", "1,833", "391", "402", "237", "10,182", "155"…
+#> $ tasa       <dbl> 0.10, 0.39, 2.59, -0.18, -0.05, 0.00, 4.35, 0.53, 0.65, -1.…
+#> $ capital    <chr> "No es capital", "No es capital", "Distrital", "Distrital",…
+#> $ region     <chr> "Sierra", "Sierra", "Sierra", "Sierra", "Sierra", "Sierra",…
+#> $ urb_rural  <chr> "RURAL", "RURAL", "RURAL", "RURAL", "RURAL", "RURAL", "URBA…
+#> $ tc_catg    <chr> "POSITIVO", "POSITIVO", "POSITIVO", "NEGATIVO", "NEGATIVO",…
+#> $ geom       <POINT [°]> POINT (-71.93249 -13.29263), POINT (-72.11369 -14.285…
 ```
 
 ### Estructura de los datos
@@ -91,6 +109,7 @@ ccpp_prov_cusco <- get_centros_poblados_crecimiento(
 )
 
 nrow(ccpp_prov_cusco)
+#> [1] 37
 ```
 
 ### Filtrado por distrito
@@ -117,6 +136,15 @@ ccpp_sur <- get_centros_poblados_crecimiento(
 ccpp_sur |>
   st_drop_geometry() |>
   count(dep, tc_catg)
+#> # A tibble: 6 × 3
+#>   dep      tc_catg      n
+#>   <chr>    <chr>    <int>
+#> 1 AREQUIPA NEGATIVO   144
+#> 2 AREQUIPA POSITIVO   151
+#> 3 CUSCO    NEGATIVO   412
+#> 4 CUSCO    POSITIVO   425
+#> 5 PUNO     NEGATIVO   597
+#> 6 PUNO     POSITIVO   322
 ```
 
 ## Análisis descriptivo
@@ -126,9 +154,13 @@ ccpp_sur |>
 ``` r
 # Resumen de tasas de crecimiento
 summary(ccpp_cusco$tasa)
+#>    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+#> -10.540  -1.950   0.090   1.007   1.950  58.910
 
 # Resumen de población 2017
 summary(ccpp_cusco$pob_2017)
+#>    Length     Class      Mode 
+#>       837 character character
 ```
 
 ### Centros poblados con crecimiento negativo
@@ -138,7 +170,9 @@ ccpp_negativo <- ccpp_cusco |>
   filter(tc_catg == "NEGATIVO")
 
 cat("Centros con crecimiento negativo:", nrow(ccpp_negativo), "\n")
+#> Centros con crecimiento negativo: 412
 cat("Tasa promedio:", round(mean(ccpp_negativo$tasa), 2), "%\n")
+#> Tasa promedio: -2.27 %
 ```
 
 ### Top 10 por crecimiento
@@ -152,6 +186,19 @@ top_crecimiento <- ccpp_cusco |>
   select(centro_pob, distrito, pob_2007, pob_2017, tasa)
 
 print(top_crecimiento)
+#> # A tibble: 10 × 5
+#>    centro_pob                      distrito       pob_2007 pob_2017  tasa
+#>    <chr>                           <chr>          <chr>    <chr>    <dbl>
+#>  1 SANFORTUNIA                     VELILLE        15       1,540     58.9
+#>  2 HUARCA                          ESPINAR        10       244       37.6
+#>  3 SAN MIGUEL                      QUELLOUNO      15       239       31.9
+#>  4 SAN LUIS                        PISAC          11       150       29.9
+#>  5 QQUECHASNIYOC                   ANDAHUAYLILLAS 19       259       29.8
+#>  6 CCANCCAU                        LARES          18       238       29.5
+#>  7 ROYAL INCA                      PISAC          18       222       28.6
+#>  8 CONDEBAMBA ALTA-CONDEBAMBA BAJA SAYLLA         96       1,182     28.5
+#>  9 LLAYCHU                         PAUCARTAMBO    29       342       28.0
+#> 10 JANAC CHUQUIBAMBA               LAMAY          19       218       27.6
 ```
 
 ``` r
@@ -163,6 +210,19 @@ top_decrecimiento <- ccpp_cusco |>
   select(centro_pob, distrito, pob_2007, pob_2017, tasa)
 
 print(top_decrecimiento)
+#> # A tibble: 10 × 5
+#>    centro_pob            distrito    pob_2007 pob_2017   tasa
+#>    <chr>                 <chr>       <chr>    <chr>     <dbl>
+#>  1 PUERTO MAYO           PICHARI     460      151      -10.5 
+#>  2 POYENTIMARI           ECHARATE    645      265       -8.51
+#>  3 HUALLA                YANATILE    667      280       -8.31
+#>  4 SELVA ALEGRE          VILCABAMBA  366      154       -8.29
+#>  5 TIRINCAVINI           PICHARI     370      160       -8.04
+#>  6 PUCUTO                HUARO       533      241       -7.63
+#>  7 SUYO                  YANATILE    460      213       -7.41
+#>  8 ANTIGUO SAN CRISTOBAL PICHARI     353      166       -7.27
+#>  9 CCOYO                 SANTO TOMAS 396      187       -7.23
+#> 10 URAYPAMPA PAMPA ANZA  SICUANI     401      193       -7.05
 ```
 
 ## Análisis por clasificaciones
@@ -183,6 +243,13 @@ ccpp_cusco |>
     tasa_promedio = mean(tasa, na.rm = TRUE),
     tasa_mediana = median(tasa, na.rm = TRUE)
   )
+#> # A tibble: 4 × 5
+#>   capital       n_centros pob_total_2017 tasa_promedio tasa_mediana
+#>   <chr>             <int>          <dbl>         <dbl>        <dbl>
+#> 1 Departamental         1         111930         0.51          0.51
+#> 2 Distrital            99         466653         1.33          1.03
+#> 3 No es capital       725         225847         0.949        -0.22
+#> 4 Provincial           12         164388         1.87          1.62
 ```
 
 ### Por clasificación urbano-rural
@@ -201,6 +268,11 @@ ccpp_cusco |>
     tasa_promedio = mean(tasa, na.rm = TRUE),
     tasa_mediana = median(tasa, na.rm = TRUE)
   )
+#> # A tibble: 2 × 5
+#>   urb_rural n_centros pob_total_2017 tasa_promedio tasa_mediana
+#>   <chr>         <int>          <dbl>         <dbl>        <dbl>
+#> 1 RURAL           794         290491         0.898        -0.09
+#> 2 URBANA           43         678327         3.02          2.06
 ```
 
 ### Por región natural
@@ -219,6 +291,13 @@ ccpp_cusco |>
     tasa_promedio = mean(tasa, na.rm = TRUE),
     .groups = "drop"
   )
+#> # A tibble: 4 × 5
+#>   region tc_catg  n_centros pob_total_2017 tasa_promedio
+#>   <chr>  <chr>        <int>          <dbl>         <dbl>
+#> 1 Selva  NEGATIVO        70          45942         -3.20
+#> 2 Selva  POSITIVO        57          49275          6.28
+#> 3 Sierra NEGATIVO       342         161791         -2.07
+#> 4 Sierra POSITIVO       368         711810          3.85
 ```
 
 ## Visualizaciones
@@ -255,6 +334,13 @@ ccpp_cusco |>
   )
 ```
 
+![Centros poblados del departamento de Cusco coloreados por categoría de
+crecimiento
+(positivo/negativo)](centros-poblados-crecimiento_files/figure-html/map-basic-1.png)
+
+Centros poblados del departamento de Cusco coloreados por categoría de
+crecimiento (positivo/negativo)
+
 ### Centros poblados urbanos
 
 ``` r
@@ -286,6 +372,12 @@ ccpp_urbanos |>
   ) +
   theme_minimal()
 ```
+
+![Centros poblados urbanos con gradiente de color según tasa de
+crecimiento](centros-poblados-crecimiento_files/figure-html/map-urban-1.png)
+
+Centros poblados urbanos con gradiente de color según tasa de
+crecimiento
 
 ### Top 20 por población
 
@@ -326,6 +418,11 @@ ggplot(top_poblados) +
   theme_minimal()
 ```
 
+![Los 20 centros poblados más grandes de
+Cusco](centros-poblados-crecimiento_files/figure-html/map-top20-1.png)
+
+Los 20 centros poblados más grandes de Cusco
+
 ### Boxplot por clasificación urbano-rural
 
 ``` r
@@ -342,6 +439,11 @@ ggplot(ccpp_cusco, aes(x = urb_rural, y = tasa, fill = urb_rural)) +
   theme_minimal() +
   theme(legend.position = "none")
 ```
+
+![Distribución de tasas de crecimiento por clasificación
+urbano/rural](centros-poblados-crecimiento_files/figure-html/boxplot-urban-1.png)
+
+Distribución de tasas de crecimiento por clasificación urbano/rural
 
 ### Histograma de tasas
 
@@ -361,6 +463,11 @@ ggplot(ccpp_cusco, aes(x = tasa, fill = tc_catg)) +
   ) +
   theme_minimal()
 ```
+
+![Distribución de frecuencias de las tasas de
+crecimiento](centros-poblados-crecimiento_files/figure-html/histogram-1.png)
+
+Distribución de frecuencias de las tasas de crecimiento
 
 ### Evolución poblacional 2007-2017
 
@@ -388,6 +495,11 @@ ccpp_cusco |>
   ) +
   theme_minimal()
 ```
+
+![Relación entre población 2007 y 2017 (escala
+logarítmica)](centros-poblados-crecimiento_files/figure-html/scatter-1.png)
+
+Relación entre población 2007 y 2017 (escala logarítmica)
 
 **Interpretación**: Los puntos por encima de la línea diagonal
 representan centros poblados que crecieron, mientras que los puntos por
@@ -433,6 +545,11 @@ ggplot() +
   theme_minimal()
 ```
 
+![Centros poblados sobre límites distritales de
+Cusco](centros-poblados-crecimiento_files/figure-html/integration-1.png)
+
+Centros poblados sobre límites distritales de Cusco
+
 ## Análisis agregado por distrito
 
 ### Calcular estadísticas por distrito
@@ -456,6 +573,20 @@ ccpp_por_distrito <- ccpp_cusco |>
   arrange(desc(pob_total_2017))
 
 head(ccpp_por_distrito, 10)
+#> # A tibble: 10 × 7
+#>    distrito      n_centros_poblados pob_total_2017 pob_total_2007 tasa_promedio
+#>    <chr>                      <int>          <dbl>          <dbl>         <dbl>
+#>  1 CUSCO                          6         113359         107506         2.23 
+#>  2 SAN SEBASTIAN                  7         112365          91597         2.73 
+#>  3 SANTIAGO                       6          94258          65516         0.492
+#>  4 WANCHAQ                        1          58541          59134        -0.1  
+#>  5 SAN JERONIMO                   4          56157          30439         2.06 
+#>  6 SICUANI                       18          50765          46227        -0.263
+#>  7 ESPINAR                        3          30935          24576        16.5  
+#>  8 SANTA ANA                      6          25229          28088        -2.63 
+#>  9 PICHARI                       16          20124          10078         2.03 
+#> 10 ANTA                          30          19918          15118         1.57 
+#> # ℹ 2 more variables: n_positivo <int>, n_negativo <int>
 ```
 
 ### Mapa coroplético por distrito
@@ -480,6 +611,11 @@ ggplot(distritos_con_datos) +
   theme_minimal()
 ```
 
+![Número de centros poblados por distrito en
+Cusco](centros-poblados-crecimiento_files/figure-html/choropleth-map-1.png)
+
+Número de centros poblados por distrito en Cusco
+
 ## Casos de uso avanzados
 
 ### Identificar áreas de alta concentración poblacional
@@ -492,6 +628,7 @@ grandes_centros <- ccpp_cusco |>
   arrange(desc(pob_2017))
 
 cat("Centros poblados con más de 5,000 habitantes:", nrow(grandes_centros), "\n")
+#> Centros poblados con más de 5,000 habitantes: 15
 ```
 
 ### Análisis de centros poblados candidatos para creación distrital
@@ -515,6 +652,19 @@ candidatos <- ccpp_cusco |>
   arrange(desc(tasa))
 
 head(candidatos, 10)
+#> # A tibble: 10 × 6
+#>    centro_pob   distrito     pob_2007 pob_2017  tasa capital   
+#>    <chr>        <chr>           <dbl>    <dbl> <dbl> <chr>     
+#>  1 PICHARI      PICHARI          5236    12050  8.69 Distrital 
+#>  2 SAN JERONIMO SAN JERONIMO    29678    55335  6.43 Distrital 
+#>  3 ANTA         ANTA             6652    10182  4.35 Provincial
+#>  4 OROPESA      OROPESA          3001     4411  3.93 Distrital 
+#>  5 SANTIAGO     SANTIAGO        64075    92729  3.77 Distrital 
+#>  6 YANAOCA      YANAOCA          2308     3307  3.66 Provincial
+#>  7 CHINCHERO    CHINCHERO        2664     3765  3.52 Distrital 
+#>  8 KIMBIRI      KIMBIRI          4369     5913  3.07 Distrital 
+#>  9 SANTO TOMAS  SANTO TOMAS      7575    10170  2.99 Provincial
+#> 10 CALCA        CALCA           10413    13519  2.64 Provincial
 ```
 
 ### Comparación entre capitales y no capitales
@@ -533,6 +683,11 @@ ccpp_cusco |>
     pob_promedio = mean(pob_2017, na.rm = TRUE),
     .groups = "drop"
   )
+#> # A tibble: 2 × 4
+#>   es_capital     n tasa_promedio pob_promedio
+#>   <chr>      <int>         <dbl>        <dbl>
+#> 1 No           725         0.949         312.
+#> 2 Sí           112         1.38         6634.
 ```
 
 ## Consejos y mejores prácticas
