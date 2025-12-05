@@ -1,0 +1,632 @@
+---
+title: "Análisis de Crecimiento Poblacional en Centros Poblados del Perú"
+author: "Paul Efren Santos Andrade"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{centros-poblados-crecimiento}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 5,
+  warning = FALSE,
+  message = FALSE
+)
+```
+
+## Introducción
+
+La función `get_centros_poblados_crecimiento()` del paquete `rsdot` proporciona acceso programático a datos de centros poblados del Perú con información detallada sobre su tasa de crecimiento poblacional del período intercensal 2007-2017. 
+
+Esta viñeta demuestra cómo utilizar la función para realizar análisis demográficos y espaciales, desde la descarga básica de datos hasta visualizaciones avanzadas.
+
+### Fuente de los datos
+
+Los datos provienen de:
+
+- **Censos**: Población y Vivienda 2007 y 2017 (INEI)
+- **Nivel**: Centro poblado
+- **Variable principal**: Tasa media de crecimiento anual intercensal
+
+## Instalación y carga de paquetes
+
+```{r load-packages}
+# Cargar paquetes necesarios
+library(rsdot)
+library(sf)
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+```
+
+## Uso básico
+
+### Ver departamentos disponibles
+
+Para conocer qué departamentos están disponibles, ejecuta la función sin argumentos:
+
+```{r list-departments, eval=FALSE}
+get_centros_poblados_crecimiento()
+```
+
+Esto mostrará una lista de los 25 departamentos del Perú disponibles.
+
+### Cargar datos de un departamento
+
+Carguemos los datos de centros poblados del departamento de Cusco:
+
+```{r load-cusco, eval=FALSE}
+ccpp_cusco <- get_centros_poblados_crecimiento(departamento = "CUSCO")
+```
+
+```{r glimpse-data, eval=FALSE}
+# Explorar la estructura de los datos
+glimpse(ccpp_cusco)
+```
+
+### Estructura de los datos
+
+Los datos incluyen las siguientes variables:
+
+- `nro`: Número de identificación
+- `codccpp`: Código del centro poblado
+- `ubigeo`: Código UBIGEO del distrito
+- `dep`: Departamento
+- `prov`: Provincia
+- `distrito`: Distrito
+- `centro_pob`: Nombre del centro poblado
+- `pob_2007`: Población en el censo 2007
+- `pob_2017`: Población en el censo 2017
+- `tasa`: Tasa media de crecimiento anual (%)
+- `capital`: Tipo de capital (Departamental, Provincial, Distrital, No es capital)
+- `region`: Región natural (Costa, Sierra, Selva)
+- `urb_rural`: Clasificación urbano/rural
+- `tc_catg`: Categoría de tasa de crecimiento (POSITIVO, NEGATIVO)
+- `geom`: Geometría tipo POINT (coordenadas)
+
+## Filtrado de datos
+
+### Filtrado por provincia
+
+Podemos filtrar los datos por provincia:
+
+```{r filter-provincia, eval=FALSE}
+ccpp_prov_cusco <- get_centros_poblados_crecimiento(
+  departamento = "CUSCO",
+  provincia = "CUSCO"
+)
+
+nrow(ccpp_prov_cusco)
+```
+
+### Filtrado por distrito
+
+Para obtener centros poblados de un distrito específico:
+
+```{r filter-distrito, eval=FALSE}
+ccpp_anta <- get_centros_poblados_crecimiento(
+  departamento = "CUSCO",
+  provincia = "ANTA"
+)
+```
+
+### Múltiples departamentos
+
+La función permite cargar varios departamentos simultáneamente:
+
+```{r load-multiple, eval=FALSE}
+ccpp_sur <- get_centros_poblados_crecimiento(
+  departamento = c("CUSCO", "PUNO", "AREQUIPA")
+)
+
+# Ver distribución por departamento y categoría
+ccpp_sur |>
+  st_drop_geometry() |>
+  count(dep, tc_catg)
+```
+
+## Análisis descriptivo
+
+### Estadísticas básicas
+
+```{r basic-stats, eval=FALSE}
+# Resumen de tasas de crecimiento
+summary(ccpp_cusco$tasa)
+
+# Resumen de población 2017
+summary(ccpp_cusco$pob_2017)
+```
+
+### Centros poblados con crecimiento negativo
+
+```{r negative-growth, eval=FALSE}
+ccpp_negativo <- ccpp_cusco |>
+  filter(tc_catg == "NEGATIVO")
+
+cat("Centros con crecimiento negativo:", nrow(ccpp_negativo), "\n")
+cat("Tasa promedio:", round(mean(ccpp_negativo$tasa), 2), "%\n")
+```
+
+### Top 10 por crecimiento
+
+```{r top-growth, eval=FALSE}
+# Centros poblados con mayor crecimiento
+top_crecimiento <- ccpp_cusco |>
+  arrange(desc(tasa)) |>
+  head(10) |>
+  st_drop_geometry() |>
+  select(centro_pob, distrito, pob_2007, pob_2017, tasa)
+
+print(top_crecimiento)
+```
+
+```{r top-decrease, eval=FALSE}
+# Centros poblados con mayor decrecimiento
+top_decrecimiento <- ccpp_cusco |>
+  arrange(tasa) |>
+  head(10) |>
+  st_drop_geometry() |>
+  select(centro_pob, distrito, pob_2007, pob_2017, tasa)
+
+print(top_decrecimiento)
+```
+
+## Análisis por clasificaciones
+
+### Por tipo de capital
+
+```{r analysis-capital, eval=FALSE}
+ccpp_cusco |>
+  st_drop_geometry() |>
+  mutate(
+    pob_2007 = as.numeric(str_remove(pob_2007, ",")),
+    pob_2017 = as.numeric(str_remove(pob_2017, ","))
+  ) |>
+  group_by(capital) |>
+  summarise(
+    n_centros = n(),
+    pob_total_2017 = sum(pob_2017, na.rm = TRUE),
+    tasa_promedio = mean(tasa, na.rm = TRUE),
+    tasa_mediana = median(tasa, na.rm = TRUE)
+  )
+```
+
+### Por clasificación urbano-rural
+
+```{r analysis-urban-rural, eval=FALSE}
+ccpp_cusco |>
+  st_drop_geometry() |>
+  mutate(
+    pob_2007 = as.numeric(str_remove(pob_2007, ",")),
+    pob_2017 = as.numeric(str_remove(pob_2017, ","))
+  ) |>
+  group_by(urb_rural) |>
+  summarise(
+    n_centros = n(),
+    pob_total_2017 = sum(pob_2017, na.rm = TRUE),
+    tasa_promedio = mean(tasa, na.rm = TRUE),
+    tasa_mediana = median(tasa, na.rm = TRUE)
+  )
+```
+
+### Por región natural
+
+```{r analysis-region, eval=FALSE}
+ccpp_cusco |>
+  st_drop_geometry() |>
+  mutate(
+    pob_2007 = as.numeric(str_remove(pob_2007, ",")),
+    pob_2017 = as.numeric(str_remove(pob_2017, ","))
+  ) |>
+  group_by(region, tc_catg) |>
+  summarise(
+    n_centros = n(),
+    pob_total_2017 = sum(pob_2017, na.rm = TRUE),
+    tasa_promedio = mean(tasa, na.rm = TRUE),
+    .groups = "drop"
+  )
+```
+
+## Visualizaciones
+
+### Mapa de centros poblados por categoría de crecimiento
+
+```{r map-basic, eval=FALSE, fig.cap="Centros poblados del departamento de Cusco coloreados por categoría de crecimiento (positivo/negativo)"}
+ccpp_cusco |>
+  mutate(
+    pob_2007 = as.numeric(str_remove(pob_2007, ",")),
+    pob_2017 = as.numeric(str_remove(pob_2017, ","))
+  ) |>
+  ggplot() +
+  geom_sf(aes(color = tc_catg, size = pob_2017), alpha = 0.6) +
+  scale_color_manual(
+    values = c("POSITIVO" = "darkgreen", "NEGATIVO" = "darkred"),
+    name = "Crecimiento"
+  ) +
+  scale_size_continuous(
+    name = "Población 2017",
+    range = c(0.5, 5),
+    labels = scales::comma
+  ) +
+  labs(
+    title = "Centros Poblados del Departamento de Cusco",
+    subtitle = "Tasa de Crecimiento Poblacional 2007-2017",
+    caption = "Fuente: INEI | Visor - SDOT"
+  ) +
+  theme_minimal() +
+  theme(
+    legend.position = "right",
+    plot.title = element_text(face = "bold", size = 14),
+    plot.subtitle = element_text(size = 11)
+  )
+```
+
+### Centros poblados urbanos
+
+```{r map-urban, eval=FALSE, fig.cap="Centros poblados urbanos con gradiente de color según tasa de crecimiento"}
+ccpp_urbanos <- ccpp_cusco |> filter(urb_rural == "URBANA")
+
+ccpp_urbanos |>
+  mutate(
+    pob_2007 = as.numeric(str_remove(pob_2007, ",")),
+    pob_2017 = as.numeric(str_remove(pob_2017, ","))
+  ) |>
+  ggplot() +
+  geom_sf(aes(color = tasa, size = pob_2017), alpha = 0.7) +
+  scale_color_gradient2(
+    low = "red",
+    mid = "yellow",
+    high = "darkgreen",
+    midpoint = 0,
+    name = "Tasa (%)"
+  ) +
+  scale_size_continuous(
+    name = "Población 2017",
+    range = c(2, 8),
+    labels = scales::comma
+  ) +
+  labs(
+    title = "Centros Poblados Urbanos - Cusco",
+    subtitle = "Tasa de Crecimiento Poblacional 2007-2017",
+    caption = "Fuente: INEI | Visor - SDOT"
+  ) +
+  theme_minimal()
+```
+
+### Top 20 por población
+
+```{r map-top20, eval=FALSE, fig.cap="Los 20 centros poblados más grandes de Cusco"}
+top_poblados <- ccpp_cusco |>
+  mutate(
+    pob_2007 = as.numeric(str_remove(pob_2007, ",")),
+    pob_2017 = as.numeric(str_remove(pob_2017, ","))
+  ) |>
+  arrange(desc(pob_2017)) |>
+  head(20)
+
+ggplot(top_poblados) +
+  geom_sf(aes(size = pob_2017, color = tasa), alpha = 0.7) +
+  geom_sf_text(
+    aes(label = centro_pob),
+    size = 2.5,
+    nudge_y = 0.05,
+    check_overlap = TRUE
+  ) +
+  scale_size_continuous(
+    name = "Población 2017",
+    range = c(3, 15),
+    labels = scales::comma
+  ) +
+  scale_color_gradient2(
+    low = "red",
+    mid = "yellow",
+    high = "darkgreen",
+    midpoint = 0,
+    name = "Tasa (%)"
+  ) +
+  labs(
+    title = "Top 20 Centros Poblados por Población",
+    subtitle = "Departamento de Cusco - Censo 2017",
+    caption = "Fuente: INEI | Visor - SDOT"
+  ) +
+  theme_minimal()
+```
+
+### Boxplot por clasificación urbano-rural
+
+```{r boxplot-urban, eval=FALSE, fig.cap="Distribución de tasas de crecimiento por clasificación urbano/rural"}
+ggplot(ccpp_cusco, aes(x = urb_rural, y = tasa, fill = urb_rural)) +
+  geom_boxplot(alpha = 0.7, outlier.alpha = 0.3) +
+  scale_fill_brewer(palette = "Set2") +
+  labs(
+    title = "Distribución de Tasas de Crecimiento Poblacional",
+    subtitle = "Por clasificación urbano/rural - Departamento de Cusco",
+    x = "Clasificación",
+    y = "Tasa de Crecimiento (%)",
+    caption = "Fuente: INEI | Visor - SDOT"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+### Histograma de tasas
+
+```{r histogram, eval=FALSE, fig.cap="Distribución de frecuencias de las tasas de crecimiento"}
+ggplot(ccpp_cusco, aes(x = tasa, fill = tc_catg)) +
+  geom_histogram(bins = 50, alpha = 0.7) +
+  scale_fill_manual(
+    values = c("POSITIVO" = "darkgreen", "NEGATIVO" = "darkred"),
+    name = "Categoría"
+  ) +
+  labs(
+    title = "Distribución de Tasas de Crecimiento Poblacional",
+    subtitle = "Departamento de Cusco (2007-2017)",
+    x = "Tasa de Crecimiento (%)",
+    y = "Número de Centros Poblados",
+    caption = "Fuente: INEI | Visor - SDOT"
+  ) +
+  theme_minimal()
+```
+
+### Evolución poblacional 2007-2017
+
+```{r scatter, eval=FALSE, fig.cap="Relación entre población 2007 y 2017 (escala logarítmica)"}
+ccpp_cusco |>
+  mutate(
+    pob_2007 = as.numeric(str_remove(pob_2007, ",")),
+    pob_2017 = as.numeric(str_remove(pob_2017, ","))
+  ) |>
+  ggplot(aes(x = pob_2007, y = pob_2017, color = tc_catg)) +
+  geom_point(alpha = 0.5, size = 2) +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "gray50") +
+  scale_x_log10(labels = scales::comma) +
+  scale_y_log10(labels = scales::comma) +
+  scale_color_manual(
+    values = c("POSITIVO" = "darkgreen", "NEGATIVO" = "darkred"),
+    name = "Crecimiento"
+  ) +
+  labs(
+    title = "Evolución Poblacional 2007-2017",
+    subtitle = "Departamento de Cusco (escala logarítmica)",
+    x = "Población 2007",
+    y = "Población 2017",
+    caption = "Fuente: INEI | Visor - SDOT"
+  ) +
+  theme_minimal()
+```
+
+**Interpretación**: Los puntos por encima de la línea diagonal representan centros poblados que crecieron, mientras que los puntos por debajo perdieron población.
+
+## Integración con otras capas
+
+### Combinar con límites distritales
+
+Una de las ventajas del paquete `rsdot` es que permite integrar fácilmente diferentes capas de información espacial:
+
+```{r integration, eval=FALSE, fig.cap="Centros poblados sobre límites distritales de Cusco"}
+# Obtener límites distritales
+distritos_cusco <- get_distritos(departamento = "CUSCO")
+
+# Mapa combinado
+ggplot() +
+  geom_sf(data = distritos_cusco, fill = NA, color = "gray70", linewidth = 0.3) +
+  geom_sf(
+    data = ccpp_cusco |>
+      mutate(
+        pob_2007 = as.numeric(str_remove(pob_2007, ",")),
+        pob_2017 = as.numeric(str_remove(pob_2017, ","))
+      ),
+    aes(color = tc_catg, size = pob_2017),
+    alpha = 0.6
+  ) +
+  scale_color_manual(
+    values = c("POSITIVO" = "darkgreen", "NEGATIVO" = "darkred"),
+    name = "Crecimiento"
+  ) +
+  scale_size_continuous(
+    name = "Población 2017",
+    range = c(0.5, 5),
+    labels = scales::comma
+  ) +
+  labs(
+    title = "Centros Poblados y Límites Distritales",
+    subtitle = "Departamento de Cusco",
+    caption = "Fuente: INEI | Visor - SDOT"
+  ) +
+  theme_minimal()
+```
+
+## Análisis agregado por distrito
+
+### Calcular estadísticas por distrito
+
+```{r district-stats, eval=FALSE}
+ccpp_por_distrito <- ccpp_cusco |>
+  mutate(
+    pob_2007 = as.numeric(str_remove(pob_2007, ",")),
+    pob_2017 = as.numeric(str_remove(pob_2017, ","))
+  ) |>
+  st_drop_geometry() |>
+  group_by(distrito) |>
+  summarise(
+    n_centros_poblados = n(),
+    pob_total_2017 = sum(pob_2017, na.rm = TRUE),
+    pob_total_2007 = sum(pob_2007, na.rm = TRUE),
+    tasa_promedio = mean(tasa, na.rm = TRUE),
+    n_positivo = sum(tc_catg == "POSITIVO", na.rm = TRUE),
+    n_negativo = sum(tc_catg == "NEGATIVO", na.rm = TRUE)
+  ) |>
+  arrange(desc(pob_total_2017))
+
+head(ccpp_por_distrito, 10)
+```
+
+### Mapa coroplético por distrito
+
+```{r choropleth-map, eval=FALSE, fig.cap="Número de centros poblados por distrito en Cusco"}
+# Unir estadísticas con geometrías
+distritos_con_datos <- distritos_cusco |>
+  left_join(ccpp_por_distrito, by = c("nombdist" = "distrito"))
+
+# Mapa coroplético
+ggplot(distritos_con_datos) +
+  geom_sf(aes(fill = n_centros_poblados), color = "white", linewidth = 0.2) +
+  scale_fill_viridis_c(
+    option = "plasma",
+    name = "N° Centros\nPoblados"
+  ) +
+  labs(
+    title = "Número de Centros Poblados por Distrito",
+    subtitle = "Departamento de Cusco",
+    caption = "Fuente: INEI | Visor - SDOT"
+  ) +
+  theme_minimal()
+```
+
+## Casos de uso avanzados
+
+### Identificar áreas de alta concentración poblacional
+
+```{r high-concentration, eval=FALSE}
+# Centros poblados con más de 5,000 habitantes
+grandes_centros <- ccpp_cusco |>
+  mutate(pob_2017 = as.numeric(str_remove(pob_2017, ","))) |>
+  filter(pob_2017 > 5000) |>
+  arrange(desc(pob_2017))
+
+cat("Centros poblados con más de 5,000 habitantes:", nrow(grandes_centros), "\n")
+```
+
+### Análisis de centros poblados candidatos para creación distrital
+
+Los centros poblados con crecimiento positivo sostenido pueden ser candidatos para análisis de creación distrital:
+
+```{r district-candidates, eval=FALSE}
+candidatos <- ccpp_cusco |>
+  mutate(
+    pob_2007 = as.numeric(str_remove(pob_2007, ",")),
+    pob_2017 = as.numeric(str_remove(pob_2017, ","))
+  ) |>
+  filter(
+    tc_catg == "POSITIVO",
+    tasa > 2,  # Crecimiento mayor a 2% anual
+    pob_2017 > 3000  # Población mínima
+  ) |>
+  st_drop_geometry() |>
+  select(centro_pob, distrito, pob_2007, pob_2017, tasa, capital) |>
+  arrange(desc(tasa))
+
+head(candidatos, 10)
+```
+
+### Comparación entre capitales y no capitales
+
+```{r capital-comparison, eval=FALSE}
+ccpp_cusco |>
+  mutate(
+    es_capital = ifelse(capital == "No es capital", "No", "Sí"),
+    pob_2017 = as.numeric(str_remove(pob_2017, ","))
+  ) |>
+  st_drop_geometry() |>
+  group_by(es_capital) |>
+  summarise(
+    n = n(),
+    tasa_promedio = mean(tasa, na.rm = TRUE),
+    pob_promedio = mean(pob_2017, na.rm = TRUE),
+    .groups = "drop"
+  )
+```
+
+## Consejos y mejores prácticas
+
+### 1. Manejo de datos
+
+Al trabajar con población, es importante convertir las variables numéricas correctamente:
+
+```{r tips-data, eval=FALSE}
+# Convertir población de character a numeric
+ccpp_clean <- ccpp_cusco |>
+  mutate(
+    pob_2007 = as.numeric(str_remove(pob_2007, ",")),
+    pob_2017 = as.numeric(str_remove(pob_2017, ","))
+  )
+```
+
+### 2. Filtrado eficiente
+
+Para análisis por región o tipo:
+
+```{r tips-filtering, eval=FALSE}
+# Filtrar por múltiples condiciones
+ccpp_sierra_urbano <- ccpp_cusco |>
+  filter(
+    region == "Sierra",
+    urb_rural == "URBANA"
+  )
+```
+
+### 3. Exportar resultados
+
+Guardar los datos procesados para uso posterior:
+
+```{r tips-export, eval=FALSE}
+# Exportar a GeoPackage
+st_write(ccpp_cusco, "centros_poblados_cusco.gpkg", delete_dsn = TRUE)
+
+# Exportar tabla sin geometría
+ccpp_cusco |>
+  st_drop_geometry() |>
+  write.csv("centros_poblados_cusco.csv", row.names = FALSE)
+```
+
+### 4. Sistema de caché
+
+La función almacena automáticamente los datos descargados:
+
+```{r tips-cache, eval=FALSE}
+# Primera ejecución: descarga desde OSF
+ccpp1 <- get_centros_poblados_crecimiento(departamento = "CUSCO")
+
+# Segunda ejecución: usa caché (más rápido)
+ccpp2 <- get_centros_poblados_crecimiento(departamento = "CUSCO")
+
+# Forzar nueva descarga si necesitas actualizar datos
+ccpp3 <- get_centros_poblados_crecimiento(
+  departamento = "CUSCO",
+  force_update = TRUE
+)
+```
+
+## Conclusiones
+
+La función `get_centros_poblados_crecimiento()` facilita el acceso a datos valiosos sobre la dinámica poblacional del Perú a nivel de centros poblados. Los principales hallazgos de este análisis incluyen:
+
+1. **Diversidad de patrones**: Existen centros poblados con crecimiento muy acelerado y otros en decrecimiento
+
+2. **Diferencias urbano-rural**: Las áreas urbanas tienden a mostrar patrones de crecimiento diferentes a las rurales
+
+3. **Utilidad para planificación**: Los datos son fundamentales para análisis de creación distrital y planificación territorial
+
+4. **Integración de datos**: La función se integra perfectamente con otras funciones del paquete para análisis espaciales más complejos
+
+## Recursos adicionales
+
+- **Documentación del paquete**: `?get_centros_poblados_crecimiento`
+- **Repositorio GitHub**: https://github.com/PaulESantos/rsdot
+- **Visor SDOT**: https://geosdot.servicios.gob.pe/visor/
+- **INEI**: https://www.inei.gob.pe/
+
+## Referencias
+
+- INEI (2007, 2017). Censos Nacionales de Población y Vivienda.
+- Secretaría de Demarcación y Organización Territorial (SDOT) - PCM Perú.
+
+---
+
+*Esta viñeta fue generada con `rmarkdown` v`r packageVersion("rmarkdown")`*

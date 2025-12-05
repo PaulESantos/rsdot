@@ -27,7 +27,8 @@ Suggests:
     testthat (>= 3.0.0),
     knitr,
     rmarkdown,
-    dplyr
+    dplyr,
+    tidyr
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 Roxygen: list(markdown = TRUE)
