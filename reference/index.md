@@ -2,6 +2,8 @@
 
 ## All functions
 
+- [`get_centros_poblados_crecimiento()`](https://paulesantos.github.io/rsdot/reference/get_centros_poblados_crecimiento.md)
+  : Obtener Centros Poblados con Tasa de Crecimiento Poblacional
 - [`get_densidad_poblacional()`](https://paulesantos.github.io/rsdot/reference/get_densidad_poblacional.md)
   : Obtener Densidad y Crecimiento Poblacional por Departamento
 - [`get_departamentos()`](https://paulesantos.github.io/rsdot/reference/get_departamentos.md)
