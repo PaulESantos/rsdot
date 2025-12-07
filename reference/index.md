@@ -4,6 +4,10 @@
 
 - [`get_aerodromos()`](https://paulesantos.github.io/rsdot/reference/get_aerodromos.md)
   : Obtener Aeródromos del Perú
+- [`get_capitales()`](https://paulesantos.github.io/rsdot/reference/get_capitales.md)
+  : Obtener Capitales Distritales del Perú
+- [`get_centros_poblados()`](https://paulesantos.github.io/rsdot/reference/get_centros_poblados.md)
+  : Obtener Centros Poblados y Asentamientos Dispersos del Perú
 - [`get_centros_poblados_crecimiento()`](https://paulesantos.github.io/rsdot/reference/get_centros_poblados_crecimiento.md)
   : Obtener Centros Poblados con Tasa de Crecimiento Poblacional
 - [`get_densidad_poblacional()`](https://paulesantos.github.io/rsdot/reference/get_densidad_poblacional.md)

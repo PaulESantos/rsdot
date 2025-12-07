@@ -4,7 +4,8 @@ pkgdown_sha: ~
 articles:
   centros-poblados-crecimiento: centros-poblados-crecimiento.html
   infraestructura_transporte: infraestructura_transporte.html
-last_built: 2025-12-07T04:05Z
+  sistema_centros_poblados: sistema_centros_poblados.html
+last_built: 2025-12-07T20:14Z
 urls:
   reference: https://paulesantos.github.io/rsdot/reference
   article: https://paulesantos.github.io/rsdot/articles
