@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 
 ## Introducción
 
-El paquete `rsdot` proporciona acceso a datos de infraestructura de transporte del Perú a través del Visor SDOT (Sistema de Difusión de Obra Territorial) del Ministerio de Transportes y Comunicaciones. Esta viñeta muestra cómo acceder y analizar información sobre:
+El paquete `rsdot` proporciona acceso a datos de infraestructura de transporte del Perú a través del [Visor SDOT](https://geosdot.servicios.gob.pe/geoportal/). Esta viñeta muestra cómo acceder y analizar información sobre:
 
 - **Red Vial Nacional**: Carreteras principales que conectan el país
 - **Red Vial Departamental**: Vías que conectan provincias dentro de cada departamento
@@ -27,6 +27,7 @@ El paquete `rsdot` proporciona acceso a datos de infraestructura de transporte d
 - **Aeródromos**: Aeropuertos, aeródromos y helipuertos
 
 Todos los datos provienen de PROVÍAS NACIONAL y PROVÍAS DESCENTRALIZADO, actualizados a julio 2022 según el Clasificador de Rutas (DS 011-2016-MTC).
+
 ```{r setup}
 library(rsdot)
 library(sf)
@@ -39,6 +40,7 @@ library(ggplot2)
 La Red Vial Nacional comprende las principales carreteras que conectan el territorio peruano, incluyendo las longitudinales de la costa, sierra y selva, así como las carreteras transversales.
 
 ### Carga de datos
+
 ```{r red_nacional}
 # Cargar red vial nacional de Cusco
 vias_nac_cusco <- get_red_vial_nacional(departamento = "CUSCO")
@@ -48,6 +50,7 @@ head(vias_nac_cusco)
 ```
 
 ### Análisis básico
+
 ```{r analisis_nacional}
 # Estadísticas generales
 vias_nac_cusco |>
@@ -185,6 +188,7 @@ ggplot(vias_prov_cusco) +
 La Red Vial Vecinal o Rural conecta centros poblados menores, caseríos y zonas de producción. Es administrada por los gobiernos locales.
 
 ### Características de la red vecinal
+
 ```{r red_vecinal}
 # Cargar red vial vecinal
 vias_vec_cusco <- get_red_vial_vecinal(departamento = "CUSCO")

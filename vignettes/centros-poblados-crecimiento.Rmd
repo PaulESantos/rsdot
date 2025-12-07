@@ -616,12 +616,6 @@ La función `get_centros_poblados_crecimiento()` facilita el acceso a datos vali
 
 4. **Integración de datos**: La función se integra perfectamente con otras funciones del paquete para análisis espaciales más complejos
 
-## Recursos adicionales
-
-- **Documentación del paquete**: `?get_centros_poblados_crecimiento`
-- **Repositorio GitHub**: https://github.com/PaulESantos/rsdot
-- **Visor SDOT**: https://geosdot.servicios.gob.pe/visor/
-- **INEI**: https://www.inei.gob.pe/
 
 ## Referencias
 
@@ -629,5 +623,3 @@ La función `get_centros_poblados_crecimiento()` facilita el acceso a datos vali
 - Secretaría de Demarcación y Organización Territorial (SDOT) - PCM Perú.
 
 ---
-
-*Esta viñeta fue generada con `rmarkdown` v`r packageVersion("rmarkdown")`*
