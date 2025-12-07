@@ -3,9 +3,9 @@
 ## Introducción
 
 El paquete `rsdot` proporciona acceso a datos de infraestructura de
-transporte del Perú a través del Visor SDOT (Sistema de Difusión de Obra
-Territorial) del Ministerio de Transportes y Comunicaciones. Esta viñeta
-muestra cómo acceder y analizar información sobre:
+transporte del Perú a través del [Visor
+SDOT](https://geosdot.servicios.gob.pe/geoportal/). Esta viñeta muestra
+cómo acceder y analizar información sobre:
 
 - **Red Vial Nacional**: Carreteras principales que conectan el país
 - **Red Vial Departamental**: Vías que conectan provincias dentro de

@@ -771,14 +771,6 @@ análisis incluyen:
 4.  **Integración de datos**: La función se integra perfectamente con
     otras funciones del paquete para análisis espaciales más complejos
 
-## Recursos adicionales
-
-- **Documentación del paquete**:
-  [`?get_centros_poblados_crecimiento`](https://paulesantos.github.io/rsdot/reference/get_centros_poblados_crecimiento.md)
-- **Repositorio GitHub**: <https://github.com/PaulESantos/rsdot>
-- **Visor SDOT**: <https://geosdot.servicios.gob.pe/visor/>
-- **INEI**: <https://www.inei.gob.pe/>
-
 ## Referencias
 
 - INEI (2007, 2017). Censos Nacionales de Población y Vivienda.
@@ -786,5 +778,3 @@ análisis incluyen:
   Perú.
 
 ------------------------------------------------------------------------
-
-*Esta viñeta fue generada con `rmarkdown` v2.30*
