@@ -2,6 +2,8 @@
 
 ## All functions
 
+- [`get_aerodromos()`](https://paulesantos.github.io/rsdot/reference/get_aerodromos.md)
+  : Obtener Aeródromos del Perú
 - [`get_centros_poblados_crecimiento()`](https://paulesantos.github.io/rsdot/reference/get_centros_poblados_crecimiento.md)
   : Obtener Centros Poblados con Tasa de Crecimiento Poblacional
 - [`get_densidad_poblacional()`](https://paulesantos.github.io/rsdot/reference/get_densidad_poblacional.md)
@@ -12,3 +14,9 @@
   : Obtener Límites Censales Distritales del Perú
 - [`get_provincias()`](https://paulesantos.github.io/rsdot/reference/get_provincias.md)
   : Obtener Límites Censales Provinciales del Perú
+- [`get_red_vial_departamental()`](https://paulesantos.github.io/rsdot/reference/get_red_vial_departamental.md)
+  : Obtener Red Vial Departamental del Perú
+- [`get_red_vial_nacional()`](https://paulesantos.github.io/rsdot/reference/get_red_vial_nacional.md)
+  : Obtener Red Vial Nacional del Perú
+- [`get_red_vial_vecinal()`](https://paulesantos.github.io/rsdot/reference/get_red_vial_vecinal.md)
+  : Obtener Red Vial Vecinal del Perú

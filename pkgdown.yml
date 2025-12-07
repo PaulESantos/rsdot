@@ -3,7 +3,8 @@ pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
   centros-poblados-crecimiento: centros-poblados-crecimiento.html
-last_built: 2025-12-05T04:58Z
+  infraestructura_transporte: infraestructura_transporte.html
+last_built: 2025-12-07T03:19Z
 urls:
   reference: https://paulesantos.github.io/rsdot/reference
   article: https://paulesantos.github.io/rsdot/articles
