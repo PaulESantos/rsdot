@@ -39,7 +39,7 @@ library(ggplot2)
 La Red Vial Nacional comprende las principales carreteras que conectan el territorio peruano, incluyendo las longitudinales de la costa, sierra y selva, así como las carreteras transversales.
 
 ### Carga de datos
-```{r red_nacional, eval=FALSE}
+```{r red_nacional}
 # Cargar red vial nacional de Cusco
 vias_nac_cusco <- get_red_vial_nacional(departamento = "CUSCO")
 
@@ -48,7 +48,7 @@ head(vias_nac_cusco)
 ```
 
 ### Análisis básico
-```{r analisis_nacional, eval=FALSE}
+```{r analisis_nacional}
 # Estadísticas generales
 vias_nac_cusco |>
   st_drop_geometry() |>
@@ -72,7 +72,7 @@ vias_nac_cusco |>
 ```
 
 ### Visualización
-```{r viz_nacional, eval=FALSE}
+```{r viz_nacional}
 # Mapa de red vial nacional por código de ruta
 ggplot(vias_nac_cusco) +
   geom_sf(aes(color = codruta), linewidth = 1.2) +
@@ -117,7 +117,7 @@ ggplot(vias_nac_cusco) +
 Las carreteras departamentales conectan las capitales provinciales y centros poblados importantes dentro de cada departamento.
 
 ### Carga y análisis
-```{r red_departamental, eval=FALSE}
+```{r red_departamental}
 # Cargar red vial departamental
 vias_dep_cusco <- get_red_vial_departamental(departamento = "CUSCO")
 
@@ -138,7 +138,7 @@ print(analisis_prov)
 ```
 
 ### Visualización por tipo de superficie
-```{r viz_departamental, eval=FALSE}
+```{r viz_departamental}
 # Mapa por tipo de superficie
 ggplot(vias_dep_cusco) +
   geom_sf(aes(color = superfic_l), linewidth = 0.8) +
@@ -160,7 +160,7 @@ ggplot(vias_dep_cusco) +
 ```
 
 ### Filtrado por provincia
-```{r filtro_provincia, eval=FALSE}
+```{r filtro_provincia}
 # Cargar solo una provincia específica
 vias_prov_cusco <- get_red_vial_departamental(
   departamento = "CUSCO",
@@ -185,7 +185,7 @@ ggplot(vias_prov_cusco) +
 La Red Vial Vecinal o Rural conecta centros poblados menores, caseríos y zonas de producción. Es administrada por los gobiernos locales.
 
 ### Características de la red vecinal
-```{r red_vecinal, eval=FALSE}
+```{r red_vecinal}
 # Cargar red vial vecinal
 vias_vec_cusco <- get_red_vial_vecinal(departamento = "CUSCO")
 
@@ -213,7 +213,8 @@ vias_vec_cusco |>
 ```
 
 ### Identificación de prioridades
-```{r prioridades_vecinal, eval=FALSE}
+
+```{r prioridades_vecinal}
 # Identificar vías en mal estado por provincia
 vias_mal_estado <- vias_vec_cusco |>
   filter(estado_l == "Malo") |>
@@ -230,7 +231,8 @@ print(vias_mal_estado)
 ```
 
 ### Visualización
-```{r viz_vecinal, eval=FALSE}
+
+```{r viz_vecinal}
 # Mapa de red vecinal por estado
 ggplot(vias_vec_cusco) +
   geom_sf(aes(color = estado_l), linewidth = 0.6, alpha = 0.7) +
@@ -255,7 +257,8 @@ ggplot(vias_vec_cusco) +
 Los datos de aeródromos incluyen aeropuertos, aeródromos y helipuertos en todo el Perú.
 
 ### Carga y exploración
-```{r aerodromos, eval=FALSE}
+
+```{r aerodromos}
 # Cargar aeródromos de Cusco
 aero_cusco <- get_aerodromos(departamento = "CUSCO")
 
@@ -271,7 +274,7 @@ aero_cusco |>
 ```
 
 ### Visualización
-```{r viz_aerodromos, eval=FALSE}
+```{r viz_aerodromos}
 # Mapa de aeródromos
 ggplot(aero_cusco) +
   geom_sf(aes(color = tipo, shape = tipo), size = 4) +
@@ -318,7 +321,8 @@ ggplot(aero_cusco) +
 ## Análisis Integrado
 
 ### Comparación entre redes viales
-```{r comparacion_redes, eval=FALSE}
+
+```{r comparacion_redes}
 # Cargar las tres redes
 vias_nacional <- get_red_vial_nacional(departamento = "CUSCO")
 vias_departamental <- get_red_vial_departamental(departamento = "CUSCO")
@@ -349,7 +353,8 @@ print(comparacion)
 ```
 
 ### Visualización comparativa
-```{r viz_comparacion, eval=FALSE}
+
+```{r viz_comparacion}
 # Gráfico de barras comparativo
 ggplot(comparacion, aes(x = Red, y = Longitud_km, fill = Red)) +
   geom_col() +
@@ -378,7 +383,8 @@ ggplot(comparacion, aes(x = Red, y = Longitud_km, fill = Red)) +
 ```
 
 ### Mapa integrado de infraestructura
-```{r mapa_integrado, eval=FALSE}
+
+```{r mapa_integrado}
 # Mapa con todas las redes y aeródromos
 ggplot() +
   # Red Nacional (base)
@@ -439,10 +445,10 @@ ggplot() +
 ## Análisis Multidepartamental
 
 ### Comparación entre departamentos del sur
-```{r multi_departamento, eval=FALSE}
+```{r multi_departamento}
 # Cargar red nacional de varios departamentos
 vias_sur <- get_red_vial_nacional(
-  departamento = c("CUSCO", "PUNO", "AREQUIPA", "APURIMAC")
+  departamento = c("PUNO", "APURIMAC")
 )
 
 # Análisis por departamento
@@ -464,14 +470,14 @@ print(resumen_sur)
 ```
 
 ### Visualización regional
-```{r viz_regional, eval=FALSE}
+```{r viz_regional}
 # Mapa regional
 ggplot(vias_sur) +
   geom_sf(aes(color = nombdep), linewidth = 1) +
   scale_color_brewer(palette = "Set1", name = "Departamento") +
   labs(
     title = "Red Vial Nacional - Región Sur del Perú",
-    subtitle = "Cusco, Puno, Arequipa y Apurímac",
+    subtitle = "Puno y Apurímac",
     caption = "Fuente: PROVÍAS NACIONAL - MTC 2022"
   ) +
   theme_minimal()
@@ -502,10 +508,11 @@ vias_sur |>
 ## Análisis de Accesibilidad
 
 ### Conectividad aérea
-```{r conectividad_aerea, eval=FALSE}
+
+```{r conectividad_aerea}
 # Cargar aeródromos de múltiples departamentos
 aero_sur <- get_aerodromos(
-  departamento = c("CUSCO", "PUNO", "AREQUIPA", "APURIMAC")
+  departamento = c("PUNO", "AREQUIPA", "APURIMAC")
 )
 
 # Resumen por departamento
@@ -525,7 +532,8 @@ nrow(aero_publicos)
 ## Casos de Uso Prácticos
 
 ### Caso 1: Planificación de rutas
-```{r caso_ruta, eval=FALSE}
+
+```{r caso_ruta}
 # Identificar la ruta principal entre Cusco y Lima
 # PE-3S es la carretera principal
 
@@ -543,7 +551,8 @@ ruta_principal |>
 ```
 
 ### Caso 2: Evaluación de necesidades de mantenimiento
-```{r caso_mantenimiento, eval=FALSE}
+
+```{r caso_mantenimiento}
 # Identificar tramos que requieren intervención urgente
 # (mal estado y alta importancia)
 
@@ -567,7 +576,8 @@ vias_prioritarias |>
 ```
 
 ### Caso 3: Análisis de inversión rural
-```{r caso_rural, eval=FALSE}
+
+```{r caso_rural}
 # Analizar el estado de la red vecinal
 # para priorizar inversiones
 
@@ -591,6 +601,7 @@ print(head(analisis_rural, 10))
 ## Exportación de Datos
 
 ### Guardar en formatos estándar
+
 ```{r exportacion, eval=FALSE}
 # Exportar a GeoPackage
 st_write(
@@ -617,30 +628,11 @@ vias_nacional |>
 ### Fuentes de datos
 
 - **Visor SDOT**: https://geosdot.servicios.gob.pe/visor/
-- **PROVÍAS NACIONAL**: https://www.gob.pe/proviasnac
-- **PROVÍAS DESCENTRALIZADO**: https://www.gob.pe/proviasdes
-- **Repositorio OSF**: https://osf.io/qy4j6/
+
 
 ### Normativa relevante
 
 - Decreto Supremo 011-2016-MTC: Clasificador de Rutas del SINAC
 - Ley 27181: Ley General de Transporte y Tránsito Terrestre
 
-### Funciones relacionadas
 
-- `get_departamentos()`: Límites departamentales
-- `get_provincias()`: Límites provinciales
-- `get_distritos()`: Límites distritales
-- `get_centros_poblados_crecimiento()`: Datos demográficos de centros poblados
-
-## Conclusión
-
-El paquete `rsdot` facilita el acceso y análisis de datos de infraestructura de transporte en el Perú. Las funciones presentadas permiten:
-
-1. **Análisis espacial** de redes viales a diferentes niveles jerárquicos
-2. **Evaluación de estado** de infraestructura vial
-3. **Planificación** de inversiones en transporte
-4. **Estudios de conectividad** territorial
-5. **Análisis multidepartamental** para estudios regionales
-
-Para más información sobre otras funcionalidades del paquete, consulte las viñetas adicionales y la documentación de cada función.
