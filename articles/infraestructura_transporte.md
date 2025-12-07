@@ -39,6 +39,23 @@ vias_nac_cusco <- get_red_vial_nacional(departamento = "CUSCO")
 
 # Ver estructura de los datos
 head(vias_nac_cusco)
+#> Simple feature collection with 6 features and 17 fields
+#> Geometry type: MULTILINESTRING
+#> Dimension:     XY
+#> Bounding box:  xmin: -73.38161 ymin: -13.53206 xmax: -71.96576 ymax: -11.30783
+#> Geodetic CRS:  WGS 84
+#> # A tibble: 6 × 18
+#>   inicio   fin trayectori        nrocarril ejeclas iddpto nombdep codruta jerarq
+#>    <dbl> <dbl> <chr>                 <int> <chr>   <chr>  <chr>   <chr>   <chr> 
+#> 1  317.  340.  Pte. Reither (PE…         0 Longit… 08     CUSCO   PE-5S   RN    
+#> 2  340.  455.  Pte. Reither (PE…         0 Longit… 08     CUSCO   PE-5S   RN    
+#> 3  974.  974.  Repartición La O…         4 Longit… 08     CUSCO   PE-3S   RN    
+#> 4   19.8  19.8 Emp. PE-3S (Poro…         2 Ramal   08     CUSCO   PE-28F  RN    
+#> 5  269.  305.  Emp.PE-3S (Pacay…         1 Varian… 08     CUSCO   PE-28B  RN    
+#> 6  321.  331.  Emp.PE-3S (Pacay…         1 Varian… 08     CUSCO   PE-28B  RN    
+#> # ℹ 9 more variables: superfic <int>, longitud <dbl>, codconces <chr>,
+#> #   codclog <chr>, superfic_l <chr>, codclog_l <chr>, estado <int>,
+#> #   estado_l <chr>, geom <MULTILINESTRING [°]>
 ```
 
 ### Análisis básico
@@ -54,6 +71,10 @@ vias_nac_cusco |>
     km_pavimentado = sum(longitud[superfic_l == "Pavimentado"], na.rm = TRUE),
     pct_pavimentado = (km_pavimentado / longitud_total_km) * 100
   )
+#> # A tibble: 1 × 5
+#>   longitud_total_km n_rutas n_tramos km_pavimentado pct_pavimentado
+#>               <dbl>   <int>    <int>          <dbl>           <dbl>
+#> 1             2425.      17      432          1080.            44.5
 
 # Análisis por eje de clasificación
 vias_nac_cusco |>
@@ -64,6 +85,14 @@ vias_nac_cusco |>
     .groups = "drop"
   ) |>
   arrange(desc(longitud_km))
+#> # A tibble: 5 × 2
+#>   ejeclas                   longitud_km
+#>   <chr>                           <dbl>
+#> 1 Ramal                            779.
+#> 2 Variante                         724.
+#> 3 Longitudinal de la Selva         399.
+#> 4 Longitudinal de la Sierra        280.
+#> 5 Transversal                      243.
 ```
 
 ### Visualización
@@ -84,6 +113,11 @@ ggplot(vias_nac_cusco) +
     plot.title = element_text(face = "bold", size = 14),
     plot.subtitle = element_text(size = 11)
   )
+```
+
+![](infraestructura_transporte_files/figure-html/viz_nacional-1.png)
+
+``` r
 
 # Mapa por estado de conservación
 ggplot(vias_nac_cusco) +
@@ -107,6 +141,8 @@ ggplot(vias_nac_cusco) +
   ) +
   theme_minimal()
 ```
+
+![](infraestructura_transporte_files/figure-html/viz_nacional-2.png)
 
 ## Red Vial Departamental
 
@@ -133,6 +169,22 @@ analisis_prov <- vias_dep_cusco |>
   arrange(desc(longitud_total))
 
 print(analisis_prov)
+#> # A tibble: 13 × 5
+#>    nombprov      longitud_total n_rutas km_pavimentado pct_pavimentado
+#>    <chr>                  <dbl>   <int>          <dbl>           <dbl>
+#>  1 LA CONVENCION          808.       10           9.53            1.18
+#>  2 PARURO                 436.        7         105.             24.0 
+#>  3 PAUCARTAMBO            379.        5          25.7             6.77
+#>  4 CALCA                  312.        3           0               0   
+#>  5 QUISPICANCHI           210.        5           9.94            4.72
+#>  6 CHUMBIVILCAS           208.        4          83.9            40.4 
+#>  7 CANCHIS                169.        2           8.59            5.09
+#>  8 ESPINAR                143.        5          25.8            18.0 
+#>  9 ACOMAYO                139.        3          85.1            61.1 
+#> 10 CANAS                  101.        2          90.8            90.1 
+#> 11 ANTA                    68.0       3          12.6            18.5 
+#> 12 URUBAMBA                48.2       4           2.15            4.47
+#> 13 CUSCO                   37.5       2          17.9            47.8
 ```
 
 ### Visualización por tipo de superficie
@@ -158,6 +210,8 @@ ggplot(vias_dep_cusco) +
   theme_minimal()
 ```
 
+![](infraestructura_transporte_files/figure-html/viz_departamental-1.png)
+
 ### Filtrado por provincia
 
 ``` r
@@ -179,6 +233,8 @@ ggplot(vias_prov_cusco) +
   ) +
   theme_minimal()
 ```
+
+![](infraestructura_transporte_files/figure-html/filtro_provincia-1.png)
 
 ## Red Vial Vecinal
 
@@ -202,6 +258,15 @@ vias_vec_cusco |>
     .groups = "drop"
   ) |>
   arrange(desc(longitud_km))
+#> # A tibble: 6 × 4
+#>   superfic_l          longitud_km n_tramos porcentaje
+#>   <chr>                     <dbl>    <int>      <dbl>
+#> 1 Trocha                   6631.      1216    52.3   
+#> 2 Afirmado                 3589.       513    28.3   
+#> 3 Sin afirmar              2111.       383    16.7   
+#> 4 Pavimentado               304.       198     2.40  
+#> 5 Asfaltado económico        24.1        3     0.191 
+#> 6 Proyectado                 12.4        2     0.0979
 
 # Análisis de estado
 vias_vec_cusco |>
@@ -212,6 +277,13 @@ vias_vec_cusco |>
     porcentaje = (longitud_km / sum(vias_vec_cusco$longitud, na.rm = TRUE)) * 100,
     .groups = "drop"
   )
+#> # A tibble: 4 × 3
+#>   estado_l                  longitud_km porcentaje
+#>   <chr>                           <dbl>      <dbl>
+#> 1 Bueno                           2369.      18.7 
+#> 2 Información no disponible        582.       4.59
+#> 3 Malo                            3645.      28.8 
+#> 4 Regular                         6077.      48.0
 ```
 
 ### Identificación de prioridades
@@ -230,6 +302,22 @@ vias_mal_estado <- vias_vec_cusco |>
   arrange(desc(km_mal_estado))
 
 print(vias_mal_estado)
+#> # A tibble: 13 × 3
+#>    nombprov      km_mal_estado n_vias
+#>    <chr>                 <dbl>  <int>
+#>  1 LA CONVENCION         994.     160
+#>  2 QUISPICANCHI          397.      76
+#>  3 ESPINAR               390.      62
+#>  4 PAUCARTAMBO           358.      50
+#>  5 CALCA                 304.      71
+#>  6 CHUMBIVILCAS          253.      44
+#>  7 CANAS                 187.      44
+#>  8 PARURO                178.      34
+#>  9 CUSCO                 164.      52
+#> 10 ANTA                  136.      38
+#> 11 ACOMAYO               132.      32
+#> 12 CANCHIS                88.9     27
+#> 13 URUBAMBA               62.7     20
 ```
 
 ### Visualización
@@ -254,6 +342,8 @@ ggplot(vias_vec_cusco) +
   theme_minimal()
 ```
 
+![](infraestructura_transporte_files/figure-html/viz_vecinal-1.png)
+
 ## Aeródromos
 
 Los datos de aeródromos incluyen aeropuertos, aeródromos y helipuertos
@@ -267,6 +357,9 @@ aero_cusco <- get_aerodromos(departamento = "CUSCO")
 
 # Ver tipos de instalaciones
 table(aero_cusco$tipo)
+#> 
+#>                AERODROMO AEROPUERTO INTERNACIONAL               HELIPUERTO 
+#>                        5                        1                       20
 
 # Análisis por tipo y titularidad
 aero_cusco |>
@@ -274,6 +367,13 @@ aero_cusco |>
   group_by(tipo, titular) |>
   summarise(n = n(), .groups = "drop") |>
   arrange(tipo, desc(n))
+#> # A tibble: 4 × 3
+#>   tipo                     titular     n
+#>   <chr>                    <chr>   <int>
+#> 1 AERODROMO                PRIVADA     3
+#> 2 AERODROMO                PUBLICA     2
+#> 3 AEROPUERTO INTERNACIONAL PUBLICA     1
+#> 4 HELIPUERTO               PRIVADA    20
 ```
 
 ### Visualización
@@ -304,6 +404,11 @@ ggplot(aero_cusco) +
     caption = "Fuente: MTC | Visor SDOT"
   ) +
   theme_minimal()
+```
+
+![](infraestructura_transporte_files/figure-html/viz_aerodromos-1.png)
+
+``` r
 
 # Mapa con etiquetas
 ggplot(aero_cusco) +
@@ -321,6 +426,8 @@ ggplot(aero_cusco) +
   ) +
   theme_minimal()
 ```
+
+![](infraestructura_transporte_files/figure-html/viz_aerodromos-2.png)
 
 ## Análisis Integrado
 
@@ -354,6 +461,10 @@ comparacion <- comparacion |>
   )
 
 print(comparacion)
+#>             Red Longitud_km N_tramos Porcentaje Km_promedio_tramo
+#> 1      Nacional    2424.775      432   13.35542          5.612905
+#> 2 Departamental    3058.914      363   16.84819          8.426760
+#> 3       Vecinal   12672.055     2315   69.79640          5.473890
 ```
 
 ### Visualización comparativa
@@ -385,6 +496,8 @@ ggplot(comparacion, aes(x = Red, y = Longitud_km, fill = Red)) +
   theme_minimal() +
   theme(legend.position = "none")
 ```
+
+![](infraestructura_transporte_files/figure-html/viz_comparacion-1.png)
 
 ### Mapa integrado de infraestructura
 
@@ -446,6 +559,8 @@ ggplot() +
   )
 ```
 
+![](infraestructura_transporte_files/figure-html/mapa_integrado-1.png)
+
 ## Análisis Multidepartamental
 
 ### Comparación entre departamentos del sur
@@ -453,7 +568,7 @@ ggplot() +
 ``` r
 # Cargar red nacional de varios departamentos
 vias_sur <- get_red_vial_nacional(
-  departamento = c("CUSCO", "PUNO", "AREQUIPA", "APURIMAC")
+  departamento = c("PUNO", "APURIMAC")
 )
 
 # Análisis por departamento
@@ -472,6 +587,12 @@ resumen_sur <- vias_sur |>
   arrange(desc(longitud_total))
 
 print(resumen_sur)
+#> # A tibble: 2 × 7
+#>   nombdep  longitud_total n_rutas km_pavimentado pct_pavimentado km_buen_estado
+#>   <chr>             <dbl>   <int>          <dbl>           <dbl>          <dbl>
+#> 1 PUNO              2042.      17          1307.            64.0          1506.
+#> 2 APURIMAC          1284.       9           556.            43.3          1004.
+#> # ℹ 1 more variable: pct_buen_estado <dbl>
 ```
 
 ### Visualización regional
@@ -483,10 +604,15 @@ ggplot(vias_sur) +
   scale_color_brewer(palette = "Set1", name = "Departamento") +
   labs(
     title = "Red Vial Nacional - Región Sur del Perú",
-    subtitle = "Cusco, Puno, Arequipa y Apurímac",
+    subtitle = "Puno y Apurímac",
     caption = "Fuente: PROVÍAS NACIONAL - MTC 2022"
   ) +
   theme_minimal()
+```
+
+![](infraestructura_transporte_files/figure-html/viz_regional-1.png)
+
+``` r
 
 # Gráfico comparativo de estado
 vias_sur |>
@@ -511,6 +637,8 @@ vias_sur |>
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
+![](infraestructura_transporte_files/figure-html/viz_regional-2.png)
+
 ## Análisis de Accesibilidad
 
 ### Conectividad aérea
@@ -518,7 +646,7 @@ vias_sur |>
 ``` r
 # Cargar aeródromos de múltiples departamentos
 aero_sur <- get_aerodromos(
-  departamento = c("CUSCO", "PUNO", "AREQUIPA", "APURIMAC")
+  departamento = c("PUNO", "AREQUIPA", "APURIMAC")
 )
 
 # Resumen por departamento
@@ -527,12 +655,19 @@ aero_sur |>
   group_by(nombdep, tipo) |>
   summarise(n = n(), .groups = "drop") |>
   tidyr::pivot_wider(names_from = tipo, values_from = n, values_fill = 0)
+#> # A tibble: 3 × 5
+#>   nombdep  AEROPUERTO HELIPUERTO AERODROMO `AEROPUERTO INTERNACIONAL`
+#>   <chr>         <int>      <int>     <int>                      <int>
+#> 1 APURIMAC          1          2         0                          0
+#> 2 AREQUIPA          0          1         3                          1
+#> 3 PUNO              0          0         1                          1
 
 # Aeródromos operativos públicos
 aero_publicos <- aero_sur |>
   filter(titular == "PUBLICA", estado == "OPERATIVO")
 
 nrow(aero_publicos)
+#> [1] 2
 ```
 
 ## Casos de Uso Prácticos
@@ -554,6 +689,10 @@ ruta_principal |>
     km_pavimentado = sum(longitud[superfic_l == "Pavimentado"], na.rm = TRUE),
     km_afirmado = sum(longitud[superfic_l == "Afirmado"], na.rm = TRUE)
   )
+#> # A tibble: 1 × 3
+#>   longitud_total km_pavimentado km_afirmado
+#>            <dbl>          <dbl>       <dbl>
+#> 1           280.           280.           0
 ```
 
 ### Caso 2: Evaluación de necesidades de mantenimiento
@@ -579,6 +718,20 @@ vias_prioritarias |>
     .groups = "drop"
   ) |>
   arrange(desc(km_requiere_atencion))
+#> # A tibble: 11 × 3
+#>    nombprov      km_requiere_atencion n_tramos
+#>    <chr>                        <dbl>    <int>
+#>  1 LA CONVENCION               288.         39
+#>  2 PARURO                      200.         16
+#>  3 CHUMBIVILCAS                130.          8
+#>  4 CANCHIS                     122.          4
+#>  5 PAUCARTAMBO                  83.7         6
+#>  6 CANAS                        53.7         2
+#>  7 ANTA                         38.0         6
+#>  8 ESPINAR                      37.3         3
+#>  9 QUISPICANCHI                 30.4         4
+#> 10 CUSCO                        19.6         1
+#> 11 URUBAMBA                      7.24        1
 ```
 
 ### Caso 3: Análisis de inversión rural
@@ -602,6 +755,19 @@ analisis_rural <- vias_vecinal |>
 
 # Provincias con mayor necesidad de mejoramiento
 print(head(analisis_rural, 10))
+#> # A tibble: 10 × 6
+#>    nombprov      km_total km_trocha pct_trocha km_malo pct_malo
+#>    <chr>            <dbl>     <dbl>      <dbl>   <dbl>    <dbl>
+#>  1 QUISPICANCHI     1091.      984.       90.2   397.      36.4
+#>  2 PAUCARTAMBO      1129.      870.       77.1   358.      31.8
+#>  3 ACOMAYO           495.      367.       74.1   132.      26.7
+#>  4 ANTA              763.      553.       72.6   136.      17.8
+#>  5 CANCHIS           625.      417.       66.8    88.9     14.2
+#>  6 CALCA             874.      480.       54.9   304.      34.8
+#>  7 LA CONVENCION    2938.     1472.       50.1   994.      33.8
+#>  8 PARURO            656.      323.       49.2   178.      27.1
+#>  9 CHUMBIVILCAS     1464.      621.       42.4   253.      17.3
+#> 10 ESPINAR           992.      269.       27.1   390.      39.3
 ```
 
 ## Exportación de Datos
@@ -634,38 +800,8 @@ vias_nacional |>
 ### Fuentes de datos
 
 - **Visor SDOT**: <https://geosdot.servicios.gob.pe/visor/>
-- **PROVÍAS NACIONAL**: <https://www.gob.pe/proviasnac>
-- **PROVÍAS DESCENTRALIZADO**: <https://www.gob.pe/proviasdes>
-- **Repositorio OSF**: <https://osf.io/qy4j6/>
 
 ### Normativa relevante
 
 - Decreto Supremo 011-2016-MTC: Clasificador de Rutas del SINAC
 - Ley 27181: Ley General de Transporte y Tránsito Terrestre
-
-### Funciones relacionadas
-
-- [`get_departamentos()`](https://paulesantos.github.io/rsdot/reference/get_departamentos.md):
-  Límites departamentales
-- [`get_provincias()`](https://paulesantos.github.io/rsdot/reference/get_provincias.md):
-  Límites provinciales
-- [`get_distritos()`](https://paulesantos.github.io/rsdot/reference/get_distritos.md):
-  Límites distritales
-- [`get_centros_poblados_crecimiento()`](https://paulesantos.github.io/rsdot/reference/get_centros_poblados_crecimiento.md):
-  Datos demográficos de centros poblados
-
-## Conclusión
-
-El paquete `rsdot` facilita el acceso y análisis de datos de
-infraestructura de transporte en el Perú. Las funciones presentadas
-permiten:
-
-1.  **Análisis espacial** de redes viales a diferentes niveles
-    jerárquicos
-2.  **Evaluación de estado** de infraestructura vial
-3.  **Planificación** de inversiones en transporte
-4.  **Estudios de conectividad** territorial
-5.  **Análisis multidepartamental** para estudios regionales
-
-Para más información sobre otras funcionalidades del paquete, consulte
-las viñetas adicionales y la documentación de cada función.

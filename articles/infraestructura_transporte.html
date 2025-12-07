@@ -110,7 +110,24 @@ costa, sierra y selva, así como las carreteras transversales.</p>
 <span><span class="va">vias_nac_cusco</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_red_vial_nacional.html">get_red_vial_nacional</a></span><span class="op">(</span>departamento <span class="op">=</span> <span class="st">"CUSCO"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Ver estructura de los datos</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">vias_nac_cusco</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">vias_nac_cusco</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Simple feature collection with 6 features and 17 fields</span></span>
+<span><span class="co">#&gt; Geometry type: MULTILINESTRING</span></span>
+<span><span class="co">#&gt; Dimension:     XY</span></span>
+<span><span class="co">#&gt; Bounding box:  xmin: -73.38161 ymin: -13.53206 xmax: -71.96576 ymax: -11.30783</span></span>
+<span><span class="co">#&gt; Geodetic CRS:  WGS 84</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 18</span></span></span>
+<span><span class="co">#&gt;   inicio   fin trayectori        nrocarril ejeclas iddpto nombdep codruta jerarq</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>  317.  340.  Pte. Reither (PE…         0 Longit… 08     CUSCO   PE-5S   RN    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>  340.  455.  Pte. Reither (PE…         0 Longit… 08     CUSCO   PE-5S   RN    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>  974.  974.  Repartición La O…         4 Longit… 08     CUSCO   PE-3S   RN    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>   19.8  19.8 Emp. PE-3S (Poro…         2 Ramal   08     CUSCO   PE-28F  RN    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>  269.  305.  Emp.PE-3S (Pacay…         1 Varian… 08     CUSCO   PE-28B  RN    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>  321.  331.  Emp.PE-3S (Pacay…         1 Varian… 08     CUSCO   PE-28B  RN    </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 9 more variables: superfic &lt;int&gt;, longitud &lt;dbl&gt;, codconces &lt;chr&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   codclog &lt;chr&gt;, superfic_l &lt;chr&gt;, codclog_l &lt;chr&gt;, estado &lt;int&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   estado_l &lt;chr&gt;, geom &lt;MULTILINESTRING [°]&gt;</span></span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="análisis-básico">Análisis básico<a class="anchor" aria-label="anchor" href="#an%C3%A1lisis-b%C3%A1sico"></a>
@@ -126,6 +143,10 @@ costa, sierra y selva, así como las carreteras transversales.</p>
 <span>    km_pavimentado <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">longitud</span><span class="op">[</span><span class="va">superfic_l</span> <span class="op">==</span> <span class="st">"Pavimentado"</span><span class="op">]</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    pct_pavimentado <span class="op">=</span> <span class="op">(</span><span class="va">km_pavimentado</span> <span class="op">/</span> <span class="va">longitud_total_km</span><span class="op">)</span> <span class="op">*</span> <span class="fl">100</span></span>
 <span>  <span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 5</span></span></span>
+<span><span class="co">#&gt;   longitud_total_km n_rutas n_tramos km_pavimentado pct_pavimentado</span></span>
+<span><span class="co">#&gt;               <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>             <span style="text-decoration: underline;">2</span>425.      17      432          <span style="text-decoration: underline;">1</span>080.            44.5</span></span>
 <span></span>
 <span><span class="co"># Análisis por eje de clasificación</span></span>
 <span><span class="va">vias_nac_cusco</span> <span class="op">|&gt;</span></span>
@@ -135,7 +156,15 @@ costa, sierra y selva, así como las carreteras transversales.</p>
 <span>    longitud_km <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">longitud</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    .groups <span class="op">=</span> <span class="st">"drop"</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">longitud_km</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">longitud_km</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 5 × 2</span></span></span>
+<span><span class="co">#&gt;   ejeclas                   longitud_km</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Ramal                            779.</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Variante                         724.</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> Longitudinal de la Selva         399.</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> Longitudinal de la Sierra        280.</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> Transversal                      243.</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="visualización">Visualización<a class="anchor" aria-label="anchor" href="#visualizaci%C3%B3n"></a>
@@ -155,8 +184,10 @@ costa, sierra y selva, así como las carreteras transversales.</p>
 <span>    legend.position <span class="op">=</span> <span class="st">"right"</span>,</span>
 <span>    plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>face <span class="op">=</span> <span class="st">"bold"</span>, size <span class="op">=</span> <span class="fl">14</span><span class="op">)</span>,</span>
 <span>    plot.subtitle <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">11</span><span class="op">)</span></span>
-<span>  <span class="op">)</span></span>
-<span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
+<p><img src="infraestructura_transporte_files/figure-html/viz_nacional-1.png" class="r-plt" width="768"></p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="co"># Mapa por estado de conservación</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">vias_nac_cusco</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>color <span class="op">=</span> <span class="va">estado_l</span>, linewidth <span class="op">=</span> <span class="va">estado_l</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -178,6 +209,7 @@ costa, sierra y selva, así como las carreteras transversales.</p>
 <span>    caption <span class="op">=</span> <span class="st">"Fuente: PROVÍAS NACIONAL - MTC 2022"</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p><img src="infraestructura_transporte_files/figure-html/viz_nacional-2.png" class="r-plt" width="768"></p>
 </div>
 </div>
 <div class="section level2">
@@ -188,7 +220,7 @@ centros poblados importantes dentro de cada departamento.</p>
 <div class="section level3">
 <h3 id="carga-y-análisis">Carga y análisis<a class="anchor" aria-label="anchor" href="#carga-y-an%C3%A1lisis"></a>
 </h3>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Cargar red vial departamental</span></span>
 <span><span class="va">vias_dep_cusco</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_red_vial_departamental.html">get_red_vial_departamental</a></span><span class="op">(</span>departamento <span class="op">=</span> <span class="st">"CUSCO"</span><span class="op">)</span></span>
 <span></span>
@@ -205,12 +237,28 @@ centros poblados importantes dentro de cada departamento.</p>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">longitud_total</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">analisis_prov</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">analisis_prov</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 13 × 5</span></span></span>
+<span><span class="co">#&gt;    nombprov      longitud_total n_rutas km_pavimentado pct_pavimentado</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> LA CONVENCION          808.       10           9.53            1.18</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> PARURO                 436.        7         105.             24.0 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> PAUCARTAMBO            379.        5          25.7             6.77</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> CALCA                  312.        3           0               0   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> QUISPICANCHI           210.        5           9.94            4.72</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> CHUMBIVILCAS           208.        4          83.9            40.4 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> CANCHIS                169.        2           8.59            5.09</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> ESPINAR                143.        5          25.8            18.0 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> ACOMAYO                139.        3          85.1            61.1 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> CANAS                  101.        2          90.8            90.1 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> ANTA                    68.0       3          12.6            18.5 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span> URUBAMBA                48.2       4           2.15            4.47</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">13</span> CUSCO                   37.5       2          17.9            47.8</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="visualización-por-tipo-de-superficie">Visualización por tipo de superficie<a class="anchor" aria-label="anchor" href="#visualizaci%C3%B3n-por-tipo-de-superficie"></a>
 </h3>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Mapa por tipo de superficie</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">vias_dep_cusco</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>color <span class="op">=</span> <span class="va">superfic_l</span><span class="op">)</span>, linewidth <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span></span>
@@ -229,11 +277,12 @@ centros poblados importantes dentro de cada departamento.</p>
 <span>    caption <span class="op">=</span> <span class="st">"Fuente: PROVÍAS NACIONAL - MTC 2022"</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p><img src="infraestructura_transporte_files/figure-html/viz_departamental-1.png" class="r-plt" width="768"></p>
 </div>
 <div class="section level3">
 <h3 id="filtrado-por-provincia">Filtrado por provincia<a class="anchor" aria-label="anchor" href="#filtrado-por-provincia"></a>
 </h3>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Cargar solo una provincia específica</span></span>
 <span><span class="va">vias_prov_cusco</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_red_vial_departamental.html">get_red_vial_departamental</a></span><span class="op">(</span></span>
 <span>  departamento <span class="op">=</span> <span class="st">"CUSCO"</span>,</span>
@@ -251,6 +300,7 @@ centros poblados importantes dentro de cada departamento.</p>
 <span>    color <span class="op">=</span> <span class="st">"Estado"</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p><img src="infraestructura_transporte_files/figure-html/filtro_provincia-1.png" class="r-plt" width="768"></p>
 </div>
 </div>
 <div class="section level2">
@@ -262,7 +312,7 @@ locales.</p>
 <div class="section level3">
 <h3 id="características-de-la-red-vecinal">Características de la red vecinal<a class="anchor" aria-label="anchor" href="#caracter%C3%ADsticas-de-la-red-vecinal"></a>
 </h3>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Cargar red vial vecinal</span></span>
 <span><span class="va">vias_vec_cusco</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_red_vial_vecinal.html">get_red_vial_vecinal</a></span><span class="op">(</span>departamento <span class="op">=</span> <span class="st">"CUSCO"</span><span class="op">)</span></span>
 <span></span>
@@ -277,6 +327,15 @@ locales.</p>
 <span>    .groups <span class="op">=</span> <span class="st">"drop"</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">longitud_km</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 4</span></span></span>
+<span><span class="co">#&gt;   superfic_l          longitud_km n_tramos porcentaje</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Trocha                   <span style="text-decoration: underline;">6</span>631.      <span style="text-decoration: underline;">1</span>216    52.3   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Afirmado                 <span style="text-decoration: underline;">3</span>589.       513    28.3   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> Sin afirmar              <span style="text-decoration: underline;">2</span>111.       383    16.7   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> Pavimentado               304.       198     2.40  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> Asfaltado económico        24.1        3     0.191 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> Proyectado                 12.4        2     0.097<span style="text-decoration: underline;">9</span></span></span>
 <span></span>
 <span><span class="co"># Análisis de estado</span></span>
 <span><span class="va">vias_vec_cusco</span> <span class="op">|&gt;</span></span>
@@ -286,12 +345,19 @@ locales.</p>
 <span>    longitud_km <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">longitud</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    porcentaje <span class="op">=</span> <span class="op">(</span><span class="va">longitud_km</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">vias_vec_cusco</span><span class="op">$</span><span class="va">longitud</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">*</span> <span class="fl">100</span>,</span>
 <span>    .groups <span class="op">=</span> <span class="st">"drop"</span></span>
-<span>  <span class="op">)</span></span></code></pre></div>
+<span>  <span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 3</span></span></span>
+<span><span class="co">#&gt;   estado_l                  longitud_km porcentaje</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Bueno                           <span style="text-decoration: underline;">2</span>369.      18.7 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Información no disponible        582.       4.59</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> Malo                            <span style="text-decoration: underline;">3</span>645.      28.8 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> Regular                         <span style="text-decoration: underline;">6</span>077.      48.0</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="identificación-de-prioridades">Identificación de prioridades<a class="anchor" aria-label="anchor" href="#identificaci%C3%B3n-de-prioridades"></a>
 </h3>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Identificar vías en mal estado por provincia</span></span>
 <span><span class="va">vias_mal_estado</span> <span class="op">&lt;-</span> <span class="va">vias_vec_cusco</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">estado_l</span> <span class="op">==</span> <span class="st">"Malo"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -304,12 +370,28 @@ locales.</p>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">km_mal_estado</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">vias_mal_estado</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">vias_mal_estado</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 13 × 3</span></span></span>
+<span><span class="co">#&gt;    nombprov      km_mal_estado n_vias</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> LA CONVENCION         994.     160</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> QUISPICANCHI          397.      76</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> ESPINAR               390.      62</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> PAUCARTAMBO           358.      50</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> CALCA                 304.      71</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> CHUMBIVILCAS          253.      44</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> CANAS                 187.      44</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> PARURO                178.      34</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> CUSCO                 164.      52</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> ANTA                  136.      38</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> ACOMAYO               132.      32</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span> CANCHIS                88.9     27</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">13</span> URUBAMBA               62.7     20</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="visualización-1">Visualización<a class="anchor" aria-label="anchor" href="#visualizaci%C3%B3n-1"></a>
 </h3>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Mapa de red vecinal por estado</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">vias_vec_cusco</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>color <span class="op">=</span> <span class="va">estado_l</span><span class="op">)</span>, linewidth <span class="op">=</span> <span class="fl">0.6</span>, alpha <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
@@ -327,6 +409,7 @@ locales.</p>
 <span>    caption <span class="op">=</span> <span class="st">"Fuente: PROVÍAS DESCENTRALIZADO - MTC 2022"</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p><img src="infraestructura_transporte_files/figure-html/viz_vecinal-1.png" class="r-plt" width="768"></p>
 </div>
 </div>
 <div class="section level2">
@@ -337,24 +420,34 @@ helipuertos en todo el Perú.</p>
 <div class="section level3">
 <h3 id="carga-y-exploración">Carga y exploración<a class="anchor" aria-label="anchor" href="#carga-y-exploraci%C3%B3n"></a>
 </h3>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Cargar aeródromos de Cusco</span></span>
 <span><span class="va">aero_cusco</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_aerodromos.html">get_aerodromos</a></span><span class="op">(</span>departamento <span class="op">=</span> <span class="st">"CUSCO"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Ver tipos de instalaciones</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">aero_cusco</span><span class="op">$</span><span class="va">tipo</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;                AERODROMO AEROPUERTO INTERNACIONAL               HELIPUERTO </span></span>
+<span><span class="co">#&gt;                        5                        1                       20</span></span>
 <span></span>
 <span><span class="co"># Análisis por tipo y titularidad</span></span>
 <span><span class="va">aero_cusco</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_drop_geometry</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">tipo</span>, <span class="va">titular</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span>, .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">tipo</span>, <span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">tipo</span>, <span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 3</span></span></span>
+<span><span class="co">#&gt;   tipo                     titular     n</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> AERODROMO                PRIVADA     3</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> AERODROMO                PUBLICA     2</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> AEROPUERTO INTERNACIONAL PUBLICA     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> HELIPUERTO               PRIVADA    20</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="visualización-2">Visualización<a class="anchor" aria-label="anchor" href="#visualizaci%C3%B3n-2"></a>
 </h3>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Mapa de aeródromos</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">aero_cusco</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>color <span class="op">=</span> <span class="va">tipo</span>, shape <span class="op">=</span> <span class="va">tipo</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op">+</span></span>
@@ -379,8 +472,10 @@ helipuertos en todo el Perú.</p>
 <span>    subtitle <span class="op">=</span> <span class="st">"Actualizado 2022 - MTC"</span>,</span>
 <span>    caption <span class="op">=</span> <span class="st">"Fuente: MTC | Visor SDOT"</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p><img src="infraestructura_transporte_files/figure-html/viz_aerodromos-1.png" class="r-plt" width="768"></p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="co"># Mapa con etiquetas</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">aero_cusco</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>color <span class="op">=</span> <span class="va">tipo</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">+</span></span>
@@ -396,6 +491,7 @@ helipuertos en todo el Perú.</p>
 <span>    caption <span class="op">=</span> <span class="st">"Fuente: MTC 2022"</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p><img src="infraestructura_transporte_files/figure-html/viz_aerodromos-2.png" class="r-plt" width="768"></p>
 </div>
 </div>
 <div class="section level2">
@@ -404,7 +500,7 @@ helipuertos en todo el Perú.</p>
 <div class="section level3">
 <h3 id="comparación-entre-redes-viales">Comparación entre redes viales<a class="anchor" aria-label="anchor" href="#comparaci%C3%B3n-entre-redes-viales"></a>
 </h3>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Cargar las tres redes</span></span>
 <span><span class="va">vias_nacional</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_red_vial_nacional.html">get_red_vial_nacional</a></span><span class="op">(</span>departamento <span class="op">=</span> <span class="st">"CUSCO"</span><span class="op">)</span></span>
 <span><span class="va">vias_departamental</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_red_vial_departamental.html">get_red_vial_departamental</a></span><span class="op">(</span>departamento <span class="op">=</span> <span class="st">"CUSCO"</span><span class="op">)</span></span>
@@ -431,12 +527,16 @@ helipuertos en todo el Perú.</p>
 <span>    Km_promedio_tramo <span class="op">=</span> <span class="va">Longitud_km</span> <span class="op">/</span> <span class="va">N_tramos</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">comparacion</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">comparacion</span><span class="op">)</span></span>
+<span><span class="co">#&gt;             Red Longitud_km N_tramos Porcentaje Km_promedio_tramo</span></span>
+<span><span class="co">#&gt; 1      Nacional    2424.775      432   13.35542          5.612905</span></span>
+<span><span class="co">#&gt; 2 Departamental    3058.914      363   16.84819          8.426760</span></span>
+<span><span class="co">#&gt; 3       Vecinal   12672.055     2315   69.79640          5.473890</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="visualización-comparativa">Visualización comparativa<a class="anchor" aria-label="anchor" href="#visualizaci%C3%B3n-comparativa"></a>
 </h3>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Gráfico de barras comparativo</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">comparacion</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">Red</span>, y <span class="op">=</span> <span class="va">Longitud_km</span>, fill <span class="op">=</span> <span class="va">Red</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html" class="external-link">geom_col</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
@@ -462,11 +562,12 @@ helipuertos en todo el Perú.</p>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="infraestructura_transporte_files/figure-html/viz_comparacion-1.png" class="r-plt" width="768"></p>
 </div>
 <div class="section level3">
 <h3 id="mapa-integrado-de-infraestructura">Mapa integrado de infraestructura<a class="anchor" aria-label="anchor" href="#mapa-integrado-de-infraestructura"></a>
 </h3>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Mapa con todas las redes y aeródromos</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="co"># Red Nacional (base)</span></span>
@@ -522,6 +623,7 @@ helipuertos en todo el Perú.</p>
 <span>    legend.position <span class="op">=</span> <span class="st">"right"</span>,</span>
 <span>    plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>face <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
+<p><img src="infraestructura_transporte_files/figure-html/mapa_integrado-1.png" class="r-plt" width="768"></p>
 </div>
 </div>
 <div class="section level2">
@@ -530,10 +632,10 @@ helipuertos en todo el Perú.</p>
 <div class="section level3">
 <h3 id="comparación-entre-departamentos-del-sur">Comparación entre departamentos del sur<a class="anchor" aria-label="anchor" href="#comparaci%C3%B3n-entre-departamentos-del-sur"></a>
 </h3>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Cargar red nacional de varios departamentos</span></span>
 <span><span class="va">vias_sur</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_red_vial_nacional.html">get_red_vial_nacional</a></span><span class="op">(</span></span>
-<span>  departamento <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CUSCO"</span>, <span class="st">"PUNO"</span>, <span class="st">"AREQUIPA"</span>, <span class="st">"APURIMAC"</span><span class="op">)</span></span>
+<span>  departamento <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PUNO"</span>, <span class="st">"APURIMAC"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Análisis por departamento</span></span>
@@ -551,23 +653,31 @@ helipuertos en todo el Perú.</p>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">longitud_total</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">resumen_sur</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">resumen_sur</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 7</span></span></span>
+<span><span class="co">#&gt;   nombdep  longitud_total n_rutas km_pavimentado pct_pavimentado km_buen_estado</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> PUNO              <span style="text-decoration: underline;">2</span>042.      17          <span style="text-decoration: underline;">1</span>307.            64.0          <span style="text-decoration: underline;">1</span>506.</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> APURIMAC          <span style="text-decoration: underline;">1</span>284.       9           556.            43.3          <span style="text-decoration: underline;">1</span>004.</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 1 more variable: pct_buen_estado &lt;dbl&gt;</span></span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="visualización-regional">Visualización regional<a class="anchor" aria-label="anchor" href="#visualizaci%C3%B3n-regional"></a>
 </h3>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Mapa regional</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">vias_sur</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>color <span class="op">=</span> <span class="va">nombdep</span><span class="op">)</span>, linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html" class="external-link">scale_color_brewer</a></span><span class="op">(</span>palette <span class="op">=</span> <span class="st">"Set1"</span>, name <span class="op">=</span> <span class="st">"Departamento"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
 <span>    title <span class="op">=</span> <span class="st">"Red Vial Nacional - Región Sur del Perú"</span>,</span>
-<span>    subtitle <span class="op">=</span> <span class="st">"Cusco, Puno, Arequipa y Apurímac"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Puno y Apurímac"</span>,</span>
 <span>    caption <span class="op">=</span> <span class="st">"Fuente: PROVÍAS NACIONAL - MTC 2022"</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p><img src="infraestructura_transporte_files/figure-html/viz_regional-1.png" class="r-plt" width="768"></p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="co"># Gráfico comparativo de estado</span></span>
 <span><span class="va">vias_sur</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_drop_geometry</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -589,6 +699,7 @@ helipuertos en todo el Perú.</p>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>axis.text.x <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>angle <span class="op">=</span> <span class="fl">45</span>, hjust <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="infraestructura_transporte_files/figure-html/viz_regional-2.png" class="r-plt" width="768"></p>
 </div>
 </div>
 <div class="section level2">
@@ -597,10 +708,10 @@ helipuertos en todo el Perú.</p>
 <div class="section level3">
 <h3 id="conectividad-aérea">Conectividad aérea<a class="anchor" aria-label="anchor" href="#conectividad-a%C3%A9rea"></a>
 </h3>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Cargar aeródromos de múltiples departamentos</span></span>
 <span><span class="va">aero_sur</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_aerodromos.html">get_aerodromos</a></span><span class="op">(</span></span>
-<span>  departamento <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CUSCO"</span>, <span class="st">"PUNO"</span>, <span class="st">"AREQUIPA"</span>, <span class="st">"APURIMAC"</span><span class="op">)</span></span>
+<span>  departamento <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PUNO"</span>, <span class="st">"AREQUIPA"</span>, <span class="st">"APURIMAC"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Resumen por departamento</span></span>
@@ -609,12 +720,19 @@ helipuertos en todo el Perú.</p>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">nombdep</span>, <span class="va">tipo</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span>, .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html" class="external-link">pivot_wider</a></span><span class="op">(</span>names_from <span class="op">=</span> <span class="va">tipo</span>, values_from <span class="op">=</span> <span class="va">n</span>, values_fill <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 3 × 5</span></span></span>
+<span><span class="co">#&gt;   nombdep  AEROPUERTO HELIPUERTO AERODROMO `AEROPUERTO INTERNACIONAL`</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>                      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> APURIMAC          1          2         0                          0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> AREQUIPA          0          1         3                          1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> PUNO              0          0         1                          1</span></span>
 <span></span>
 <span><span class="co"># Aeródromos operativos públicos</span></span>
 <span><span class="va">aero_publicos</span> <span class="op">&lt;-</span> <span class="va">aero_sur</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">titular</span> <span class="op">==</span> <span class="st">"PUBLICA"</span>, <span class="va">estado</span> <span class="op">==</span> <span class="st">"OPERATIVO"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">aero_publicos</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">aero_publicos</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 2</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -623,7 +741,7 @@ helipuertos en todo el Perú.</p>
 <div class="section level3">
 <h3 id="caso-1-planificación-de-rutas">Caso 1: Planificación de rutas<a class="anchor" aria-label="anchor" href="#caso-1-planificaci%C3%B3n-de-rutas"></a>
 </h3>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Identificar la ruta principal entre Cusco y Lima</span></span>
 <span><span class="co"># PE-3S es la carretera principal</span></span>
 <span></span>
@@ -637,12 +755,16 @@ helipuertos en todo el Perú.</p>
 <span>    longitud_total <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">longitud</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    km_pavimentado <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">longitud</span><span class="op">[</span><span class="va">superfic_l</span> <span class="op">==</span> <span class="st">"Pavimentado"</span><span class="op">]</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    km_afirmado <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">longitud</span><span class="op">[</span><span class="va">superfic_l</span> <span class="op">==</span> <span class="st">"Afirmado"</span><span class="op">]</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span>  <span class="op">)</span></span></code></pre></div>
+<span>  <span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 3</span></span></span>
+<span><span class="co">#&gt;   longitud_total km_pavimentado km_afirmado</span></span>
+<span><span class="co">#&gt;            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>           280.           280.           0</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="caso-2-evaluación-de-necesidades-de-mantenimiento">Caso 2: Evaluación de necesidades de mantenimiento<a class="anchor" aria-label="anchor" href="#caso-2-evaluaci%C3%B3n-de-necesidades-de-mantenimiento"></a>
 </h3>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Identificar tramos que requieren intervención urgente</span></span>
 <span><span class="co"># (mal estado y alta importancia)</span></span>
 <span></span>
@@ -662,12 +784,26 @@ helipuertos en todo el Perú.</p>
 <span>    n_tramos <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>    .groups <span class="op">=</span> <span class="st">"drop"</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">km_requiere_atencion</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">km_requiere_atencion</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 11 × 3</span></span></span>
+<span><span class="co">#&gt;    nombprov      km_requiere_atencion n_tramos</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> LA CONVENCION               288.         39</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> PARURO                      200.         16</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> CHUMBIVILCAS                130.          8</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> CANCHIS                     122.          4</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> PAUCARTAMBO                  83.7         6</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> CANAS                        53.7         2</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> ANTA                         38.0         6</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> ESPINAR                      37.3         3</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> QUISPICANCHI                 30.4         4</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> CUSCO                        19.6         1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> URUBAMBA                      7.24        1</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="caso-3-análisis-de-inversión-rural">Caso 3: Análisis de inversión rural<a class="anchor" aria-label="anchor" href="#caso-3-an%C3%A1lisis-de-inversi%C3%B3n-rural"></a>
 </h3>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Analizar el estado de la red vecinal</span></span>
 <span><span class="co"># para priorizar inversiones</span></span>
 <span></span>
@@ -685,7 +821,20 @@ helipuertos en todo el Perú.</p>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">pct_trocha</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Provincias con mayor necesidad de mejoramiento</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">analisis_rural</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">analisis_rural</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 10 × 6</span></span></span>
+<span><span class="co">#&gt;    nombprov      km_total km_trocha pct_trocha km_malo pct_malo</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> QUISPICANCHI     <span style="text-decoration: underline;">1</span>091.      984.       90.2   397.      36.4</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> PAUCARTAMBO      <span style="text-decoration: underline;">1</span>129.      870.       77.1   358.      31.8</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> ACOMAYO           495.      367.       74.1   132.      26.7</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> ANTA              763.      553.       72.6   136.      17.8</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> CANCHIS           625.      417.       66.8    88.9     14.2</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> CALCA             874.      480.       54.9   304.      34.8</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> LA CONVENCION    <span style="text-decoration: underline;">2</span>938.     <span style="text-decoration: underline;">1</span>472.       50.1   994.      33.8</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> PARURO            656.      323.       49.2   178.      27.1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> CHUMBIVILCAS     <span style="text-decoration: underline;">1</span>464.      621.       42.4   253.      17.3</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> ESPINAR           992.      269.       27.1   390.      39.3</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -694,7 +843,7 @@ helipuertos en todo el Perú.</p>
 <div class="section level3">
 <h3 id="guardar-en-formatos-estándar">Guardar en formatos estándar<a class="anchor" aria-label="anchor" href="#guardar-en-formatos-est%C3%A1ndar"></a>
 </h3>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Exportar a GeoPackage</span></span>
 <span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_write.html" class="external-link">st_write</a></span><span class="op">(</span></span>
 <span>  <span class="va">vias_nacional</span>,</span>
@@ -725,15 +874,6 @@ helipuertos en todo el Perú.</p>
 <li>
 <strong>Visor SDOT</strong>: <a href="https://geosdot.servicios.gob.pe/visor/" class="external-link uri">https://geosdot.servicios.gob.pe/visor/</a>
 </li>
-<li>
-<strong>PROVÍAS NACIONAL</strong>: <a href="https://www.gob.pe/proviasnac" class="external-link uri">https://www.gob.pe/proviasnac</a>
-</li>
-<li>
-<strong>PROVÍAS DESCENTRALIZADO</strong>: <a href="https://www.gob.pe/proviasdes" class="external-link uri">https://www.gob.pe/proviasdes</a>
-</li>
-<li>
-<strong>Repositorio OSF</strong>: <a href="https://osf.io/qy4j6/" class="external-link uri">https://osf.io/qy4j6/</a>
-</li>
 </ul>
 </div>
 <div class="section level3">
@@ -744,44 +884,6 @@ helipuertos en todo el Perú.</p>
 <li>Ley 27181: Ley General de Transporte y Tránsito Terrestre</li>
 </ul>
 </div>
-<div class="section level3">
-<h3 id="funciones-relacionadas">Funciones relacionadas<a class="anchor" aria-label="anchor" href="#funciones-relacionadas"></a>
-</h3>
-<ul>
-<li>
-<code><a href="../reference/get_departamentos.html">get_departamentos()</a></code>: Límites departamentales</li>
-<li>
-<code><a href="../reference/get_provincias.html">get_provincias()</a></code>: Límites provinciales</li>
-<li>
-<code><a href="../reference/get_distritos.html">get_distritos()</a></code>: Límites distritales</li>
-<li>
-<code><a href="../reference/get_centros_poblados_crecimiento.html">get_centros_poblados_crecimiento()</a></code>: Datos demográficos
-de centros poblados</li>
-</ul>
-</div>
-</div>
-<div class="section level2">
-<h2 id="conclusión">Conclusión<a class="anchor" aria-label="anchor" href="#conclusi%C3%B3n"></a>
-</h2>
-<p>El paquete <code>rsdot</code> facilita el acceso y análisis de datos
-de infraestructura de transporte en el Perú. Las funciones presentadas
-permiten:</p>
-<ol style="list-style-type: decimal">
-<li>
-<strong>Análisis espacial</strong> de redes viales a diferentes
-niveles jerárquicos</li>
-<li>
-<strong>Evaluación de estado</strong> de infraestructura vial</li>
-<li>
-<strong>Planificación</strong> de inversiones en transporte</li>
-<li>
-<strong>Estudios de conectividad</strong> territorial</li>
-<li>
-<strong>Análisis multidepartamental</strong> para estudios
-regionales</li>
-</ol>
-<p>Para más información sobre otras funcionalidades del paquete,
-consulte las viñetas adicionales y la documentación de cada función.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
