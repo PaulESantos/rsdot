@@ -1,4 +1,4 @@
 # License
 
-    YEAR: 2025
-    COPYRIGHT HOLDER: rsdot authors
+    YEAR: 2026
+    COPYRIGHT HOLDER: Paul Efren
