@@ -10,12 +10,19 @@
   : Obtener Centros Poblados y Asentamientos Dispersos del Perú
 - [`get_centros_poblados_crecimiento()`](https://paulesantos.github.io/rsdot/reference/get_centros_poblados_crecimiento.md)
   : Obtener Centros Poblados con Tasa de Crecimiento Poblacional
+- [`get_cobertura_movil_c()`](https://paulesantos.github.io/rsdot/reference/get_cobertura_movil_c.md)
+  : Obtener Cobertura de Servicio Móvil por Centros Poblados del Perú
 - [`get_densidad_poblacional()`](https://paulesantos.github.io/rsdot/reference/get_densidad_poblacional.md)
   : Obtener Densidad y Crecimiento Poblacional por Departamento
 - [`get_departamentos()`](https://paulesantos.github.io/rsdot/reference/get_departamentos.md)
   : Obtener Límites Censales Departamentales del Perú
 - [`get_distritos()`](https://paulesantos.github.io/rsdot/reference/get_distritos.md)
   : Obtener Límites Censales Distritales del Perú
+- [`get_ipress()`](https://paulesantos.github.io/rsdot/reference/get_ipress.md)
+  : Obtener Instituciones Prestadoras de Servicios de Salud (IPRESS) del
+  Perú
+- [`get_locales_educativos()`](https://paulesantos.github.io/rsdot/reference/get_locales_educativos.md)
+  : Obtener Locales Educativos del Perú
 - [`get_provincias()`](https://paulesantos.github.io/rsdot/reference/get_provincias.md)
   : Obtener Límites Censales Provinciales del Perú
 - [`get_red_vial_departamental()`](https://paulesantos.github.io/rsdot/reference/get_red_vial_departamental.md)
@@ -24,3 +31,5 @@
   : Obtener Red Vial Nacional del Perú
 - [`get_red_vial_vecinal()`](https://paulesantos.github.io/rsdot/reference/get_red_vial_vecinal.md)
   : Obtener Red Vial Vecinal del Perú
+- [`get_servicios_educativos()`](https://paulesantos.github.io/rsdot/reference/get_servicios_educativos.md)
+  : Obtener Servicios Educativos del Perú
