@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_ccpp_tasa_crecimiento.R
 \name{get_centros_poblados_crecimiento}
 \alias{get_centros_poblados_crecimiento}
-\title{Obtener Centros Poblados con Tasa de Crecimiento Poblacional}
+\title{Get Population Centers with Population Growth Rate}
 \usage{
 get_centros_poblados_crecimiento(
   departamento = NULL,
@@ -13,159 +13,156 @@ get_centros_poblados_crecimiento(
 )
 }
 \arguments{
-\item{departamento}{Character vector. Nombre(s) del/los departamento(s) a descargar.
-Opciones válidas: "AMAZONAS", "ANCASH", "APURIMAC", "AREQUIPA", "AYACUCHO",
+\item{departamento}{Character vector. Name(s) of the department(s) to download.
+Valid options: "AMAZONAS", "ANCASH", "APURIMAC", "AREQUIPA", "AYACUCHO",
 "CAJAMARCA", "CALLAO", "CUSCO", "HUANCAVELICA", "HUANUCO", "ICA", "JUNIN",
 "LA LIBERTAD", "LAMBAYEQUE", "LIMA", "LORETO", "MADRE DE DIOS", "MOQUEGUA",
 "PASCO", "PIURA", "PUNO", "SAN MARTIN", "TACNA", "TUMBES", "UCAYALI".
-No distingue entre mayúsculas y minúsculas. Si es \code{NULL}, muestra la
-lista de departamentos disponibles.}
+Case-insensitive. If \code{NULL}, shows the list of available departments.}
 
-\item{provincia}{Character vector. Nombre(s) de la(s) provincia(s) para filtrar
-dentro del/los departamento(s) especificado(s). Opcional.}
+\item{provincia}{Character vector. Name(s) of the province(s) to filter
+within the specified department(s). Optional.}
 
-\item{distrito}{Character vector. Nombre(s) del/los distrito(s) para filtrar
-dentro de la(s) provincia(s) especificada(s). Opcional.}
+\item{distrito}{Character vector. Name(s) of the district(s) to filter
+within the specified province(s). Optional.}
 
-\item{show_progress}{Logical. Si \code{TRUE} (por defecto), muestra mensajes
-informativos sobre el progreso de la descarga. Si \code{FALSE}, ejecuta de
-forma silenciosa.}
+\item{show_progress}{Logical. If \code{TRUE} (default), shows informative
+messages about download progress. If \code{FALSE}, executes silently.}
 
-\item{force_update}{Logical. Si \code{TRUE}, fuerza una nueva descarga del
-archivo incluso si existe en caché. Por defecto \code{FALSE}.}
+\item{force_update}{Logical. If \code{TRUE}, forces a new download of the
+file even if it exists in cache. Default \code{FALSE}.}
 }
 \value{
-Un objeto \code{sf} (simple feature) con geometría tipo POINT que contiene
-información de los centros poblados y su tasa de crecimiento, incluyendo:
+An \code{sf} (simple feature) object with POINT type geometry containing
+information on population centers and their growth rate, including:
 \itemize{
-\item Geometría POINT (coordenadas del centro poblado)
-\item \code{nro}: Número de identificación
-\item \code{codccpp}: Código de centro poblado
-\item \code{ubigeo}: Código UBIGEO del distrito
-\item \code{dep}: Nombre del departamento
-\item \code{prov}: Nombre de la provincia
-\item \code{distrito}: Nombre del distrito
-\item \code{centro_pob}: Nombre del centro poblado
-\item \code{pob_2007}: Población en el censo 2007
-\item \code{pob_2017}: Población en el censo 2017
-\item \code{tasa}: Tasa media de crecimiento anual (\%)
-\item \code{capital}: Tipo de capital (Departamental, Provincial, Distrital, No es capital)
-\item \code{region}: Región natural (Costa, Sierra, Selva)
-\item \code{urb_rural}: Clasificación urbano/rural
-\item \code{tc_catg}: Categoría de tasa de crecimiento (POSITIVO, NEGATIVO)
+\item POINT geometry (coordinates of the population center)
+\item \code{nro}: Identification number
+\item \code{codccpp}: Population center code
+\item \code{ubigeo}: UBIGEO code of the district
+\item \code{dep}: Department name
+\item \code{prov}: Province name
+\item \code{distrito}: District name
+\item \code{centro_pob}: Population center name
+\item \code{pob_2007}: Population in the 2007 census
+\item \code{pob_2017}: Population in the 2017 census
+\item \code{tasa}: Average annual growth rate (\%)
+\item \code{capital}: Capital type (Departmental, Provincial, Distrital, Not a capital)
+\item \code{region}: Natural region (Coast, Highland, Jungle)
+\item \code{urb_rural}: Urban/rural classification
+\item \code{tc_catg}: Growth rate category (POSITIVE, NEGATIVE)
 }
 
-Si se solicitan múltiples departamentos, retorna un objeto sf combinado.
+If multiple departments are requested, it returns a combined sf object.
 }
 \description{
-Descarga y carga la información de centros poblados con su tasa media de
-crecimiento anual poblacional intercensal (2007-2017) desde el repositorio
-OSF de DEMARCA. Los datos incluyen geometría tipo POINT y permiten identificar
-los cambios de volumen poblacional de cada centro poblado. Permite filtrado
-escalonado por departamento, provincia y distrito.
+Downloads and loads information on population centers with their average annual
+intercensal population growth rate (2007-2017) from the DEMARCA OSF repository.
+Data includes POINT type geometry and allows identifying changes in population
+volume for each population center. Allows stepwise filtering by department,
+province, and district.
 }
 \details{
-La función descarga datos desde OSF (Open Science Framework) y los almacena
-en caché durante la sesión de R. Los datos están en formato GeoPackage (.gpkg).
+The function downloads data from OSF (Open Science Framework) and stores it
+in cache during the R session. Data is in GeoPackage (.gpkg) format.
 
-\strong{Metodología de los datos:}
+\strong{Data Methodology:}
 \itemize{
-\item Fuente: Censos de Población INEI 2007 y 2017
-\item Nivel: Centro poblado
-\item Variable: Tasa media de crecimiento anual intercensal
-\item Aplicación: Análisis territorial para creaciones distritales
+\item Source: INEI Population Censuses 2007 and 2017
+\item Level: Population center
+\item Variable: Average annual intercensal growth rate
+\item Application: Territorial analysis for district creations
 }
 
-\strong{Filtrado jerárquico:}
-Los filtros se aplican en cascada:
+\strong{Hierarchical Filtering:}
+Filters are applied in cascade:
 \enumerate{
-\item Primero se cargan los departamentos especificados
-\item Luego se filtran las provincias (si se especifican)
-\item Finalmente se filtran los distritos (si se especifican)
+\item Specified departments are loaded first
+\item Then provinces are filtered (if specified)
+\item Finally, districts are filtered (if specified)
 }
 
-El caché se almacena en: \code{tempdir()/DEMARCA_cache/centros_poblados/}
+Cache is stored in: \code{tempdir()/DEMARCA_cache/centros_poblados/}
 
-\strong{NOTA:} Las geometrías son tipo POINT (puntos) y representan la ubicación
-de cada centro poblado.
+\strong{NOTE:} Geometries are POINT type and represent the location of each population center.
 }
 \examples{
 \dontrun{
-# Ver departamentos disponibles
+# See available departments
 get_centros_poblados_crecimiento()
 
-# Cargar centros poblados de un departamento completo
+# Load population centers of a full department
 ccpp_cusco <- get_centros_poblados_crecimiento(departamento = "CUSCO")
 
-# Filtrar por provincia específica
+# Filter by specific province
 ccpp_prov_cusco <- get_centros_poblados_crecimiento(
   departamento = "CUSCO",
   provincia = "CUSCO"
 )
 
-# Filtrar por distrito específico
+# Filter by specific district
 ccpp_wanchaq <- get_centros_poblados_crecimiento(
   departamento = "CUSCO",
   provincia = "CUSCO",
   distrito = "WANCHAQ"
 )
 
-# Cargar múltiples departamentos
+# Load multiple departments
 ccpp_sur <- get_centros_poblados_crecimiento(
   departamento = c("CUSCO", "PUNO", "AREQUIPA")
 )
 
-# Visualización con ggplot2
+# Visualization with ggplot2
 library(ggplot2)
 library(dplyr)
 
-# Mapa de centros poblados por categoría de crecimiento
+# Map of population centers by growth category
 ggplot(ccpp_cusco) +
   geom_sf(aes(color = tc_catg, size = pob_2017), alpha = 0.6) +
   scale_color_manual(
     values = c("POSITIVO" = "darkgreen", "NEGATIVO" = "darkred"),
-    name = "Crecimiento"
+    name = "Growth"
   ) +
   scale_size_continuous(
-    name = "Población 2017",
+    name = "Population 2017",
     range = c(0.5, 5)
   ) +
   labs(
-    title = "Centros Poblados del Departamento de Cusco",
-    subtitle = "Tasa de Crecimiento Poblacional 2007-2017",
-    caption = "Fuente: INEI | Visor - SDOT"
+    title = "Population Centers of the Department of Cusco",
+    subtitle = "Population Growth Rate 2007-2017",
+    caption = "Source: INEI | Visor - SDOT"
   ) +
   theme_minimal()
 
-# Filtrar centros poblados por características
+# Filter population centers by characteristics
 ccpp_urbanos <- ccpp_cusco |>
   filter(urb_rural == "URBANA")
 
 ccpp_capitales <- ccpp_cusco |>
   filter(capital != "No es capital")
 
-# Centros poblados con mayor crecimiento
+# Population centers with highest growth
 top_crecimiento <- ccpp_cusco |>
   arrange(desc(tasa)) |>
   head(10)
 
 ggplot(top_crecimiento) +
   geom_sf(aes(size = tasa, color = tasa)) +
-  scale_color_gradient(low = "yellow", high = "red", name = "Tasa (\%)") +
-  scale_size_continuous(range = c(3, 10), name = "Tasa (\%)") +
+  scale_color_gradient(low = "yellow", high = "red", name = "Rate (\%)") +
+  scale_size_continuous(range = c(3, 10), name = "Rate (\%)") +
   geom_sf_text(
     aes(label = centro_pob),
     size = 2.5,
     nudge_y = 0.05
   ) +
   labs(
-    title = "Top 10 Centros Poblados con Mayor Crecimiento",
-    subtitle = "Departamento de Cusco (2007-2017)",
-    caption = "Fuente: INEI | Visor - SDOT"
+    title = "Top 10 Population Centers with Highest Growth",
+    subtitle = "Department of Cusco (2007-2017)",
+    caption = "Source: INEI | Visor - SDOT"
   ) +
   theme_minimal()
 
-# Análisis por región natural
+# Analysis by natural region
 ccpp_cusco |>
   group_by(region, tc_catg) |>
   summarise(
@@ -175,16 +172,16 @@ ccpp_cusco |>
     .groups = "drop"
   )
 
-# Comparación urbano vs rural
+# Urban vs rural comparison
 ggplot(ccpp_cusco) +
   geom_boxplot(aes(x = urb_rural, y = tasa, fill = urb_rural)) +
   scale_fill_brewer(palette = "Set2") +
   labs(
-    title = "Distribución de Tasas de Crecimiento",
-    subtitle = "Por área urbana y rural - Cusco",
-    x = "Clasificación",
-    y = "Tasa de Crecimiento (\%)",
-    caption = "Fuente: INEI | Visor - SDOT"
+    title = "Distribution of Growth Rates",
+    subtitle = "By urban and rural area - Cusco",
+    x = "Classification",
+    y = "Growth Rate (\%)",
+    caption = "Source: INEI | Visor - SDOT"
   ) +
   theme_minimal() +
   theme(legend.position = "none")
@@ -192,9 +189,9 @@ ggplot(ccpp_cusco) +
 
 }
 \references{
-INEI. Censos Nacionales de Población y Vivienda 2007 y 2017.
+INEI. National Population and Housing Censuses 2007 and 2017.
 
-Repositorio DEMARCA en OSF: \url{https://osf.io/qy4j6/}
+DEMARCA OSF Repository: \url{https://osf.io/qy4j6/}
 }
 \seealso{
 \code{\link{get_densidad_poblacional}}, \code{\link{get_departamentos}},

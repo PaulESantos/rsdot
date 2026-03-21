@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_capitales.R
 \name{get_capitales}
 \alias{get_capitales}
-\title{Obtener Capitales Distritales del Perú}
+\title{Get District Capitals of Peru}
 \usage{
 get_capitales(
   departamento = NULL,
@@ -13,109 +13,107 @@ get_capitales(
 )
 }
 \arguments{
-\item{departamento}{Character vector. Nombre(s) del/los departamento(s) a descargar.
-Opciones válidas: "AMAZONAS", "ANCASH", "APURIMAC", "AREQUIPA", "AYACUCHO",
+\item{departamento}{Character vector. Name(s) of the department(s) to download.
+Valid options: "AMAZONAS", "ANCASH", "APURIMAC", "AREQUIPA", "AYACUCHO",
 "CAJAMARCA", "CALLAO", "CUSCO", "HUANCAVELICA", "HUANUCO", "ICA", "JUNIN",
 "LA LIBERTAD", "LAMBAYEQUE", "LIMA", "LORETO", "MADRE DE DIOS", "MOQUEGUA",
 "PASCO", "PIURA", "PUNO", "SAN MARTIN", "TACNA", "TUMBES", "UCAYALI".
-No distingue entre mayúsculas y minúsculas. Si es \code{NULL}, muestra la
-lista de departamentos disponibles.}
+Case-insensitive. If \code{NULL}, shows the list of available departments.}
 
-\item{provincia}{Character vector. Nombre(s) de provincia(s) para filtrar los
-resultados (opcional). Se aplica después de cargar los datos.}
+\item{provincia}{Character vector. Name(s) of province(s) to filter the
+results (optional). It is applied after loading the data.}
 
-\item{distrito}{Character vector. Nombre(s) de distrito(s) para filtrar los
-resultados (opcional). Se aplica después de cargar los datos.}
+\item{distrito}{Character vector. Name(s) of district(s) to filter the
+results (optional). It is applied after loading the data.}
 
-\item{show_progress}{Logical. Si \code{TRUE} (por defecto), muestra mensajes
-informativos sobre el progreso de la descarga. Si \code{FALSE}, ejecuta de
-forma silenciosa.}
+\item{show_progress}{Logical. If \code{TRUE} (default), shows informative
+messages about download progress. If \code{FALSE}, executes silently.}
 
-\item{force_update}{Logical. Si \code{TRUE}, fuerza una nueva descarga del
-archivo incluso si existe en caché. Por defecto \code{FALSE}.}
+\item{force_update}{Logical. If \code{TRUE}, forces a new download of the
+file even if it exists in cache. Default \code{FALSE}.}
 }
 \value{
-Un objeto \code{sf} (simple feature) con geometría tipo POINT
-que contiene información de capitales distritales, incluyendo:
+An \code{sf} (simple feature) object with POINT type geometry
+containing district capital information, including:
 \itemize{
-\item Geometría POINT (ubicación de la capital)
-\item \code{gid}: Identificador único del registro
-\item \code{ubigeo}: Código de ubicación geográfica (6 dígitos)
-\item \code{nombdep}: Nombre del departamento
-\item \code{nombprov}: Nombre de la provincia
-\item \code{nombdist}: Nombre del distrito
-\item \code{codccpp}: Código del centro poblado (10 dígitos)
-\item \code{cen_pob}: Nombre del centro poblado
-\item \code{pob}: Población total
-\item \code{capital}: Tipo de capital (1=departamental, 2=provincial, 3=distrital)
+\item POINT geometry (location of the capital)
+\item \code{gid}: Unique record identifier
+\item \code{ubigeo}: Geographic location code (6 digits)
+\item \code{nombdep}: Department name
+\item \code{nombprov}: Province name
+\item \code{nombdist}: District name
+\item \code{codccpp}: Population center code (10 digits)
+\item \code{cen_pob}: Population center name
+\item \code{pob}: Total population
+\item \code{capital}: Capital type (1=departmental, 2=provincial, 3=distrital)
 }
 
-Si se solicitan múltiples departamentos, retorna un objeto sf combinado.
+If multiple departments are requested, it returns a combined sf object.
 }
 \description{
-Descarga y carga la información de capitales distritales identificadas en el
-Censo de Población y Vivienda 2017 del Instituto Nacional de Estadística e
-Informática (INEI). Los datos incluyen información demográfica y geográfica de
-las capitales a nivel departamental, provincial y distrital, con geometría tipo
-POINT.
+Downloads and loads information on district capitals identified in the
+2017 Population and Housing Census of the National Institute of Statistics and
+Informatics (INEI). Data includes demographic and geographic information of
+the capitals at the departmental, provincial, and district levels, with POINT type
+geometry.
 }
 \details{
-La función descarga datos desde OSF (Open Science Framework) y los almacena
-en caché durante la sesión de R. Los datos están en formato GeoPackage (.gpkg).
+The function downloads data from OSF (Open Science Framework) and stores it
+in cache during the R session. Data is in GeoPackage (.gpkg) format.
 
-El caché se almacena en: \code{tempdir()/DEMARCA_cache/capitales/}
+Cache is stored in: \code{tempdir()/DEMARCA_cache/capitales/}
 
-\strong{NOTA:} Las geometrías son tipo POINT y representan la ubicación geográfica
-aproximada de las capitales según el Censo 2017. Los datos de población
-corresponden al año censal.
+\strong{NOTE:} Geometries are POINT type and represent the approximate geographic
+location of the capitals according to the 2017 Census. Population data
+correspond to the census year.
 }
 \examples{
 \dontrun{
-# Ver departamentos disponibles
+# See available departments
 get_capitales()
 
-# Cargar capitales de un departamento
+# Load capitals of a department
 capitales_cusco <- get_capitales(departamento = "CUSCO")
 
-# Cargar múltiples departamentos
+# Load multiple departments
 capitales_sur <- get_capitales(
   departamento = c("CUSCO", "PUNO", "AREQUIPA")
 )
 
-# Filtrar por provincia
+# Filter by province
 capitales_lima_prov <- get_capitales(
   departamento = "LIMA",
   provincia = "LIMA"
 )
 
-# Filtrar por distrito
+# Filter by district
 capital_cusco_dist <- get_capitales(
   departamento = "CUSCO",
   provincia = "CUSCO",
   distrito = "CUSCO"
 )
 
-# Visualización con ggplot2
+# Visualization with ggplot2
 library(ggplot2)
 library(dplyr)
 
-# Mapa de capitales por jerarquía
+# Map of capitals by hierarchy
 ggplot(capitales_cusco) +
   geom_sf(aes(color = factor(capital), size = pob), alpha = 0.7) +
   scale_color_manual(
     values = c("1" = "red", "2" = "blue", "3" = "green"),
-    labels = c("Departamental", "Provincial", "Distrital"),
-    name = "Tipo de Capital"
+    labels = c("Departmental", "Provincial", "Distrital"),
+    name = "Capital Type"
   ) +
-  scale_size_continuous(range = c(1, 10), name = "Población") +
+  scale_size_continuous(range = c(1, 10), name = "Population") +
   labs(
-    title = "Capitales de Cusco por Jerarquía",
-    subtitle = "Censo de Población y Vivienda 2017",
-    caption = "Fuente: INEI | Visor - SDOT"
+    title = "Capitals of Cusco by Hierarchy",
+    subtitle = "2017 Population and Housing Census",
+    caption = "Source: INEI | Visor - SDOT"
   ) +
   theme_minimal()
 
-# Análisis de población por tipo de capital
+# Population analysis by capital type
 capitales_cusco |>
   st_drop_geometry() |>
   group_by(capital) |>
@@ -127,18 +125,18 @@ capitales_cusco |>
   ) |>
   arrange(capital)
 
-# Capitales más pobladas
+# Most populated capitals
 capitales_cusco |>
   st_drop_geometry() |>
   arrange(desc(pob)) |>
   select(nombdist, cen_pob, pob, capital) |>
   head(10)
 
-# Filtrar solo capitales provinciales
+# Filter only provincial capitals
 caps_prov <- capitales_cusco |>
   filter(capital == 2)
 
-# Análisis por provincia
+# Analysis by province
 capitales_cusco |>
   st_drop_geometry() |>
   group_by(nombprov) |>
@@ -151,10 +149,10 @@ capitales_cusco |>
 
 }
 \references{
-INEI. Censo de Población y Vivienda 2017. Instituto Nacional de Estadística
-e Informática.
+INEI. 2017 Population and Housing Census. National Institute of Statistics
+and Informatics.
 
-Visor SDOT: \url{https://geosdot.servicios.gob.pe/visor/}
+SDOT Viewer: \url{https://geosdot.servicios.gob.pe/visor/}
 }
 \seealso{
 \code{\link{get_centros_poblados}}, \code{\link{get_departamentos}},

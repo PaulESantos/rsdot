@@ -1,241 +1,239 @@
-#' Obtener Instituciones Prestadoras de Servicios de Salud (IPRESS) del Perú
+#' Get Health Service Provider Institutions (IPRESS) of Peru
 #'
-#' Descarga y carga la información de Instituciones Prestadoras de Servicios de
-#' Salud (IPRESS) del Perú, elaborado por la Superintendencia Nacional de Salud
-#' (SUSALUD). Los datos incluyen geometría tipo POINT e información sobre
-#' establecimientos de salud, servicios médicos de apoyo, categorización,
-#' horarios de atención y redes de salud. Actualizado al año 2024.
-#' Permite filtrado escalonado por departamento, provincia y distrito.
+#' Downloads and loads information on Health Service Provider Institutions
+#' (IPRESS) of Peru, prepared by the National Health Superintendence
+#' (SUSALUD). Data includes POINT type geometry and information on health
+#' establishments, supporting medical services, categorization, operating
+#' hours, and health networks. Updated to 2024.
+#' Allows stepwise filtering by department, province, and district.
 #'
-#' @param departamento Character vector. Nombre(s) del/los departamento(s) a descargar.
-#'   Opciones válidas: "AMAZONAS", "ANCASH", "APURIMAC", "AREQUIPA", "AYACUCHO",
+#' @param departamento Character vector. Name(s) of the department(s) to download.
+#'   Valid options: "AMAZONAS", "ANCASH", "APURIMAC", "AREQUIPA", "AYACUCHO",
 #'   "CAJAMARCA", "CALLAO", "CUSCO", "HUANCAVELICA", "HUANUCO", "ICA", "JUNIN",
 #'   "LA LIBERTAD", "LAMBAYEQUE", "LIMA", "LORETO", "MADRE DE DIOS", "MOQUEGUA",
 #'   "PASCO", "PIURA", "PUNO", "SAN MARTIN", "TACNA", "TUMBES", "UCAYALI".
-#'   No distingue entre mayúsculas y minúsculas. Si es \code{NULL}, muestra la
-#'   lista de departamentos disponibles.
-#' @param provincia Character vector. Nombre(s) de la(s) provincia(s) para filtrar
-#'   dentro del/los departamento(s) especificado(s). Opcional.
-#' @param distrito Character vector. Nombre(s) del/los distrito(s) para filtrar
-#'   dentro de la(s) provincia(s) especificada(s). Opcional.
-#' @param show_progress Logical. Si \code{TRUE} (por defecto), muestra mensajes
-#'   informativos sobre el progreso de la descarga. Si \code{FALSE}, ejecuta de
-#'   forma silenciosa.
-#' @param force_update Logical. Si \code{TRUE}, fuerza una nueva descarga del
-#'   archivo incluso si existe en caché. Por defecto \code{FALSE}.
+#'   Case-insensitive. If \code{NULL}, shows the list of available departments.
+#' @param provincia Character vector. Name(s) of the province(s) to filter
+#'   within the specified department(s). Optional.
+#' @param distrito Character vector. Name(s) of the district(s) to filter
+#'   within the specified province(s). Optional.
+#' @param show_progress Logical. If \code{TRUE} (default), shows informative
+#'   messages about download progress. If \code{FALSE}, executes silently.
+#' @param force_update Logical. If \code{TRUE}, forces a new download of the
+#'   file even if it exists in cache. Default \code{FALSE}.
 #'
-#' @return Un objeto \code{sf} (simple feature) con geometría tipo POINT que contiene
-#'   información de las IPRESS, incluyendo:
+#' @return An \code{sf} (simple feature) object with POINT geometry containing
+#'   IPRESS information, including:
 #'
-#'   \strong{Identificación del establecimiento:}
+#'   \strong{Establishment Identification:}
 #'   \itemize{
-#'     \item Geometría POINT (coordenadas del establecimiento)
-#'     \item \code{cod_unic_e}: Código único del establecimiento (RENIPRESS)
-#'     \item \code{nom_esta}: Nombre del establecimiento de salud
-#'     \item \code{dir_esta}: Dirección completa del establecimiento
-#'     \item \code{num_tele}: Número de teléfono de contacto
+#'     \item POINT geometry (establishment coordinates)
+#'     \item \code{cod_unic_e}: Unique establishment code (RENIPRESS)
+#'     \item \code{nom_esta}: Health establishment name
+#'     \item \code{dir_esta}: Full address of the establishment
+#'     \item \code{num_tele}: Contact phone number
 #'   }
 #'
-#'   \strong{Tipo y clasificación:}
+#'   \strong{Type and Classification:}
 #'   \itemize{
-#'     \item \code{cod_tipo_e}: Código del tipo de establecimiento
-#'     \item \code{des_tipo_e}: Descripción del tipo de establecimiento:
+#'     \item \code{cod_tipo_e}: Establishment type code
+#'     \item \code{des_tipo_e}: Establishment type description:
 #'       \itemize{
-#'         \item 1 = Establecimiento de salud sin internamiento
-#'         \item 2 = Establecimiento de salud con internamiento
-#'         \item 3 = Servicio médico de apoyo
-#'         \item 4 = Oferta flexible
-#'         \item 5 = Comunidades terapeuticas
+#'         \item 1 = Health establishment without inpatient care
+#'         \item 2 = Health establishment with inpatient care
+#'         \item 3 = Supporting medical service
+#'         \item 4 = Flexible offer
+#'         \item 5 = Therapeutic communities
 #'       }
-#'     \item \code{cod_clas_e}: Código de clasificación del establecimiento
-#'     \item \code{des_clas_e}: Descripción de la clasificación (ej: Puestos de
-#'       salud, Centros de salud, Hospitales, Clínicas, Consultorios, etc.)
+#'     \item \code{cod_clas_e}: Establishment classification code
+#'     \item \code{des_clas_e}: Classification description (e.g., Health posts,
+#'       Health centers, Hospitals, Clinics, Doctor's offices, etc.)
 #'   }
 #'
-#'   \strong{Institución administradora:}
+#'   \strong{Administering Institution:}
 #'   \itemize{
-#'     \item \code{cod_inst_d}: Código de la institución administradora
-#'     \item \code{des_inst_d}: Descripción de la institución administradora
+#'     \item \code{cod_inst_d}: Administering institution code
+#'     \item \code{des_inst_d}: Administering institution description
 #'   }
 #'
-#'   \strong{Ubicación geográfica:}
+#'   \strong{Geographic Location:}
 #'   \itemize{
-#'     \item \code{cod_ubig_e}: Código de ubigeo del establecimiento
-#'     \item \code{nombdep}: Nombre del departamento
-#'     \item \code{nombprov}: Nombre de la provincia
-#'     \item \code{nombdist}: Nombre del distrito
-#'     \item \code{val_lati}: Latitud del establecimiento
-#'     \item \code{val_long}: Longitud del establecimiento
+#'     \item \code{cod_ubig_e}: Establishment ubigeo code
+#'     \item \code{nombdep}: Department name
+#'     \item \code{nombprov}: Province name
+#'     \item \code{nombdist}: District name
+#'     \item \code{val_lati}: Establishment latitude
+#'     \item \code{val_long}: Establishment longitude
 #'   }
 #'
-#'   \strong{Categorización y operación:}
+#'   \strong{Categorization and Operation:}
 #'   \itemize{
-#'     \item \code{cod_cate}: Código de categoría del establecimiento (ej: I-1,
+#'     \item \code{cod_cate}: Establishment category code (e.g., I-1,
 #'       I-2, I-3, I-4, II-1, II-2, II-E, III-1, III-2, III-E)
-#'     \item \code{doc_cate}: Documento de resolución de categorización
-#'     \item \code{fec_inic_o}: Fecha de inicio de operaciones
-#'     \item \code{des_hora_e}: Horario de atención del establecimiento
-#'     \item \code{cod_cond_e}: Condición del establecimiento (ej: ACTIVO, INACTIVO)
+#'     \item \code{doc_cate}: Categorization resolution document
+#'     \item \code{fec_inic_o}: Operations start date
+#'     \item \code{des_hora_e}: Establishment operating hours
+#'     \item \code{cod_cond_e}: Establishment condition (e.g., ACTIVE, INACTIVE)
 #'   }
 #'
-#'   \strong{Red de salud:}
+#'   \strong{Health Network:}
 #'   \itemize{
-#'     \item \code{cod_auto_s}: Código de autoridad sanitaria
-#'     \item \code{des_auto_s}: Descripción de autoridad sanitaria (región)
-#'     \item \code{cod_reds}: Código de red de salud
-#'     \item \code{des_reds}: Nombre de la red de salud
-#'     \item \code{cod_micr_r}: Código de micro red
-#'     \item \code{des_micr_r}: Nombre de la micro red
+#'     \item \code{cod_auto_s}: Health authority code
+#'     \item \code{des_auto_s}: Health authority description (region)
+#'     \item \code{cod_reds}: Health network code
+#'     \item \code{des_reds}: Health network name
+#'     \item \code{cod_micr_r}: Micro-network code
+#'     \item \code{des_micr_r}: Micro-network name
 #'   }
 #'
-#'   \strong{Datos del representante:}
+#'   \strong{Representative Data:}
 #'   \itemize{
-#'     \item \code{cod_nruc}: Número de RUC de la institución
-#'     \item \code{nom_repr_l}: Nombre del representante legal
+#'     \item \code{cod_nruc}: Institution RUC number
+#'     \item \code{nom_repr_l}: Legal representative name
 #'   }
 #'
-#'   Si se solicitan múltiples departamentos, retorna un objeto sf combinado.
+#'   If multiple departments are requested, it returns a combined sf object.
 #'
 #' @details
-#' La función descarga datos desde OSF (Open Science Framework) y los almacena
-#' en caché durante la sesión de R. Los datos están en formato GeoPackage (.gpkg).
+#' The function downloads data from OSF (Open Science Framework) and stores it
+#' in cache during the R session. Data is in GeoPackage (.gpkg) format.
 #'
-#' **Fuente de los datos:**
+#' **Data Source:**
 #' \itemize{
-#'   \item Fuente: Superintendencia Nacional de Salud (SUSALUD)
-#'   \item Registro: RENIPRESS (Registro Nacional de IPRESS)
-#'   \item Año de actualización: 2024
-#'   \item Nivel: Establecimiento de salud
-#'   \item Aplicación: Análisis de acceso a servicios de salud, planificación
-#'     sanitaria y estudios epidemiológicos
+#'   \item Source: National Health Superintendence (SUSALUD)
+#'   \item Registration: RENIPRESS (National IPRESS Registry)
+#'   \item Update year: 2024
+#'   \item Level: Health establishment
+#'   \item Application: Analysis of access to health services, health
+#'     planning, and epidemiological studies
 #' }
 #'
-#' **Sistema de categorización de establecimientos de salud en Perú:**
+#' **Health Establishment Categorization System in Peru:**
 #'
-#' La categorización determina la capacidad resolutiva del establecimiento:
+#' Categorization determines the resolutive capacity of the establishment:
 #' \itemize{
-#'   \item \strong{Primer nivel (I-1 a I-4)}: Atención básica y preventiva
+#'   \item \strong{First level (I-1 to I-4)}: Basic and preventive care
 #'     \itemize{
-#'       \item I-1: Puesto de salud (técnico de enfermería)
-#'       \item I-2: Puesto de salud (profesional de salud)
-#'       \item I-3: Centro de salud sin internamiento
-#'       \item I-4: Centro de salud con internamiento
+#'       \item I-1: Health post (nursing technician)
+#'       \item I-2: Health post (health professional)
+#'       \item I-3: Health center without inpatient care
+#'       \item I-4: Health center with inpatient care
 #'     }
-#'   \item \strong{Segundo nivel (II-1, II-2, II-E)}: Atención especializada
+#'   \item \strong{Second level (II-1, II-2, II-E)}: Specialized care
 #'     \itemize{
 #'       \item II-1: Hospital I
 #'       \item II-2: Hospital II
-#'       \item II-E: Hospital especializado
+#'       \item II-E: Specialized hospital
 #'     }
-#'   \item \strong{Tercer nivel (III-1, III-2, III-E)}: Alta especialización
+#'   \item \strong{Third level (III-1, III-2, III-E)}: High specialization
 #'     \itemize{
 #'       \item III-1: Hospital III
-#'       \item III-2: Instituto especializado
-#'       \item III-E: Instituto especializado de alta complejidad
+#'       \item III-2: Specialized institute
+#'       \item III-E: High complexity specialized institute
 #'     }
 #' }
 #'
-#' **Tipos de IPRESS:**
+#' **IPRESS Types:**
 #' \enumerate{
-#'   \item \strong{Establecimientos sin internamiento}: Consultorios, puestos
-#'     de salud, centros médicos, policlínicos
-#'   \item \strong{Establecimientos con internamiento}: Hospitales, clínicas,
-#'     centros de salud con camas
-#'   \item \strong{Servicios médicos de apoyo}: Laboratorios, centros de
-#'     diagnóstico por imágenes, bancos de sangre, patología clínica
+#'   \item \strong{Establishments without inpatient care}: Offices, health
+#'     posts, medical centers, polyclinics
+#'   \item \strong{Establishments with inpatient care}: Hospitals, clinics,
+#'     health centers with beds
+#'   \item \strong{Supporting medical services}: Laboratories, image
+#'     diagnostic centers, blood banks, clinical pathology
 #' }
 #'
-#' **Filtrado jerárquico:**
-#' Los filtros se aplican en cascada:
+#' **Hierarchical Filtering:**
+#' Filters are applied in cascade:
 #' \enumerate{
-#'   \item Primero se cargan los departamentos especificados
-#'   \item Luego se filtran las provincias (si se especifican)
-#'   \item Finalmente se filtran los distritos (si se especifican)
+#'   \item Specified departments are loaded first
+#'   \item Then provinces are filtered (if specified)
+#'   \item Finally districts are filtered (if specified)
 #' }
 #'
-#' El caché se almacena en: \code{tempdir()/DEMARCA_cache/ipress/}
+#' Cache is stored in: \code{tempdir()/DEMARCA_cache/ipress/}
 #'
-#' **NOTA:** Las geometrías son tipo POINT (puntos) y representan la ubicación
-#' de cada establecimiento de salud.
+#' **NOTE:** Geometries are POINT type and represent the location
+#' of each health establishment.
 #'
 #' @examples
 #' \dontrun{
-#' # Ver departamentos disponibles
+#' # See available departments
 #' get_ipress()
 #'
-#' # Cargar IPRESS de un departamento completo
+#' # Load IPRESS of a full department
 #' ipress_cusco <- get_ipress(departamento = "CUSCO")
 #'
-#' # Filtrar por provincia específica
+#' # Filter by specific province
 #' ipress_prov_cusco <- get_ipress(
 #'   departamento = "CUSCO",
 #'   provincia = "CUSCO"
 #' )
 #'
-#' # Filtrar por distrito específico
+#' # Filter by specific district
 #' ipress_wanchaq <- get_ipress(
 #'   departamento = "CUSCO",
 #'   provincia = "CUSCO",
 #'   distrito = "WANCHAQ"
 #' )
 #'
-#' # Cargar múltiples departamentos
+#' # Load multiple departments
 #' ipress_sur <- get_ipress(
 #'   departamento = c("CUSCO", "PUNO", "AREQUIPA")
 #' )
 #'
-#' # Visualización con ggplot2
+#' # Visualization with ggplot2
 #' library(ggplot2)
 #' library(dplyr)
 #'
-#' # Mapa de IPRESS por tipo de establecimiento
+#' # Map of IPRESS by establishment type
 #' ggplot(ipress_cusco) +
 #'   geom_sf(aes(color = des_tipo_e), size = 1.5, alpha = 0.7) +
-#'   scale_color_brewer(palette = "Set1", name = "Tipo") +
+#'   scale_color_brewer(palette = "Set1", name = "Type") +
 #'   labs(
-#'     title = "Instituciones Prestadoras de Servicios de Salud - Cusco",
+#'     title = "Health Service Provider Institutions - Cusco",
 #'     subtitle = "SUSALUD 2024",
-#'     caption = "Fuente: SUSALUD - RENIPRESS"
+#'     caption = "Source: SUSALUD - RENIPRESS"
 #'   ) +
 #'   theme_minimal()
 #'
-#' # Resumen por tipo de establecimiento
+#' # Summary by establishment type
 #' ipress_cusco |>
 #'   sf::st_drop_geometry() |>
 #'   count(des_tipo_e, sort = TRUE)
 #'
-#' # Resumen por institución administradora
+#' # Summary by administering institution
 #' ipress_cusco |>
 #'   sf::st_drop_geometry() |>
 #'   count(des_inst_d, sort = TRUE)
 #'
-#' # Filtrar establecimientos públicos activos
+#' # Filter active public establishments
 #' ipress_publicos <- ipress_cusco |>
 #'   filter(
 #'     des_inst_d == "GOBIERNO REGIONAL",
 #'     cod_cond_e == "ACTIVO"
 #'   )
 #'
-#' # Análisis por categoría
+#' # Analysis by category
 #' ipress_cusco |>
 #'   sf::st_drop_geometry() |>
 #'   count(cod_cate, sort = TRUE) |>
 #'   head(10)
 #'
-#' # Mapa de hospitales y clínicas (establecimientos con internamiento)
+#' # Map of hospitals and clinics (establishments with inpatient care)
 #' ipress_cusco |>
 #'   filter(cod_tipo_e == "2") |>
 #'   ggplot() +
 #'   geom_sf(aes(color = des_inst_d), size = 3) +
-#'   scale_color_brewer(palette = "Dark2", name = "Administrador") +
+#'   scale_color_brewer(palette = "Dark2", name = "Administrator") +
 #'   labs(
-#'     title = "Establecimientos de Salud con Internamiento - Cusco",
-#'     subtitle = "Hospitales y Clínicas",
-#'     caption = "Fuente: SUSALUD - RENIPRESS 2024"
+#'     title = "Health Establishments with Inpatient Care - Cusco",
+#'     subtitle = "Hospitals and Clinics",
+#'     caption = "Source: SUSALUD - RENIPRESS 2024"
 #'   ) +
 #'   theme_minimal()
 #'
-#' # Análisis de cobertura por distrito
+#' # Coverage analysis by district
 #' cobertura_distrito <- ipress_cusco |>
 #'   sf::st_drop_geometry() |>
 #'   group_by(nombdist) |>
@@ -243,32 +241,32 @@
 #'     total_ipress = n(),
 #'     con_internamiento = sum(cod_tipo_e == "2"),
 #'     sin_internamiento = sum(cod_tipo_e == "1"),
-#'     servicios_apoyo = sum(cod_tipo_e == "3"),
+#'     supporting_services = sum(cod_tipo_e == "3"),
 #'     .groups = "drop"
 #'   ) |>
 #'   arrange(desc(total_ipress))
 #'
-#' # Distribución por red de salud
+#' # Distribution by health network
 #' ipress_cusco |>
 #'   sf::st_drop_geometry() |>
 #'   filter(!is.na(des_reds)) |>
 #'   count(des_reds, sort = TRUE)
 #'
-#' # Mapa de establecimientos por categoría (primer nivel)
+#' # Map of establishments by category (first level)
 #' ipress_cusco |>
 #'   filter(grepl("^I-", cod_cate)) |>
 #'   ggplot() +
 #'   geom_sf(aes(color = cod_cate), size = 2, alpha = 0.7) +
-#'   scale_color_viridis_d(name = "Categoría") +
+#'   scale_color_viridis_d(name = "Category") +
 #'   labs(
-#'     title = "Establecimientos de Primer Nivel - Cusco",
-#'     subtitle = "Categorías I-1 a I-4",
-#'     caption = "Fuente: SUSALUD - RENIPRESS 2024"
+#'     title = "First Level Establishments - Cusco",
+#'     subtitle = "Categories I-1 to I-4",
+#'     caption = "Source: SUSALUD - RENIPRESS 2024"
 #'   ) +
 #'   theme_minimal()
 #'
-#' # Buscar establecimientos por nombre
-#' hospitales_regionales <- ipress_cusco |>
+#' # Search establishments by name
+#' regional_hospitals <- ipress_cusco |>
 #'   filter(grepl("REGIONAL|HOSPITAL", nom_esta, ignore.case = TRUE))
 #' }
 #'
@@ -278,13 +276,13 @@
 #' \code{\link[sf]{read_sf}}
 #'
 #' @references
-#' Superintendencia Nacional de Salud (SUSALUD). Registro Nacional de
-#' Instituciones Prestadoras de Servicios de Salud (RENIPRESS) 2024.
+#' National Health Superintendence (SUSALUD). National Registry of Health
+#' Service Provider Institutions (RENIPRESS) 2024.
 #'
-#' Ministerio de Salud del Perú. Norma Técnica de Categorización de
-#' Establecimientos de Salud.
+#' Ministry of Health of Peru. Technical Standard for Categorization of
+#' Health Establishments.
 #'
-#' Repositorio DEMARCA en OSF: \url{https://osf.io/qy4j6/}
+#' DEMARCA OSF Repository: \url{https://osf.io/qy4j6/}
 #'
 #' @export
 #' @importFrom utils download.file
@@ -295,7 +293,6 @@ get_ipress <- function(departamento = NULL,
                        distrito = NULL,
                        show_progress = TRUE,
                        force_update = FALSE) {
-
   # ==========================================================================
   # 1. TABLA DE REFERENCIA DE DEPARTAMENTOS Y URLs
   # ==========================================================================
@@ -350,34 +347,37 @@ get_ipress <- function(departamento = NULL,
   # ==========================================================================
 
   if (!is.logical(show_progress) || length(show_progress) != 1) {
-    stop("El par\u00e1metro 'show_progress' debe ser TRUE o FALSE", call. = FALSE)
+    stop("The 'show_progress' parameter must be TRUE or FALSE", call. = FALSE)
   }
 
   if (!is.logical(force_update) || length(force_update) != 1) {
-    stop("El par\u00e1metro 'force_update' debe ser TRUE o FALSE", call. = FALSE)
+    stop("The 'force_update' parameter must be TRUE or FALSE", call. = FALSE)
   }
 
   if (!is.null(provincia) && !is.character(provincia)) {
-    stop("El par\u00e1metro 'provincia' debe ser un vector de caracteres o NULL",
-         call. = FALSE)
+    stop("The 'provincia' parameter must be a character vector or NULL",
+      call. = FALSE
+    )
   }
 
   if (!is.null(distrito) && !is.character(distrito)) {
-    stop("El par\u00e1metro 'distrito' debe ser un vector de caracteres o NULL",
-         call. = FALSE)
+    stop("The 'distrito' parameter must be a character vector or NULL",
+      call. = FALSE
+    )
   }
 
-  # Si no se especifica departamento, mostrar lista
+  # If no department is specified, show list
   if (is.null(departamento)) {
-    message("Departamentos disponibles:")
+    message("Available departments:")
     message(paste0("  - ", tabla_departamentos$departamento, collapse = "\n"))
-    message("\nUso: get_ipress(departamento = 'CUSCO')")
+    message("\nUsage: get_ipress(departamento = 'CUSCO')")
     return(invisible(tabla_departamentos$departamento))
   }
 
   if (!is.character(departamento)) {
-    stop("El par\u00e1metro 'departamento' debe ser un vector de caracteres",
-         call. = FALSE)
+    stop("The 'departamento' parameter must be a character vector",
+      call. = FALSE
+    )
   }
 
 
@@ -385,15 +385,15 @@ get_ipress <- function(departamento = NULL,
   departamento_input <- toupper(trimws(departamento))
   departamento_input <- gsub("_", " ", departamento_input)
 
-  # Validar departamentos
+  # Validate departments
   departamentos_validos <- departamento_input %in% tabla_departamentos$departamento
 
   if (!all(departamentos_validos)) {
     departamentos_invalidos <- departamento_input[!departamentos_validos]
     stop(
-      "Departamento(s) no v\u00e1lido(s): ",
+      "Invalid department(s): ",
       paste(departamentos_invalidos, collapse = ", "), "\n",
-      "Use get_ipress() para ver la lista completa.",
+      "Use get_ipress() to see the full list.",
       call. = FALSE
     )
   }
@@ -426,13 +426,13 @@ get_ipress <- function(departamento = NULL,
     url_descarga <- paste0("https://osf.io/download/", id_osf, "/")
     archivo_local <- file.path(ruta_cache_dir, file_name)
 
-    # Descargar si no existe o si se fuerza
+    # Download if it doesn't exist or if force_update is TRUE
     if (!file.exists(archivo_local) || force_update) {
-      if (show_progress) message("Descargando: ", dep, "...")
+      if (show_progress) message("Downloading: ", dep, "...")
 
-      # Intentar descarga con timeout extendido
+      # Attempt download with extended timeout
       timeout_original <- getOption("timeout")
-      options(timeout = 300)  # 5 minutos
+      options(timeout = 300) # 5 minutes
 
       descarga_exitosa <- tryCatch(
         {
@@ -446,9 +446,9 @@ get_ipress <- function(departamento = NULL,
         },
         error = function(e) {
           warning(
-            "Error al descargar ", dep, ": ", e$message, "\n",
+            "Error downloading ", dep, ": ", e$message, "\n",
             "URL: ", url_descarga, "\n",
-            "Puede que el archivo no est\u00e9 disponible temporalmente.",
+            "The file may be temporarily unavailable.",
             call. = FALSE,
             immediate. = TRUE
           )
@@ -459,23 +459,23 @@ get_ipress <- function(departamento = NULL,
       options(timeout = timeout_original)
 
       if (descarga_exitosa && show_progress) {
-        message("\u2713 Descarga completada: ", dep)
+        message("\u2713 Download completed: ", dep)
       } else if (!descarga_exitosa) {
-        next  # Saltar a siguiente departamento
+        next # Skip to next department
       }
     } else {
-      if (show_progress) message("\u2713 Usando cach\u00e9: ", dep)
+      if (show_progress) message("\u2713 Using cache: ", dep)
     }
 
-    # Leer GeoPackage
+    # Read GeoPackage
     if (file.exists(archivo_local)) {
-      if (show_progress) message("Cargando datos: ", dep, "...")
+      if (show_progress) message("Loading data: ", dep, "...")
 
       tryCatch(
         {
           datos_dep <- sf::read_sf(archivo_local, quiet = TRUE)
 
-          # Aplicar corrección de codificación UTF-8
+          # Apply UTF-8 encoding correction
           cols_char <- names(datos_dep)[sapply(datos_dep, is.character)]
           for (col in cols_char) {
             if (col != "geom" && col != "geometry") {
@@ -483,18 +483,18 @@ get_ipress <- function(departamento = NULL,
             }
           }
 
-          # Normalizar nombres de columnas a minúsculas
+          # Normalize column names to lowercase
           colnames(datos_dep) <- tolower(colnames(datos_dep))
 
           lista_datos[[dep]] <- datos_dep
 
           if (show_progress) {
-            message("\u2713 Cargado: ", dep, " (", nrow(datos_dep), " establecimientos)")
+            message("\u2713 Loaded: ", dep, " (", nrow(datos_dep), " establishments)")
           }
         },
         error = function(e) {
           warning(
-            "Error al leer archivo para ", dep, ": ", e$message,
+            "Error reading file for ", dep, ": ", e$message,
             call. = FALSE,
             immediate. = TRUE
           )
@@ -508,22 +508,22 @@ get_ipress <- function(departamento = NULL,
   # ==========================================================================
 
   if (length(lista_datos) == 0) {
-    stop("No se pudo cargar ning\u00fan departamento", call. = FALSE)
+    stop("Could not load any department", call. = FALSE)
   }
 
   if (length(lista_datos) == 1) {
     datos_final <- lista_datos[[1]]
   } else {
-    if (show_progress) message("Combinando datos de m\u00faltiples departamentos...")
+    if (show_progress) message("Combining data from multiple departments...")
 
-    # Usar rbind con manejo de errores
+    # Use rbind with error handling
     tryCatch(
       {
         datos_final <- do.call(rbind, lista_datos)
       },
       error = function(e) {
         stop(
-          "Error al combinar datos de m\u00faltiples departamentos: ",
+          "Error combining data from multiple departments: ",
           e$message,
           call. = FALSE
         )
@@ -535,7 +535,7 @@ get_ipress <- function(departamento = NULL,
   # 6. FILTRADO POR PROVINCIA Y DISTRITO
   # ==========================================================================
 
-  # Filtro por PROVINCIA
+  # Filter by PROVINCE
   if (!is.null(provincia)) {
     if ("nombprov" %in% names(datos_final)) {
       prov_input <- toupper(trimws(provincia))
@@ -543,7 +543,7 @@ get_ipress <- function(departamento = NULL,
 
       if (nrow(datos_final) == 0) {
         warning(
-          "No se encontraron establecimientos para la(s) provincia(s): ",
+          "No establishments found for the province(s): ",
           paste(provincia, collapse = ", "),
           call. = FALSE
         )
@@ -552,17 +552,17 @@ get_ipress <- function(departamento = NULL,
 
       if (show_progress) {
         message(
-          "\u2713 Filtrado por provincia: ",
+          "\u2713 Filtered by province: ",
           nrow(datos_final),
-          " establecimientos"
+          " establishments"
         )
       }
     } else {
-      warning("No se encontr\u00f3 la columna 'nombprov' para filtrar", call. = FALSE)
+      warning("Column 'nombprov' not found for filtering", call. = FALSE)
     }
   }
 
-  # Filtro por DISTRITO
+  # Filter by DISTRICT
   if (!is.null(distrito)) {
     if ("nombdist" %in% names(datos_final)) {
       dist_input <- toupper(trimws(distrito))
@@ -570,7 +570,7 @@ get_ipress <- function(departamento = NULL,
 
       if (nrow(datos_final) == 0) {
         warning(
-          "No se encontraron establecimientos para el/los distrito(s): ",
+          "No establishments found for the district(s): ",
           paste(distrito, collapse = ", "),
           call. = FALSE
         )
@@ -579,13 +579,13 @@ get_ipress <- function(departamento = NULL,
 
       if (show_progress) {
         message(
-          "\u2713 Filtrado por distrito: ",
+          "\u2713 Filtered by district: ",
           nrow(datos_final),
-          " establecimientos"
+          " establishments"
         )
       }
     } else {
-      warning("No se encontr\u00f3 la columna 'nombdist' para filtrar", call. = FALSE)
+      warning("Column 'nombdist' not found for filtering", call. = FALSE)
     }
   }
 
@@ -595,8 +595,8 @@ get_ipress <- function(departamento = NULL,
 
   if (show_progress) {
     message(
-      "\u2713 Datos cargados exitosamente: ",
-      nrow(datos_final), " establecimientos de salud (IPRESS)"
+      "\u2713 Data loaded successfully: ",
+      nrow(datos_final), " health establishments (IPRESS)"
     )
   }
 

@@ -1,161 +1,159 @@
-#' Obtener Densidad y Crecimiento Poblacional por Departamento
+#' Get Population Density and Growth by Department
 #'
-#' Descarga y carga la información de densidad y crecimiento poblacional intercensal
-#' por departamento desde el repositorio OSF de DEMARCA. Los datos provienen de los
-#' censos de población 2007 y 2017 del INEI, procesados mediante interpolación espacial.
-#' Permite filtrado escalonado por departamento, provincia y distrito.
+#' Downloads and loads intercensal population density and growth information
+#' by department from the DEMARCA OSF repository. Data comes from INEI
+#' 2007 and 2017 population censuses, processed through spatial interpolation.
+#' Allows stepwise filtering by department, province, and district.
 #'
-#' @param departamento Character vector. Nombre(s) del/los departamento(s) a descargar.
-#'   Opciones válidas: "AMAZONAS", "ANCASH", "APURIMAC", "AREQUIPA", "AYACUCHO",
+#' @param departamento Character vector. Name(s) of the department(s) to download.
+#'   Valid options: "AMAZONAS", "ANCASH", "APURIMAC", "AREQUIPA", "AYACUCHO",
 #'   "CAJAMARCA", "CALLAO", "CUSCO", "HUANCAVELICA", "HUANUCO", "ICA", "JUNIN",
 #'   "LA LIBERTAD", "LAMBAYEQUE", "LIMA", "LORETO", "MADRE DE DIOS", "MOQUEGUA",
 #'   "PASCO", "PIURA", "PUNO", "SAN MARTIN", "TACNA", "TUMBES", "UCAYALI".
-#'   No distingue entre mayúsculas y minúsculas. Si es \code{NULL}, muestra la
-#'   lista de departamentos disponibles.
-#' @param provincia Character vector. Nombre(s) de la(s) provincia(s) para filtrar
-#'   dentro del/los departamento(s) especificado(s). Opcional.
-#' @param distrito Character vector. Nombre(s) del/los distrito(s) para filtrar
-#'   dentro de la(s) provincia(s) especificada(s). Opcional.
-#' @param show_progress Logical. Si \code{TRUE} (por defecto), muestra mensajes
-#'   informativos sobre el progreso de la descarga. Si \code{FALSE}, ejecuta de
-#'   forma silenciosa.
-#' @param force_update Logical. Si \code{TRUE}, fuerza una nueva descarga del
-#'   archivo incluso si existe en caché. Por defecto \code{FALSE}.
+#'   Case-insensitive. If \code{NULL}, shows the list of available departments.
+#' @param provincia Character vector. Name(s) of the province(s) to filter
+#'   within the specified department(s). Optional.
+#' @param distrito Character vector. Name(s) of the district(s) to filter
+#'   within the specified province(s). Optional.
+#' @param show_progress Logical. If \code{TRUE} (default), shows informative
+#'   messages about download progress. If \code{FALSE}, executes silently.
+#' @param force_update Logical. If \code{TRUE}, forces a new download of the
+#'   file even if it exists in cache. Default \code{FALSE}.
 #'
-#' @return Un objeto \code{sf} (simple feature) con información de densidad y
-#'   crecimiento poblacional, incluyendo:
+#' @return An \code{sf} (simple feature) object with density and population growth
+#'   information, including:
 #'   \itemize{
-#'     \item Geometría de los polígonos interpolados (con geometrías validadas)
-#'     \item \code{ubigeo}: Código UBIGEO del distrito
-#'     \item \code{nombdep}: Nombre del departamento
-#'     \item \code{nombprov}: Nombre de la provincia
-#'     \item \code{nombdist}: Nombre del distrito
-#'     \item \code{nivel}: Nivel de crecimiento poblacional
-#'     \item \code{rango}: Rango de tasa de crecimiento
-#'     \item \code{descrip}: Descripción de la categoría
+#'     \item Geometry of interpolated polygons (with validated geometries)
+#'     \item \code{ubigeo}: District UBIGEO code
+#'     \item \code{nombdep}: Department name
+#'     \item \code{nombprov}: Province name
+#'     \item \code{nombdist}: District name
+#'     \item \code{nivel}: Population growth level
+#'     \item \code{rango}: Growth rate range
+#'     \item \code{descrip}: Category description
 #'   }
 #'
-#'   Si se solicitan múltiples departamentos, retorna un objeto sf combinado.
+#'   If multiple departments are requested, it returns a combined sf object.
 #'
 #' @details
-#' La función descarga datos desde OSF (Open Science Framework) y los almacena
-#' en caché durante la sesión de R. Los datos están en formato GeoPackage (.gpkg).
+#' The function downloads data from OSF (Open Science Framework) and stores it
+#' in cache during the R session. Data is in GeoPackage (.gpkg) format.
 #'
-#' **Metodología de los datos:**
+#' **Data Methodology:**
 #' \itemize{
-#'   \item Fuente: Censos de Población INEI 2007 y 2017
-#'   \item Cobertura: Centros poblados con población > 150 habitantes
-#'   \item Técnica: Interpolación espacial para representación continua
-#'   \item Variable: Tasa de crecimiento poblacional intercensal anual
+#'   \item Source: INEI 2007 and 2017 Population Censuses
+#'   \item Coverage: Population centers with > 150 inhabitants
+#'   \item Technique: Spatial interpolation for continuous representation
+#'   \item Variable: Annual intercensal population growth rate
 #' }
 #'
-#' **Filtrado jerárquico:**
-#' Los filtros se aplican en cascada:
+#' **Hierarchical Filtering:**
+#' Filters are applied in cascade:
 #' \enumerate{
-#'   \item Primero se cargan los departamentos especificados
-#'   \item Luego se filtran las provincias (si se especifican)
-#'   \item Finalmente se filtran los distritos (si se especifican)
+#'   \item Specified departments are loaded first
+#'   \item Then provinces are filtered (if specified)
+#'   \item Finally, districts are filtered (if specified)
 #' }
 #'
-#' El caché se almacena en: \code{tempdir()/DEMARCA_cache/densidad_poblacional/}
+#' Cache is stored in: \code{tempdir()/DEMARCA_cache/densidad_poblacional/}
 #'
-#' **NOTA:** Las geometrías se validan automáticamente con \code{st_make_valid()}
-#' para prevenir errores en operaciones espaciales posteriores.
+#' **NOTE:** Geometries are automatically validated with \code{st_make_valid()}
+#' to prevent errors in subsequent spatial operations.
 #'
 #' @examples
 #' \dontrun{
-#' # Ver departamentos disponibles
+#' # See available departments
 #' get_densidad_poblacional()
 #'
-#' # Cargar un departamento completo
+#' # Load a full department
 #' densidad_cusco <- get_densidad_poblacional(departamento = "CUSCO")
 #'
-#' # Cargar una provincia específica
+#' # Load a specific province
 #' densidad_prov_cusco <- get_densidad_poblacional(
 #'   departamento = "CUSCO",
 #'   provincia = "CUSCO"
 #' )
 #'
-#' # Cargar un distrito específico
+#' # Load a specific district
 #' densidad_wanchaq <- get_densidad_poblacional(
 #'   departamento = "CUSCO",
 #'   provincia = "CUSCO",
 #'   distrito = "WANCHAQ"
 #' )
 #'
-#' # Cargar múltiples departamentos
+#' # Load multiple departments
 #' densidad_sur <- get_densidad_poblacional(
 #'   departamento = c("CUSCO", "PUNO", "AREQUIPA")
 #' )
 #'
-#' # Filtrar múltiples provincias
+#' # Filter multiple provinces
 #' densidad_valle <- get_densidad_poblacional(
 #'   departamento = "CUSCO",
 #'   provincia = c("CUSCO", "URUBAMBA", "CALCA")
 #' )
 #'
-#' # Visualización con ggplot2
+#' # Visualization with ggplot2
 #' library(ggplot2)
 #' library(dplyr)
 #'
-#' # Mapa de nivel de crecimiento
+#' # Growth level map
 #' ggplot(densidad_cusco) +
 #'   geom_sf(aes(fill = nivel), color = NA) +
 #'   scale_fill_brewer(
 #'     palette = "RdYlGn",
-#'     name = "Nivel de\nCrecimiento"
+#'     name = "Growth\nLevel"
 #'   ) +
 #'   labs(
-#'     title = "Crecimiento Poblacional por Nivel",
-#'     subtitle = "Departamento de Cusco (2007-2017)",
-#'     caption = "Fuente: INEI | Visor - SDOT"
+#'     title = "Population Growth by Level",
+#'     subtitle = "Department of Cusco (2007-2017)",
+#'     caption = "Source: INEI | Visor - SDOT"
 #'   ) +
 #'   theme_minimal()
 #'
-#' # Capa agregada por distrito (un polígono por distrito)
+#' # Aggregated layer by district (one polygon per district)
 #' distritos_anta <- prov_anta |>
-#'  group_by(ubigeo, nombdist) |>
-#'  summarise(.groups = "drop")
+#'   group_by(ubigeo, nombdist) |>
+#'   summarise(.groups = "drop")
 #' distritos_anta
 #'
-#' # Puntos para poner las etiquetas dentro de cada distrito
+#' # Points to place labels inside each district
 #' distritos_centroides <- st_point_on_surface(distritos_anta)
 #' distritos_centroides
 #'
 #' ggplot() +
-#'  # 1. Celdas / polígonos con el nivel de crecimiento
-#'  geom_sf(
-#'    data = prov_anta,
-#'    aes(fill = nivel),
-#'    color = NA
-#'  ) +
-#'  # 2. Contorno de distritos (para “hacerlos notar”)
-#'  geom_sf(
-#'    data = distritos_anta,
-#'    fill  = NA,
-#'    color = "grey20",
-#'    linewidth = 0.4
-#'  ) +
-#'  # 3. Nombre de los distritos
-#'  geom_sf_text(
-#'    data = distritos_centroides,
-#'    aes(label = nombdist),
-#'    size = 3
-#'  ) +
-#'  scale_fill_brewer(
-#'    palette = "RdYlGn",
-#'    name    = "Nivel de\ncrecimiento"
-#'  ) +
-#'  labs(
-#'    title    = "Crecimiento poblacional",
-#'    subtitle = "Provincia de Anta (2007–2017)",
-#'    caption  = "Fuente: INEI | Visor SDOT"
-#'  ) +
-#'  theme_minimal() +
-#'  theme(
-#'    legend.position = "right",
-#'    panel.grid.major = element_line(linewidth = 0.2, colour = "grey90")
-#'  )
+#'   # 1. Cells / polygons with growth level
+#'   geom_sf(
+#'     data = prov_anta,
+#'     aes(fill = nivel),
+#'     color = NA
+#'   ) +
+#'   # 2. District outline (to make them stand out)
+#'   geom_sf(
+#'     data = distritos_anta,
+#'     fill = NA,
+#'     color = "grey20",
+#'     linewidth = 0.4
+#'   ) +
+#'   # 3. District names
+#'   geom_sf_text(
+#'     data = distritos_centroides,
+#'     aes(label = nombdist),
+#'     size = 3
+#'   ) +
+#'   scale_fill_brewer(
+#'     palette = "RdYlGn",
+#'     name    = "Growth\nlevel"
+#'   ) +
+#'   labs(
+#'     title    = "Population Growth",
+#'     subtitle = "Province of Anta (2007–2017)",
+#'     caption  = "Source: INEI | Visor SDOT"
+#'   ) +
+#'   theme_minimal() +
+#'   theme(
+#'     legend.position = "right",
+#'     panel.grid.major = element_line(linewidth = 0.2, colour = "grey90")
+#'   )
 #' }
 #'
 #' @seealso
@@ -164,9 +162,9 @@
 #' \code{\link[sf]{st_make_valid}}
 #'
 #' @references
-#' INEI. Censos Nacionales de Población y Vivienda 2007 y 2017.
+#' INEI. National Population and Housing Censuses 2007 and 2017.
 #'
-#' Repositorio DEMARCA en OSF: \url{https://osf.io/qy4j6/}
+#' DEMARCA OSF Repository: \url{https://osf.io/qy4j6/}
 #'
 #' @export
 #' @importFrom utils download.file
@@ -177,115 +175,74 @@ get_densidad_poblacional <- function(departamento = NULL,
                                      distrito = NULL,
                                      show_progress = TRUE,
                                      force_update = FALSE) {
+  # ==========================================================================
+  # 1. DEPARTMENT REFERENCE TABLE
+  # ==========================================================================
+
+  tabla_departamentos <- get_rsdot_catalog("densidad_poblacional")
 
   # ==========================================================================
-  # 1. TABLA DE REFERENCIA DE DEPARTAMENTOS Y URLs
-  # ==========================================================================
-
-  tabla_departamentos <- data.frame(
-    departamento = c(
-      "AMAZONAS", "ANCASH", "APURIMAC", "AREQUIPA", "AYACUCHO",
-      "CAJAMARCA", "CALLAO", "CUSCO", "HUANCAVELICA", "HUANUCO",
-      "ICA", "JUNIN", "LA LIBERTAD", "LAMBAYEQUE", "LIMA",
-      "LORETO", "MADRE DE DIOS", "MOQUEGUA", "PASCO", "PIURA",
-      "PUNO", "SAN MARTIN", "TACNA", "TUMBES", "UCAYALI"
-    ),
-    file_name = c(
-      "densidad_crecimiento_poblacional_amazonas.gpkg",
-      "densidad_crecimiento_poblacional_ancash.gpkg",
-      "densidad_crecimiento_poblacional_apurimac.gpkg",
-      "densidad_crecimiento_poblacional_arequipa.gpkg",
-      "densidad_crecimiento_poblacional_ayacucho.gpkg",
-      "densidad_crecimiento_poblacional_cajamarca.gpkg",
-      "densidad_crecimiento_poblacional_callao.gpkg",
-      "densidad_crecimiento_poblacional_cusco.gpkg",
-      "densidad_crecimiento_poblacional_huancavelica.gpkg",
-      "densidad_crecimiento_poblacional_huanuco.gpkg",
-      "densidad_crecimiento_poblacional_ica.gpkg",
-      "densidad_crecimiento_poblacional_junin.gpkg",
-      "densidad_crecimiento_poblacional_la_libertad.gpkg",
-      "densidad_crecimiento_poblacional_lambayeque.gpkg",
-      "densidad_crecimiento_poblacional_lima.gpkg",
-      "densidad_crecimiento_poblacional_loreto.gpkg",
-      "densidad_crecimiento_poblacional_madre_de_dios.gpkg",
-      "densidad_crecimiento_poblacional_moquegua.gpkg",
-      "densidad_crecimiento_poblacional_pasco.gpkg",
-      "densidad_crecimiento_poblacional_piura.gpkg",
-      "densidad_crecimiento_poblacional_puno.gpkg",
-      "densidad_crecimiento_poblacional_san_martin.gpkg",
-      "densidad_crecimiento_poblacional_tacna.gpkg",
-      "densidad_crecimiento_poblacional_tumbes.gpkg",
-      "densidad_crecimiento_poblacional_ucayali.gpkg"
-    ),
-    id_osf = c(
-      "tkur9", "ys832", "4h76w", "n36pk", "w2yhr",
-      "86hrj", "wz3xs", "dkf83", "4yzxa", "4b2vm",
-      "8cpqf", "qbez7", "nyjkc", "vmhyc", "rqdbg",
-      "v3sqr", "j6k3z", "f7vn6", "em7au", "e8agr",
-      "kp2d7", "k23rx", "rp4yf", "jdcnz", "74unj"
-    ),
-    stringsAsFactors = FALSE
-  )
-
-  # ==========================================================================
-  # 2. VALIDACIÓN DE PARÁMETROS
+  # 2. PARAMETER VALIDATION
   # ==========================================================================
 
   if (!is.logical(show_progress) || length(show_progress) != 1) {
-    stop("El par\u00e1metro 'show_progress' debe ser TRUE o FALSE", call. = FALSE)
+    stop("The 'show_progress' parameter must be TRUE or FALSE", call. = FALSE)
   }
 
   if (!is.logical(force_update) || length(force_update) != 1) {
-    stop("El par\u00e1metro 'force_update' debe ser TRUE o FALSE", call. = FALSE)
+    stop("The 'force_update' parameter must be TRUE or FALSE", call. = FALSE)
   }
 
   if (!is.null(provincia) && !is.character(provincia)) {
-    stop("El par\u00e1metro 'provincia' debe ser un vector de caracteres o NULL",
-         call. = FALSE)
+    stop("The 'provincia' parameter must be a character vector or NULL",
+      call. = FALSE
+    )
   }
 
   if (!is.null(distrito) && !is.character(distrito)) {
-    stop("El par\u00e1metro 'distrito' debe ser un vector de caracteres o NULL",
-         call. = FALSE)
+    stop("The 'distrito' parameter must be a character vector or NULL",
+      call. = FALSE
+    )
   }
 
-  # Si no se especifica departamento, mostrar lista
+  # If no department is specified, show list
   if (is.null(departamento)) {
-    message("Departamentos disponibles:")
+    message("Available departments:")
     message(paste0("  - ", tabla_departamentos$departamento, collapse = "\n"))
-    message("\nUso: get_densidad_poblacional(departamento = 'CUSCO')")
+    message("\nUsage: get_densidad_poblacional(departamento = 'CUSCO')")
     return(invisible(tabla_departamentos$departamento))
   }
 
   if (!is.character(departamento)) {
-    stop("El par\u00e1metro 'departamento' debe ser un vector de caracteres",
-         call. = FALSE)
+    stop("The 'departamento' parameter must be a character vector",
+      call. = FALSE
+    )
   }
 
-  # Normalizar nombres
+  # Normalize names
   departamento_input <- toupper(trimws(departamento))
   departamento_input <- gsub("_", " ", departamento_input)
 
-  # Validar departamentos
+  # Validate departments
   departamentos_validos <- departamento_input %in% tabla_departamentos$departamento
 
   if (!all(departamentos_validos)) {
     departamentos_invalidos <- departamento_input[!departamentos_validos]
     stop(
-      "Departamento(s) no v\u00e1lido(s): ",
+      "Invalid department(s): ",
       paste(departamentos_invalidos, collapse = ", "), "\n",
-      "Use get_densidad_poblacional() para ver la lista completa.",
+      "Use get_densidad_poblacional() to see the full list.",
       call. = FALSE
     )
   }
 
-  # Filtrar tabla
+  # Filter table
   tabla_filtrada <- tabla_departamentos[
     tabla_departamentos$departamento %in% departamento_input,
   ]
 
   # ==========================================================================
-  # 3. CONFIGURACIÓN DE DIRECTORIOS
+  # 3. DIRECTORY CONFIGURATION
   # ==========================================================================
 
   ruta_cache_dir <- file.path(tempdir(), "DEMARCA_cache", "densidad_poblacional")
@@ -294,7 +251,7 @@ get_densidad_poblacional <- function(departamento = NULL,
   }
 
   # ==========================================================================
-  # 4. DESCARGA Y CARGA DE DATOS
+  # 4. DATA DOWNLOAD AND LOAD
   # ==========================================================================
 
   lista_datos <- list()
@@ -304,134 +261,96 @@ get_densidad_poblacional <- function(departamento = NULL,
     file_name <- tabla_filtrada$file_name[i]
     id_osf <- tabla_filtrada$id_osf[i]
 
-    url_descarga <- paste0("https://osf.io/", id_osf, "/download")
+    url_descarga <- paste0("https://osf.io/download/", id_osf, "/")
     archivo_local <- file.path(ruta_cache_dir, file_name)
 
-    # Descargar si no existe o si se fuerza
+    # Download if doesn't exist or if forced
     if (!file.exists(archivo_local) || force_update) {
-      if (show_progress) message("Descargando: ", dep, "...")
+      if (show_progress) message("Downloading: ", dep, "...")
 
-      # Intentar descarga con timeout extendido
-      timeout_original <- getOption("timeout")
-      options(timeout = 300)  # 5 minutos
-
-      descarga_exitosa <- tryCatch(
-        {
-          utils::download.file(
-            url = url_descarga,
-            destfile = archivo_local,
-            mode = "wb",
-            quiet = !show_progress
-          )
-          TRUE
-        },
-        error = function(e) {
-          warning(
-            "Error al descargar ", dep, ": ", e$message, "\n",
-            "URL: ", url_descarga, "\n",
-            "Puede que el archivo no est\u00e9 disponible temporalmente.",
-            call. = FALSE,
-            immediate. = TRUE
-          )
-          FALSE
-        }
+      descarga_exitosa <- download_file_safe(
+        url = url_descarga,
+        destfile = archivo_local,
+        show_progress = show_progress
       )
-
-      options(timeout = timeout_original)
 
       if (descarga_exitosa && show_progress) {
-        message("\u2713 Descarga completada: ", dep)
+        message("\u2713 Download completed: ", dep)
       } else if (!descarga_exitosa) {
-        next  # Saltar a siguiente departamento
+        next # Skip to next department
       }
     } else {
-      if (show_progress) message("\u2713 Usando cach\u00e9: ", dep)
+      if (show_progress) message("\u2713 Using cache: ", dep)
     }
 
-    # Leer GeoPackage
+    # Read GeoPackage
     if (file.exists(archivo_local)) {
-      if (show_progress) message("Cargando datos: ", dep, "...")
+      if (show_progress) message("Loading data: ", dep, "...")
 
-      tryCatch(
-        {
-          datos_dep <- sf::read_sf(archivo_local, quiet = TRUE) |>
-            dplyr::mutate(
-              dplyr::across(
-                dplyr::where(is.character),
-                ~ fix_double_utf8(.x)
-              ),
-              dplyr::across(
-                dplyr::where(is.factor),
-                ~ factor(fix_double_utf8(as.character(.x)))
-              )
-            )
-
-          # Normalizar nombres de columnas
-          colnames(datos_dep) <- tolower(colnames(datos_dep))
-
-          # Validar geometrías para prevenir errores
-          if (show_progress) message("Validando geometr\u00edas...")
-          datos_dep <- sf::st_make_valid(datos_dep)
-
-          # Agregar columna departamento si no existe
-          if (!"departamento" %in% names(datos_dep)) {
-            datos_dep$departamento <- dep
-          }
-
-          # Corregir codificación en nombres
-          if ("nombdist" %in% names(datos_dep)) {
-            datos_dep$nombdist <- sub("A'", "\u00d1", datos_dep$nombdist, fixed = TRUE)
-          }
-          if ("nombprov" %in% names(datos_dep)) {
-            datos_dep$nombprov <- sub("A'", "\u00d1", datos_dep$nombprov, fixed = TRUE)
-          }
-
-          lista_datos[[dep]] <- datos_dep
-
-          if (show_progress) {
-            message("\u2713 Cargado: ", dep, " (", nrow(datos_dep), " registros)")
-          }
-        },
-        error = function(e) {
-          warning(
-            "Error al leer archivo para ", dep, ": ", e$message,
-            call. = FALSE,
-            immediate. = TRUE
-          )
-        }
+      # Use read_sf_safe with geometry validation and encoding correction
+      datos_dep <- read_sf_safe(
+        archivo_local,
+        fix_encoding = TRUE,
+        valid_geom = TRUE,
+        quiet = TRUE
       )
+
+      if (!is.null(datos_dep)) {
+        # Add department column if doesn't exist
+        if (!"departamento" %in% names(datos_dep)) {
+          datos_dep$departamento <- dep
+        }
+
+        # Specific correction for this dataset: A' -> Ñ
+        if ("nombdist" %in% names(datos_dep)) {
+          datos_dep$nombdist <- sub("A'", "\u00d1", datos_dep$nombdist, fixed = TRUE)
+        }
+        if ("nombprov" %in% names(datos_dep)) {
+          datos_dep$nombprov <- sub("A'", "\u00d1", datos_dep$nombprov, fixed = TRUE)
+        }
+
+        lista_datos[[dep]] <- datos_dep
+
+        if (show_progress) {
+          message("\u2713 Loaded: ", dep, " (", nrow(datos_dep), " records)")
+        }
+      }
     }
   }
 
   # ==========================================================================
-  # 5. COMBINAR DATOS
+  # 5. COMBINE DATA
   # ==========================================================================
 
   if (length(lista_datos) == 0) {
-    stop("No se pudo cargar ning\u00fan departamento", call. = FALSE)
+    stop("Could not load any department", call. = FALSE)
   }
 
   if (length(lista_datos) == 1) {
     datos_final <- lista_datos[[1]]
   } else {
-    if (show_progress) message("Combinando datos de m\u00faltiples departamentos...")
+    if (show_progress) message("Combining data from multiple departments...")
 
     tryCatch(
       {
         datos_final <- do.call(rbind, lista_datos)
       },
       error = function(e) {
-        # Fallback con sf
-        datos_final <<- do.call(dplyr::bind_rows, lista_datos)
+        # Fallback with dplyr::bind_rows if rbind fails
+        if (requireNamespace("dplyr", quietly = TRUE)) {
+          datos_final <<- dplyr::bind_rows(lista_datos)
+        } else {
+          stop("Error combining data: ", e$message)
+        }
       }
     )
   }
 
   # ==========================================================================
-  # 6. FILTRADO POR PROVINCIA Y DISTRITO
+  # 6. FILTER BY PROVINCE AND DISTRICT
   # ==========================================================================
 
-  # Filtro por PROVINCIA
+  # Filter by PROVINCE
   if (!is.null(provincia)) {
     if ("nombprov" %in% names(datos_final)) {
       prov_input <- toupper(trimws(provincia))
@@ -439,26 +358,26 @@ get_densidad_poblacional <- function(departamento = NULL,
 
       if (nrow(datos_final) == 0) {
         warning(
-          "No se encontraron datos para la(s) provincia(s): ",
+          "No data found for province(s): ",
           paste(provincia, collapse = ", "),
           call. = FALSE
         )
-        return(sf::st_sf(geometry = sf::st_sfc(crs = 4326)))
+        return(empty_sf())
       }
 
       if (show_progress) {
         message(
-          "\u2713 Filtrado por provincia: ",
+          "\u2713 Filtered by province: ",
           nrow(datos_final),
-          " registros"
+          " records"
         )
       }
     } else {
-      warning("No se encontr\u00f3 la columna 'nombprov' para filtrar", call. = FALSE)
+      warning("Column 'nombprov' not found for filtering", call. = FALSE)
     }
   }
 
-  # Filtro por DISTRITO
+  # Filter by DISTRICT
   if (!is.null(distrito)) {
     if ("nombdist" %in% names(datos_final)) {
       dist_input <- toupper(trimws(distrito))
@@ -466,33 +385,33 @@ get_densidad_poblacional <- function(departamento = NULL,
 
       if (nrow(datos_final) == 0) {
         warning(
-          "No se encontraron datos para el/los distrito(s): ",
+          "No data found for district(s): ",
           paste(distrito, collapse = ", "),
           call. = FALSE
         )
-        return(sf::st_sf(geometry = sf::st_sfc(crs = 4326)))
+        return(empty_sf())
       }
 
       if (show_progress) {
         message(
-          "\u2713 Filtrado por distrito: ",
+          "\u2713 Filtered by district: ",
           nrow(datos_final),
-          " registros"
+          " records"
         )
       }
     } else {
-      warning("No se encontr\u00f3 la columna 'nombdist' para filtrar", call. = FALSE)
+      warning("Column 'nombdist' not found for filtering", call. = FALSE)
     }
   }
 
   # ==========================================================================
-  # 7. MENSAJE FINAL
+  # 7. FINAL MESSAGE
   # ==========================================================================
 
   if (show_progress) {
     message(
-      "\u2713 Datos cargados exitosamente: ",
-      nrow(datos_final), " registros"
+      "\u2713 Data loaded successfully: ",
+      nrow(datos_final), " records"
     )
   }
 

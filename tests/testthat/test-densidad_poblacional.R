@@ -1,22 +1,22 @@
-test_that("get_densidad_poblacional() lista departamentos cuando departamento = NULL", {
-  # No debería requerir conexión a internet, solo usa la tabla interna
+test_that("get_densidad_poblacional() lists departments when departamento = NULL", {
+  # Should not require internet connection, uses internal table
   res <- get_densidad_poblacional(departamento = NULL, show_progress = FALSE)
 
   expect_type(res, "character")
-  expect_true(length(res) >= 1)
-  expect_true("CUSCO" %in% res)
+  expect_gt(length(res), 0)
+  expect_contains(res, "CUSCO")
 })
 
-test_that("get_densidad_poblacional() valida departamentos y arroja error con nombres inválidos", {
+test_that("get_densidad_poblacional() validates departments and errors with invalid names", {
   expect_error(
     get_densidad_poblacional(departamento = "NARNIA", show_progress = FALSE),
-    regexp = "Departamento\\(s\\) no v\u00e1lido\\(s\\)"
+    regexp = "Invalid department"
   )
 })
 
-test_that("get_densidad_poblacional() valida que show_progress y force_update sean lógicos", {
+test_that("get_densidad_poblacional() validates that show_progress and force_update are logical", {
   expect_error(
-    get_densidad_poblacional(departamento = "CUSCO", show_progress = "si"),
+    get_densidad_poblacional(departamento = "CUSCO", show_progress = "yes"),
     regexp = "show_progress"
   )
 
@@ -26,14 +26,14 @@ test_that("get_densidad_poblacional() valida que show_progress y force_update se
   )
 })
 
-test_that("get_densidad_poblacional() valida que provincia y distrito sean caracteres", {
+test_that("get_densidad_poblacional() validates that provincia and distrito are characters", {
   expect_error(
     get_densidad_poblacional(
       departamento = "CUSCO",
       provincia    = 1L,
       show_progress = FALSE
     ),
-    regexp = "provincia.*vector de caracteres"
+    regexp = "provincia.*character vector"
   )
 
   expect_error(
@@ -42,6 +42,6 @@ test_that("get_densidad_poblacional() valida que provincia y distrito sean carac
       distrito     = 1L,
       show_progress = FALSE
     ),
-    regexp = "distrito.*vector de caracteres"
+    regexp = "distrito.*character vector"
   )
 })

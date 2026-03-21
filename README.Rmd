@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# rsdot  <a href='https://github.com/PaulESantos/ppendemic'><img src='man/figures/rsdot_logo.png' align="right" height="280" width="260" /></a>
+# rsdot <a href='https://github.com/PaulESantos/rsdot'><img src='https://raw.githubusercontent.com/PaulESantos/rsdot/main/man/figures/rsdot_logo.png' align="right" height="280" width="260" /></a>
 
 <!-- badges: start -->
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
@@ -23,50 +23,54 @@ knitr::opts_chunk$set(
 <!-- badges: end -->
 
 
-`rsdot` proporciona acceso programático a la información geográfica producida y recopilada por la Secretaría de Demarcación y Organización Territorial (SDOT) de la Presidencia del Consejo de Ministros (PCM) del Perú.
+`rsdot` provides programmatic access to geographic information produced and collected by the Secretariat of Demarcation and Territorial Organization (SDOT) of the Presidency of the Council of Ministers (PCM) of Peru.
 
-El paquete facilita el acceso y manipulación de diversas capas vectoriales, incluyendo:
+The package facilitates access and manipulation of various vector layers, including:
 
-- **Límites censales INEI 2023**: Departamentos, provincias y distritos
-- **Tiempos de desplazamiento**: Accesibilidad territorial a capitales departamentales
-- **Densidad y crecimiento poblacional**: Interpolación espacial de censos 2007-2017
-- **Información del modelo geográfico SDOT**: Infraestructura, centros poblados, riesgos y peligros
-- **Otras capas temáticas territoriales**
+- **INEI 2023 Census Limits**: Departments, provinces, and districts
+- **Travel Times**: Territorial accessibility to departmental capitals
+- **Population Density and Growth**: Spatial interpolation of 2007-2017 censuses
+- **SDOT Geographic Model Information**: Infrastructure, population centers, risks, and hazards
+- **Other territorial thematic layers**
 
-### ⚠️ Importante
+### ⚠️ Important
 
-Los límites censales del INEI provistos por este paquete son **referenciales** y no constituyen límites oficiales ni tienen efecto legal demarcatorio.
+The INEI census limits provided by this package are **referential** and do not constitute official limits nor have legal demarcatory effect.
 
-## ✨ Características
+## ✨ Features
 
-- ✅ **Acceso programático** a datos espaciales oficiales del Perú
-- ✅ **Descarga automática** desde OSF con caché inteligente
-- ✅ **Compatible** con `sf`, `ggplot2`, `dplyr` y herramientas SIG modernas
-- ✅ **Validación de geometrías** automática para operaciones espaciales
+- ✅ **Programmatic access** to official spatial data from Peru
+- ✅ **Automatic download** from OSF with intelligent caching
+- ✅ **Compatible** with `sf`, `ggplot2`, `dplyr`, and modern GIS tools
+- ✅ **Automatic geometry validation** for spatial operations
 
-### 📦 Funciones principales
+### 📦 Key Functions
 
-- `get_departamentos()` - Límites censales departamentales
-- `get_provincias()` - Límites censales provinciales
-- `get_distritos()` - Límites censales distritales
-- `get_tiempos_desplazamiento()` - Tiempos de desplazamiento a capitales
-- `get_densidad_poblacional()` - Densidad y crecimiento poblacional intercensal
+- `get_departamentos()` - Departmental census limits
+- `get_provincias()` - Provincial census limits
+- `get_distritos()` - District census limits
+- `get_tiempos_desplazamiento()` - Travel times to capitals
+- `get_densidad_poblacional()` - Intercensal population density and growth
 
-## 📦 Instalación
-Instalar la versión de desarrollo desde GitHub:
+Once the package is on CRAN, you can install it with:
 ```r
-# Usando remotes
+install.packages("rsdot")
+```
+
+Or install the development version from GitHub:
+```r
+# Using remotes
 install.packages("remotes")
 remotes::install_github("PaulESantos/rsdot")
 
-# O usando pak (recomendado)
+# Or using pak (recommended)
 install.packages("pak")
 pak::pak("PaulESantos/rsdot")
 ```
 
-## 🚀 Ejemplos de uso
+## 🚀 Usage Examples
 
-### Cargar el paquete
+### Load the package
 ```{r }
 library(rsdot)
 library(sf)
@@ -74,119 +78,119 @@ library(ggplot2)
 library(dplyr)
 ```
 
-### 1. Límites censales
+### 1. Census Limits
 
-#### Obtener departamentos
+#### Get departments
 ```{r}
 deps <- get_departamentos()
 deps
 
-# Visualización básica
+# Basic visualization
 ggplot(deps) +
   geom_sf(fill = "steelblue", color = "white") +
   theme_minimal() +
   labs(
-    title = "Departamentos del Perú",
-    caption = "Fuente: SDOT - PCM / INEI 2023"
+    title = "Departments of Peru",
+    caption = "Source: SDOT - PCM / INEI 2023"
   )
 ```
 
-#### Obtener provincias de un departamento
+#### Get provinces of a department
 ```{r}
 cusco_prov <- get_provincias(departamento = "CUSCO")
 head(cusco_prov)
 
-# Mapa de provincias
+# Province map
 ggplot(cusco_prov) +
   geom_sf(aes(fill = nombprov), color = "white", linewidth = 0.3) +
   scale_fill_viridis_d(option = "plasma") +
   theme_minimal() +
   labs(
-    title = "Provincias del Departamento de Cusco",
-    subtitle = "INEI 2023 | Referencial",
-    fill = "Provincia"
+    title = "Provinces of the Department of Cusco",
+    subtitle = "INEI 2023 | Referential",
+    fill = "Province"
   )
 ```
 
-#### Obtener distritos
+#### Get districts
 
-Ejemplo: Cañete (Lima)
+Example: Cañete (Lima)
 ```{r}
 canete <- get_distritos(
   provincia = "CAÑETE",
   departamento = "LIMA"
 )
 
-# Visualización
+# Visualization
 ggplot(canete) +
   geom_sf(aes(fill = nombdist), color = "white", linewidth = 0.3) +
   scale_fill_viridis_d() +
   theme_minimal() +
   labs(
-    title = "Distritos de la Provincia de Cañete",
-    subtitle = "Referencia Censal INEI 2023",
-    fill = "Distrito"
+    title = "Districts of the Province of Cañete",
+    subtitle = "INEI 2023 Census Reference",
+    fill = "District"
   )
 ```
 
-### 2. Tiempos de desplazamiento
+### 2. Travel times
 ```r
-# Cargar límites de Cusco
+# Load Cusco limits
 cusco <- get_departamentos(departamento = "CUSCO")
 
-# Obtener tiempos de desplazamiento
+# Get travel times
 tiempos_cusco <- get_tiempos_desplazamiento(area_interes = cusco)
 
-# Visualizar accesibilidad territorial
+# Visualize territorial accessibility
 ggplot() +
   geom_sf(data = tiempos_cusco, aes(fill = cat_tiempo), color = NA) +
   geom_sf(data = cusco, fill = NA, color = "black", linewidth = 1) +
-  scale_fill_brewer(palette = "YlOrRd", name = "Tiempo", direction = -1) +
+  scale_fill_brewer(palette = "YlOrRd", name = "Time", direction = -1) +
   labs(
-    title = "Tiempo de Desplazamiento a Capital más Cercana",
-    subtitle = "Departamento de Cusco",
-    caption = "Fuente: INEI - MTC | Visor - SDOT"
+    title = "Travel Time to Nearest Capital",
+    subtitle = "Department of Cusco",
+    caption = "Source: INEI - MTC | Visor - SDOT"
   ) +
   theme_void()
 ```
 
-### 3. Densidad y crecimiento poblacional
+### 3. Population density and growth
 
-#### Ver departamentos disponibles
+#### See available departments
 ```{r}
-# Listar departamentos con datos disponibles
+# List departments with available data
 get_densidad_poblacional()
 ```
 
-#### Cargar datos de un departamento
+#### Load data for a department
 ```{r}
 densidad_cusco <- get_densidad_poblacional(departamento = "CUSCO")
 densidad_cusco
 
-# Mapa de nivel de crecimiento
+# Growth level map
 ggplot(densidad_cusco) +
   geom_sf(aes(fill = nivel), color = NA) +
   scale_fill_brewer(
     palette = "RdYlGn",
-    name = "Nivel de\nCrecimiento"
+    name = "Growth\nLevel"
   ) +
   labs(
-    title = "Crecimiento Poblacional por Nivel",
-    subtitle = "Departamento de Cusco (2007-2017)",
-    caption = "Fuente: INEI | Visor - SDOT"
+    title = "Population Growth by Level",
+    subtitle = "Department of Cusco (2007-2017)",
+    caption = "Source: INEI | Visor - SDOT"
   ) +
   theme_minimal()
 ```
 
-#### Filtrado por provincia y distrito
+#### Filter by province and district
 ```{r}
-# Cargar solo una provincia
+# Load only one province
 densidad_prov_cusco <- get_densidad_poblacional(
   departamento = "CUSCO",
   provincia = "CUSCO"
 )
 
-# Cargar distrito específico
+# Load specific district
 densidad_wanchaq <- get_densidad_poblacional(
   departamento = "CUSCO",
   provincia = "CUSCO",
@@ -194,7 +198,7 @@ densidad_wanchaq <- get_densidad_poblacional(
 )
 ```
 
-#### Análisis avanzado: Mapa con etiquetas de distritos
+#### Advanced Analysis: Map with district labels
 ```{r}
 prov_anta <- get_densidad_poblacional(
   departamento = "CUSCO",
@@ -205,25 +209,25 @@ distritos_anta <- prov_anta |>
    group_by(ubigeo, nombdist) |>
    summarise(.groups = "drop")
  distritos_anta
-# Calcular centroides para etiquetas
+# Calculate centroids for labels
 distritos_centroides <- st_point_on_surface(distritos_anta)
 
-# Mapa completo
+# Complete map
 ggplot() +
-  # 1. Celdas con el nivel de crecimiento
+  # 1. Cells with growth level
   geom_sf(
     data = prov_anta,
     aes(fill = nivel),
     color = NA
   ) +
-  # 2. Contorno de distritos
+  # 2. District outlines
   geom_sf(
     data = distritos_anta,
     fill  = NA,
     color = "grey20",
     linewidth = 0.4
   ) +
-  # 3. Nombres de los distritos
+  # 3. District names
   geom_sf_text(
     data = distritos_centroides,
     aes(label = nombdist),
@@ -231,12 +235,12 @@ ggplot() +
   ) +
   scale_fill_brewer(
     palette = "RdYlGn",
-    name = "Nivel de\ncrecimiento"
+    name = "Growth\nlevel"
   ) +
   labs(
-    title = "Crecimiento Poblacional",
-    subtitle = "Provincia de Anta (2007-2017)",
-    caption = "Fuente: INEI | Visor SDOT"
+    title = "Population Growth",
+    subtitle = "Province of Anta (2007-2017)",
+    caption = "Source: INEI | Visor SDOT"
   ) +
   theme_minimal() +
   theme(
@@ -245,65 +249,65 @@ ggplot() +
   )
 ```
 
-#### Cargar múltiples departamentos
+#### Load multiple departments
 ```{r}
-# Cargar varios departamentos del sur
+# Load several southern departments
 densidad_sur <- get_densidad_poblacional(
   departamento = c("CUSCO", "PUNO", "AREQUIPA")
 )
 
-# Análisis estadístico por departamento
+# Statistical analysis by department
 densidad_sur %>%
   st_drop_geometry() %>%
   count(nombdep, nivel) %>%
   ggplot(aes(x = nombdep, y = n, fill = nivel)) +
   geom_col(position = "fill") +
   scale_y_continuous(labels = scales::percent) +
-  scale_fill_brewer(palette = "RdYlGn", name = "Nivel") +
+  scale_fill_brewer(palette = "RdYlGn", name = "Level") +
   labs(
-    title = "Distribución de Niveles de Crecimiento Poblacional",
-    subtitle = "Departamentos del Sur del Perú (2007-2017)",
-    x = "Departamento",
-    y = "Porcentaje",
-    caption = "Fuente: INEI"
+    title = "Distribution of Population Growth Levels",
+    subtitle = "Southern Departments of Peru (2007-2017)",
+    x = "Department",
+    y = "Percentage",
+    caption = "Source: INEI"
   ) +
   coord_flip() +
   theme_minimal()
 ```
 
-## 📊 Fuentes de datos
+## 📊 Data Sources
 
-Los datos provistos por este paquete provienen de:
+The data provided by this package comes from:
 
-- **SDOT-PCM** - Secretaría de Demarcación y Organización Territorial
+- **SDOT-PCM** - Secretariat of Demarcation and Territorial Organization
   - https://geosdot.servicios.gob.pe/visor/
 
-## 🤝 Contribuciones
+## 🤝 Contributions
 
-Las contribuciones son bienvenidas. Por favor abre un issue o pull request:
+Contributions are welcome. Please open an issue or pull request:
 
 👉 https://github.com/PaulESantos/rsdot/issues
 
-## 📄 Licencia
+## 📄 License
 
-Este paquete utiliza la licencia MIT. Consulta `LICENSE` para más detalles.
+This package uses the MIT license. See `LICENSE` for more details.
 
-## 👤 Autor
+## 👤 Author
 
 **Paul Efren Santos Andrade**
 
 - ORCID: [0000-0002-6635-0375](https://orcid.org/0000-0002-6635-0375)
 - Email: paulefrens@gmail.com
 
-## 🌐 Sitio web del paquete
+## 🌐 Package Website
 
-Documentación ampliada y viñetas:
+Extended documentation and vignettes:
 
 👉 https://paulesantos.github.io/rsdot/
 
-## 📚 Citación
+## 📚 Citation
 
-Si utilizas este paquete en tus publicaciones, por favor cítalo como:
+If you use this package in your publications, please cite it as:
 ```{r}
 citation("rsdot")
 ```

@@ -1,105 +1,102 @@
-#' Obtener Aeródromos del Perú
+#' Get Airfields of Peru
 #'
-#' Descarga y carga la información de aeródromos del Perú actualizado al año 2022,
-#' elaborado por el Ministerio de Transportes y Comunicaciones. Los datos incluyen
-#' geometría tipo POINT e información sobre aeropuertos, aeródromos y helipuertos.
-#' Permite filtrado escalonado por departamento, provincia y distrito.
+#' Downloads and loads information on airfields in Peru updated to the year 2022,
+#' prepared by the Ministry of Transport and Communications (MTC). Data includes
+#' POINT type geometry and information on airports, airfields, and heliports.
+#' Allows stepwise filtering by department, province, and district.
 #'
-#' @param departamento Character vector. Nombre(s) del/los departamento(s) a descargar.
-#'   Opciones válidas: "AMAZONAS", "ANCASH", "APURIMAC", "AREQUIPA", "AYACUCHO",
+#' @param departamento Character vector. Name(s) of the department(s) to download.
+#'   Valid options: "AMAZONAS", "ANCASH", "APURIMAC", "AREQUIPA", "AYACUCHO",
 #'   "CAJAMARCA", "CUSCO", "HUANUCO", "ICA", "JUNIN", "LA LIBERTAD", "LAMBAYEQUE",
 #'   "LIMA", "LORETO", "MADRE DE DIOS", "MOQUEGUA", "PASCO", "PIURA", "PUNO",
 #'   "SAN MARTIN", "TACNA", "TUMBES", "UCAYALI".
-#'   No distingue entre mayúsculas y minúsculas. Si es \code{NULL}, muestra la
-#'   lista de departamentos disponibles.
-#' @param provincia Character vector. Nombre(s) de la(s) provincia(s) para filtrar
-#'   dentro del/los departamento(s) especificado(s). Opcional.
-#' @param distrito Character vector. Nombre(s) del/los distrito(s) para filtrar
-#'   dentro de la(s) provincia(s) especificada(s). Opcional.
-#' @param show_progress Logical. Si \code{TRUE} (por defecto), muestra mensajes
-#'   informativos sobre el progreso de la descarga. Si \code{FALSE}, ejecuta de
-#'   forma silenciosa.
-#' @param force_update Logical. Si \code{TRUE}, fuerza una nueva descarga del
-#'   archivo incluso si existe en caché. Por defecto \code{FALSE}.
+#'   Case-insensitive. If \code{NULL}, shows the list of available departments.
+#' @param provincia Character vector. Name(s) of the province(s) to filter
+#'   within the specified department(s). Optional.
+#' @param distrito Character vector. Name(s) of the district(s) to filter
+#'   within the specified province(s). Optional.
+#' @param show_progress Logical. If \code{TRUE} (default), shows informative
+#'   messages about download progress. If \code{FALSE}, executes silently.
+#' @param force_update Logical. If \code{TRUE}, forces a new download of the
+#'   file even if it exists in cache. Default \code{FALSE}.
 #'
-#' @return Un objeto \code{sf} (simple feature) con geometría tipo POINT que contiene
-#'   información de los aeródromos, incluyendo:
+#' @return An \code{sf} (simple feature) object with POINT type geometry containing
+#'   airfield information, including:
 #'   \itemize{
-#'     \item Geometría POINT (coordenadas del aeródromo)
-#'     \item \code{nombre}: Nombre del aeródromo
-#'     \item \code{label}: Etiqueta descriptiva completa
-#'     \item \code{tipo}: Tipo de instalación (AEROPUERTO INTERNACIONAL, AERODROMO, HELIPUERTO)
-#'     \item \code{codidep}: Código del departamento
-#'     \item \code{nombdep}: Nombre del departamento
-#'     \item \code{nombprov}: Nombre de la provincia
-#'     \item \code{nombdist}: Nombre del distrito
-#'     \item \code{escala}: Escala del aeródromo
-#'     \item \code{lat}: Latitud
-#'     \item \code{lon}: Longitud
-#'     \item \code{estado}: Estado operativo (OPERATIVO, etc.)
-#'     \item \code{administ}: Entidad administradora
-#'     \item \code{jerarquia}: Jerarquía (NACIONAL, etc.)
-#'     \item \code{titular}: Tipo de titularidad (PUBLICA, PRIVADA)
+#'     \item POINT geometry (airfield coordinates)
+#'     \item \code{nombre}: Airfield name
+#'     \item \code{label}: Full descriptive label
+#'     \item \code{tipo}: Type of facility (INTERNATIONAL AIRPORT, AIRFIELD, HELIPORT)
+#'     \item \code{codidep}: Department code
+#'     \item \code{nombdep}: Department name
+#'     \item \code{nombprov}: Province name
+#'     \item \code{nombdist}: District name
+#'     \item \code{escala}: Airfield scale
+#'     \item \code{lat}: Latitude
+#'     \item \code{lon}: Longitude
+#'     \item \code{estado}: Operating status (OPERATIONAL, etc.)
+#'     \item \code{administ}: Managing entity
+#'     \item \code{jerarquia}: Hierarchy (NATIONAL, etc.)
+#'     \item \code{titular}: Ownership type (PUBLIC, PRIVATE)
 #'   }
 #'
-#'   Si se solicitan múltiples departamentos, retorna un objeto sf combinado.
+#'   If multiple departments are requested, it returns a combined sf object.
 #'
 #' @details
-#' La función descarga datos desde OSF (Open Science Framework) y los almacena
-#' en caché durante la sesión de R. Los datos están en formato GeoPackage (.gpkg).
+#' The function downloads data from OSF (Open Science Framework) and stores it
+#' in cache during the R session. Data is in GeoPackage (.gpkg) format.
 #'
-#' **Fuente de los datos:**
+#' **Data Source:**
 #' \itemize{
-#'   \item Fuente: Ministerio de Transportes y Comunicaciones (MTC)
-#'   \item Año: 2022
-#'   \item Nivel: Aeródromo/Aeropuerto/Helipuerto
-#'   \item Aplicación: Planificación territorial y análisis de conectividad
+#'   \item Source: Ministry of Transport and Communications (MTC)
+#'   \item Year: 2022
+#'   \item Level: Airfield/Airport/Heliport
+#'   \item Application: Territorial planning and connectivity analysis
 #' }
 #'
-#' **Filtrado jerárquico:**
-#' Los filtros se aplican en cascada:
+#' **Hierarchical Filtering:**
+#' Filters are applied in cascade:
 #' \enumerate{
-#'   \item Primero se cargan los departamentos especificados
-#'   \item Luego se filtran las provincias (si se especifican)
-#'   \item Finalmente se filtran los distritos (si se especifican)
+#'   \item Specified departments are loaded first
+#'   \item Then provinces are filtered (if specified)
+#'   \item Finally, districts are filtered (if specified)
 #' }
 #'
-#' El caché se almacena en: \code{tempdir()/DEMARCA_cache/aerodromos/}
+#' Cache is stored in: \code{tempdir()/DEMARCA_cache/aerodromos/}
 #'
-#' **NOTA:** Las geometrías son tipo POINT (puntos) y representan la ubicación
-#' de cada aeródromo.
+#' **NOTE:** Geometries are POINT type and represent the location of each airfield.
 #'
 #' @examples
 #' \dontrun{
-#' # Ver departamentos disponibles
+#' # See available departments
 #' get_aerodromos()
 #'
-#' # Cargar aeródromos de un departamento completo
+#' # Load airfields of a full department
 #' aero_cusco <- get_aerodromos(departamento = "CUSCO")
 #'
-#' # Filtrar por provincia específica
+#' # Filter by specific province
 #' aero_prov_cusco <- get_aerodromos(
 #'   departamento = "CUSCO",
 #'   provincia = "CUSCO"
 #' )
 #'
-#' # Filtrar por distrito específico
+#' # Filter by specific district
 #' aero_san_sebastian <- get_aerodromos(
 #'   departamento = "CUSCO",
 #'   provincia = "CUSCO",
 #'   distrito = "SAN SEBASTIAN"
 #' )
 #'
-#' # Cargar múltiples departamentos
+#' # Load multiple departments
 #' aero_sur <- get_aerodromos(
 #'   departamento = c("CUSCO", "PUNO", "AREQUIPA")
 #' )
 #'
-#' # Visualización con ggplot2
+#' # Visualization with ggplot2
 #' library(ggplot2)
 #' library(dplyr)
 #'
-#' # Mapa de aeródromos por tipo
+#' # Map of airfields by type
 #' ggplot(aero_cusco) +
 #'   geom_sf(aes(color = tipo, shape = tipo), size = 3) +
 #'   scale_color_manual(
@@ -108,33 +105,33 @@
 #'       "AERODROMO" = "darkblue",
 #'       "HELIPUERTO" = "darkgreen"
 #'     ),
-#'     name = "Tipo"
+#'     name = "Type"
 #'   ) +
 #'   labs(
-#'     title = "Aeródromos del Departamento de Cusco",
-#'     subtitle = "Actualizado 2022 - MTC",
-#'     caption = "Fuente: MTC | Visor - SDOT"
+#'     title = "Airfields of the Department of Cusco",
+#'     subtitle = "Updated 2022 - MTC",
+#'     caption = "Source: MTC | Visor - SDOT"
 #'   ) +
 #'   theme_minimal()
 #'
-#' # Aeródromos por tipo de titularidad
+#' # Airfields by ownership type
 #' aero_cusco |>
 #'   group_by(tipo, titular) |>
 #'   summarise(n = n(), .groups = "drop") |>
 #'   arrange(desc(n))
 #'
-#' # Filtrar aeródromos operativos públicos
+#' # Filter operational public airfields
 #' aero_publicos <- aero_cusco |>
 #'   filter(titular == "PUBLICA", estado == "OPERATIVO")
 #'
-#' # Visualizar aeródromos por administrador
+#' # View airfields by administrator
 #' aero_cusco |>
 #'   filter(!is.na(administ)) |>
 #'   group_by(administ) |>
 #'   summarise(n = n(), .groups = "drop") |>
 #'   arrange(desc(n))
 #'
-#' # Mapa de aeródromos con etiquetas
+#' # Map of airfields with labels
 #' ggplot(aero_cusco) +
 #'   geom_sf(aes(color = tipo), size = 4) +
 #'   geom_sf_text(
@@ -143,11 +140,11 @@
 #'     nudge_y = 0.1,
 #'     check_overlap = TRUE
 #'   ) +
-#'   scale_color_brewer(palette = "Set1", name = "Tipo") +
+#'   scale_color_brewer(palette = "Set1", name = "Type") +
 #'   labs(
-#'     title = "Aeródromos de Cusco",
+#'     title = "Airfields of Cusco",
 #'     subtitle = "MTC 2022",
-#'     caption = "Fuente: MTC | Visor - SDOT"
+#'     caption = "Source: MTC | Visor - SDOT"
 #'   ) +
 #'   theme_minimal()
 #' }
@@ -157,9 +154,9 @@
 #' \code{\link{get_distritos}}, \code{\link[sf]{read_sf}}
 #'
 #' @references
-#' Ministerio de Transportes y Comunicaciones (MTC). Aeródromos del Perú 2022.
+#' Ministry of Transport and Communications (MTC). Airfields of Peru 2022.
 #'
-#' Repositorio DEMARCA en OSF: \url{https://osf.io/qy4j6/}
+#' DEMARCA OSF Repository: \url{https://osf.io/qy4j6/}
 #'
 #' @export
 #' @importFrom utils download.file
@@ -170,113 +167,74 @@ get_aerodromos <- function(departamento = NULL,
                            distrito = NULL,
                            show_progress = TRUE,
                            force_update = FALSE) {
+  # ==========================================================================
+  # 1. REFERENCE TABLE
+  # ==========================================================================
+
+  tabla_departamentos <- get_rsdot_catalog("aerodromos")
 
   # ==========================================================================
-  # 1. TABLA DE REFERENCIA DE DEPARTAMENTOS Y URLs
-  # ==========================================================================
-
-  tabla_departamentos <- data.frame(
-    departamento = c(
-      "AMAZONAS", "ANCASH", "APURIMAC", "AREQUIPA", "AYACUCHO",
-      "CAJAMARCA", "CUSCO", "HUANUCO", "ICA", "JUNIN",
-      "LA LIBERTAD", "LAMBAYEQUE", "LIMA", "LORETO", "MADRE DE DIOS",
-      "MOQUEGUA", "PASCO", "PIURA", "PUNO", "SAN MARTIN",
-      "TACNA", "TUMBES", "UCAYALI"
-    ),
-    file_name = c(
-      "aerodromo_amazonas.gpkg",
-      "aerodromo_ancash.gpkg",
-      "aerodromo_apurimac.gpkg",
-      "aerodromo_arequipa.gpkg",
-      "aerodromo_ayacucho.gpkg",
-      "aerodromo_cajamarca.gpkg",
-      "aerodromo_cusco.gpkg",
-      "aerodromo_huanuco.gpkg",
-      "aerodromo_ica.gpkg",
-      "aerodromo_junin.gpkg",
-      "aerodromo_la_libertad.gpkg",
-      "aerodromo_lambayeque.gpkg",
-      "aerodromo_lima.gpkg",
-      "aerodromo_loreto.gpkg",
-      "aerodromo_madre_de_dios.gpkg",
-      "aerodromo_moquegua.gpkg",
-      "aerodromo_pasco.gpkg",
-      "aerodromo_piura.gpkg",
-      "aerodromo_puno.gpkg",
-      "aerodromo_san_martin.gpkg",
-      "aerodromo_tacna.gpkg",
-      "aerodromo_tumbes.gpkg",
-      "aerodromo_ucayali.gpkg"
-    ),
-    id_osf = c(
-      "3hp9y", "krb5x", "xsvdy", "cs73x", "csp9y",
-      "wrfvt", "7g8sj", "8tj6v", "7cfmh", "7up4r",
-      "rcpyu", "jxug3", "wrh2d", "nsb96", "bwzvm",
-      "zwg8x", "57zfg", "35yrb", "etb39", "3cehq",
-      "6tms5", "udskr", "gf5xt"
-    ),
-    stringsAsFactors = FALSE
-  )
-
-  # ==========================================================================
-  # 2. VALIDACIÓN DE PARÁMETROS
+  # 2. PARAMETER VALIDATION
   # ==========================================================================
 
   if (!is.logical(show_progress) || length(show_progress) != 1) {
-    stop("El par\u00e1metro 'show_progress' debe ser TRUE o FALSE", call. = FALSE)
+    stop("The 'show_progress' parameter must be TRUE or FALSE", call. = FALSE)
   }
 
   if (!is.logical(force_update) || length(force_update) != 1) {
-    stop("El par\u00e1metro 'force_update' debe ser TRUE o FALSE", call. = FALSE)
+    stop("The 'force_update' parameter must be TRUE or FALSE", call. = FALSE)
   }
 
   if (!is.null(provincia) && !is.character(provincia)) {
-    stop("El par\u00e1metro 'provincia' debe ser un vector de caracteres o NULL",
-         call. = FALSE)
+    stop("The 'provincia' parameter must be a character vector or NULL",
+      call. = FALSE
+    )
   }
 
   if (!is.null(distrito) && !is.character(distrito)) {
-    stop("El par\u00e1metro 'distrito' debe ser un vector de caracteres o NULL",
-         call. = FALSE)
+    stop("The 'distrito' parameter must be a character vector or NULL",
+      call. = FALSE
+    )
   }
 
-  # Si no se especifica departamento, mostrar lista
+  # If no department is specified, show list
   if (is.null(departamento)) {
-    message("Departamentos disponibles:")
+    message("Available departments:")
     message(paste0("  - ", tabla_departamentos$departamento, collapse = "\n"))
-    message("\nUso: get_aerodromos(departamento = 'CUSCO')")
+    message("\nUsage: get_aerodromos(departamento = 'CUSCO')")
     return(invisible(tabla_departamentos$departamento))
   }
 
   if (!is.character(departamento)) {
-    stop("El par\u00e1metro 'departamento' debe ser un vector de caracteres",
-         call. = FALSE)
+    stop("The 'departamento' parameter must be a character vector",
+      call. = FALSE
+    )
   }
 
-  # Normalizar nombres (manejar "LA LIBERTAD", "SAN MARTIN", "MADRE DE DIOS")
+  # Normalize names
   departamento_input <- toupper(trimws(departamento))
   departamento_input <- gsub("_", " ", departamento_input)
 
-  # Validar departamentos
+  # Validate departments
   departamentos_validos <- departamento_input %in% tabla_departamentos$departamento
 
   if (!all(departamentos_validos)) {
     departamentos_invalidos <- departamento_input[!departamentos_validos]
     stop(
-      "Departamento(s) no v\u00e1lido(s): ",
+      "Invalid department(s): ",
       paste(departamentos_invalidos, collapse = ", "), "\n",
-      "Use get_aerodromos() para ver la lista completa.",
+      "Use get_aerodromos() to see the full list.",
       call. = FALSE
     )
   }
 
-  # Filtrar tabla
+  # Filter table
   tabla_filtrada <- tabla_departamentos[
     tabla_departamentos$departamento %in% departamento_input,
   ]
 
   # ==========================================================================
-  # 3. CONFIGURACIÓN DE DIRECTORIOS
+  # 3. DIRECTORY CONFIGURATION
   # ==========================================================================
 
   ruta_cache_dir <- file.path(tempdir(), "DEMARCA_cache", "aerodromos")
@@ -285,7 +243,7 @@ get_aerodromos <- function(departamento = NULL,
   }
 
   # ==========================================================================
-  # 4. DESCARGA Y CARGA DE DATOS
+  # 4. DATA DOWNLOAD AND LOAD
   # ==========================================================================
 
   lista_datos <- list()
@@ -298,104 +256,60 @@ get_aerodromos <- function(departamento = NULL,
     url_descarga <- paste0("https://osf.io/download/", id_osf, "/")
     archivo_local <- file.path(ruta_cache_dir, file_name)
 
-    # Descargar si no existe o si se fuerza
+    # Download if doesn't exist or if forced
     if (!file.exists(archivo_local) || force_update) {
-      if (show_progress) message("Descargando: ", dep, "...")
+      if (show_progress) message("Downloading: ", dep, "...")
 
-      # Intentar descarga con timeout extendido
-      timeout_original <- getOption("timeout")
-      options(timeout = 300)  # 5 minutos
-
-      descarga_exitosa <- tryCatch(
-        {
-          utils::download.file(
-            url = url_descarga,
-            destfile = archivo_local,
-            mode = "wb",
-            quiet = !show_progress
-          )
-          TRUE
-        },
-        error = function(e) {
-          warning(
-            "Error al descargar ", dep, ": ", e$message, "\n",
-            "URL: ", url_descarga, "\n",
-            "Puede que el archivo no est\u00e9 disponible temporalmente.",
-            call. = FALSE,
-            immediate. = TRUE
-          )
-          FALSE
-        }
+      descarga_exitosa <- download_file_safe(
+        url = url_descarga,
+        destfile = archivo_local,
+        show_progress = show_progress
       )
-
-      options(timeout = timeout_original)
 
       if (descarga_exitosa && show_progress) {
-        message("\u2713 Descarga completada: ", dep)
+        message("\u2713 Download completed: ", dep)
       } else if (!descarga_exitosa) {
-        next  # Saltar a siguiente departamento
+        next # Skip to next department
       }
     } else {
-      if (show_progress) message("\u2713 Usando cach\u00e9: ", dep)
+      if (show_progress) message("\u2713 Using cache: ", dep)
     }
 
-    # Leer GeoPackage
+    # Read GeoPackage
     if (file.exists(archivo_local)) {
-      if (show_progress) message("Cargando datos: ", dep, "...")
+      if (show_progress) message("Loading data: ", dep, "...")
 
-      tryCatch(
-        {
-          datos_dep <- sf::read_sf(archivo_local, quiet = TRUE)
+      datos_dep <- read_sf_safe(archivo_local, fix_encoding = TRUE)
 
-          # Aplicar corrección de codificación UTF-8
-          cols_char <- names(datos_dep)[sapply(datos_dep, is.character)]
-          for (col in cols_char) {
-            if (col != "geom" && col != "geometry") {
-              datos_dep[[col]] <- fix_double_utf8(datos_dep[[col]])
-            }
-          }
-
-          # Normalizar nombres de columnas
-          colnames(datos_dep) <- tolower(colnames(datos_dep))
-
-          lista_datos[[dep]] <- datos_dep
-
-          if (show_progress) {
-            message("\u2713 Cargado: ", dep, " (", nrow(datos_dep), " aer\u00f3dromos)")
-          }
-        },
-        error = function(e) {
-          warning(
-            "Error al leer archivo para ", dep, ": ", e$message,
-            call. = FALSE,
-            immediate. = TRUE
-          )
+      if (!is.null(datos_dep)) {
+        lista_datos[[dep]] <- datos_dep
+        if (show_progress) {
+          message("\u2713 Loaded: ", dep, " (", nrow(datos_dep), " airfields)")
         }
-      )
+      }
     }
   }
 
   # ==========================================================================
-  # 5. COMBINAR DATOS
+  # 5. COMBINE DATA
   # ==========================================================================
 
   if (length(lista_datos) == 0) {
-    stop("No se pudo cargar ning\u00fan departamento", call. = FALSE)
+    stop("Could not load any department", call. = FALSE)
   }
 
   if (length(lista_datos) == 1) {
     datos_final <- lista_datos[[1]]
   } else {
-    if (show_progress) message("Combinando datos de m\u00faltiples departamentos...")
+    if (show_progress) message("Combining data from multiple departments...")
 
-    # Usar rbind con manejo de errores
     tryCatch(
       {
         datos_final <- do.call(rbind, lista_datos)
       },
       error = function(e) {
         stop(
-          "Error al combinar datos de m\u00faltiples departamentos: ",
+          "Error combining data from multiple departments: ",
           e$message,
           call. = FALSE
         )
@@ -404,10 +318,10 @@ get_aerodromos <- function(departamento = NULL,
   }
 
   # ==========================================================================
-  # 6. FILTRADO POR PROVINCIA Y DISTRITO
+  # 6. FILTER BY PROVINCE AND DISTRICT
   # ==========================================================================
 
-  # Filtro por PROVINCIA
+  # Filter by PROVINCE
   if (!is.null(provincia)) {
     if ("nombprov" %in% names(datos_final)) {
       prov_input <- toupper(trimws(provincia))
@@ -415,26 +329,26 @@ get_aerodromos <- function(departamento = NULL,
 
       if (nrow(datos_final) == 0) {
         warning(
-          "No se encontraron aer\u00f3dromos para la(s) provincia(s): ",
+          "No airfields found for province(s): ",
           paste(provincia, collapse = ", "),
           call. = FALSE
         )
-        return(sf::st_sf(geometry = sf::st_sfc(crs = 4326)))
+        return(empty_sf())
       }
 
       if (show_progress) {
         message(
-          "\u2713 Filtrado por provincia: ",
+          "\u2713 Filtered by province: ",
           nrow(datos_final),
-          " aer\u00f3dromos"
+          " airfields"
         )
       }
     } else {
-      warning("No se encontr\u00f3 la columna 'nombprov' para filtrar", call. = FALSE)
+      warning("Column 'nombprov' not found for filtering", call. = FALSE)
     }
   }
 
-  # Filtro por DISTRITO
+  # Filter by DISTRICT
   if (!is.null(distrito)) {
     if ("nombdist" %in% names(datos_final)) {
       dist_input <- toupper(trimws(distrito))
@@ -442,33 +356,33 @@ get_aerodromos <- function(departamento = NULL,
 
       if (nrow(datos_final) == 0) {
         warning(
-          "No se encontraron aer\u00f3dromos para el/los distrito(s): ",
+          "No airfields found for district(s): ",
           paste(distrito, collapse = ", "),
           call. = FALSE
         )
-        return(sf::st_sf(geometry = sf::st_sfc(crs = 4326)))
+        return(empty_sf())
       }
 
       if (show_progress) {
         message(
-          "\u2713 Filtrado por distrito: ",
+          "\u2713 Filtered by district: ",
           nrow(datos_final),
-          " aer\u00f3dromos"
+          " airfields"
         )
       }
     } else {
-      warning("No se encontr\u00f3 la columna 'nombdist' para filtrar", call. = FALSE)
+      warning("Column 'nombdist' not found for filtering", call. = FALSE)
     }
   }
 
   # ==========================================================================
-  # 7. MENSAJE FINAL
+  # 7. FINAL MESSAGE
   # ==========================================================================
 
   if (show_progress) {
     message(
-      "\u2713 Datos cargados exitosamente: ",
-      nrow(datos_final), " aer\u00f3dromos"
+      "\u2713 Data loaded successfully: ",
+      nrow(datos_final), " airfields"
     )
   }
 

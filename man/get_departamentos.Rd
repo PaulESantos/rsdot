@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_departamentos.R
 \name{get_departamentos}
 \alias{get_departamentos}
-\title{Obtener Límites Censales Departamentales del Perú}
+\title{Get Departmental Census Limits of Peru}
 \usage{
 get_departamentos(
   departamento = NULL,
@@ -11,93 +11,69 @@ get_departamentos(
 )
 }
 \arguments{
-\item{departamento}{Character vector. Nombre(s) del/los departamento(s) a filtrar.
-Puede ser un único departamento (ej: "CUSCO") o múltiples departamentos
-(ej: c("CUSCO", "PUNO")). No distingue entre mayúsculas y minúsculas.
-Si es \code{NULL} (por defecto), retorna todos los departamentos del Perú.}
+\item{departamento}{Character vector. Name(s) of the department(s) to filter.
+Can be a single department (e.g., "CUSCO") or multiple departments
+(e.g., c("CUSCO", "PUNO")). Case-insensitive.
+If \code{NULL} (default), returns all departments of Peru.}
 
-\item{show_progress}{Logical. Si \code{TRUE} (por defecto), muestra mensajes
-informativos sobre el progreso de la descarga. Si \code{FALSE}, ejecuta de
-forma silenciosa.}
+\item{show_progress}{Logical. If \code{TRUE} (default), shows informative
+messages about download progress. If \code{FALSE}, executes silently.}
 
-\item{force_update}{Logical. Si \code{TRUE}, fuerza una nueva descarga del
-archivo incluso si existe en caché. Por defecto \code{FALSE} para aprovechar
-datos en caché.}
+\item{force_update}{Logical. If \code{TRUE}, forces a new download of the
+file even if it exists in cache. Default \code{FALSE} to leverage cached data.}
 }
 \value{
-Un objeto \code{sf} (simple feature) con la geometría de los departamentos
-solicitados, incluyendo sus atributos geográficos y administrativos.
+An \code{sf} (simple feature) object with the geometry of the requested
+departments, including their geographic and administrative attributes.
 }
 \description{
-Descarga y carga los límites departamentales oficiales del INEI (2023) desde el
-repositorio OSF de DEMARCA. Implementa caché de sesión para optimizar descargas
-repetidas y mantiene la consola limpia durante la ejecución.
+Downloads and loads the official departmental limits from INEI (2023) from the
+DEMARCA OSF repository. Implements persistent caching to optimize repeated
+downloads and keeps the console clean during execution.
 }
 \details{
-La función descarga los datos directamente desde OSF (Open Science Framework)
-y los almacena en un directorio temporal de caché durante la sesión de R.
-Los datos corresponden a los límites censales oficiales del INEI 2023.
+The function downloads data directly from OSF (Open Science Framework)
+and stores it in the user's cache directory (\code{tools::R_user_dir("rsdot", "cache")}).
+The data corresponds to the official INEI 2023 census limits.
 
-El caché se almacena en: \code{tempdir()/DEMARCA_cache/}
-
-Fuente de datos: Repositorio DEMARCA en OSF (\url{https://osf.io/grhe3/})
+Data source: DEMARCA Repository on OSF (\url{https://osf.io/grhe3/})
 }
 \examples{
 \dontrun{
-# Cargar todos los departamentos del Perú
+# Load all departments of Peru
 peru <- get_departamentos()
 
-# Cargar un departamento específico (no distingue mayúsculas/minúsculas)
+# Load a specific department (case-insensitive)
 cusco <- get_departamentos(departamento = "Cusco")
 
-# Cargar múltiples departamentos (región sur)
+# Load multiple departments (southern region)
 sur <- get_departamentos(
   departamento = c("PUNO", "TACNA", "MOQUEGUA", "AREQUIPA")
 )
 
-# Forzar actualización de datos
-peru_actualizado <- get_departamentos(force_update = TRUE)
+# Force data update
+peru_updated <- get_departamentos(force_update = TRUE)
 
-# Ejecución silenciosa
+# Silent execution
 lima <- get_departamentos(departamento = "LIMA", show_progress = FALSE)
 
-# Visualización con ggplot2
+# Visualization with ggplot2
 library(ggplot2)
 
 ggplot(peru) +
   geom_sf(fill = "#ff9999", color = "#e60000", linewidth = 1) +
   labs(
-    title = "Límites Censales Departamentales del Perú",
-    subtitle = "Límites Censales INEI 2023",
-    caption = "Fuente: INEI | Visor - SDOT"
+    title = "Departmental Census Limits of Peru",
+    subtitle = "INEI 2023 Census Limits",
+    caption = "Source: INEI | Visor - SDOT"
   ) +
   theme_minimal()
-
-ggplot(cusco) +
-  geom_sf(fill = "lightgreen", color = "darkgreen", linewidth = 1) +
-  labs(
-    title = "Departamento de Cusco",
-    subtitle = "Límites Censales INEI 2023",
-    caption = "Fuente: INEI | Visor - SDOT"
-  ) +
-  theme_minimal()
-
-ggplot(sur) +
-  geom_sf(aes(fill = nombdep), color = "white", linewidth = 0.5) +
-  labs(
-    title = "Macro Región Sur del Perú",
-    fill = "Departamento",
-    caption = "Fuente: INEI | Visor - SDOT"
-  ) +
-  scale_fill_brewer(palette = "Set3") +
-  theme_minimal() +
-  theme(legend.position = "bottom")
 }
 
 }
 \references{
-INEI (2023). Límites Censales Departamentales del Perú.
-Repositorio VISOR SDOT DEMARCA PERU: \url{https://osf.io/qy4j6/overview}
+INEI (2023). Departmental Census Limits of Peru.
+SDOT DEMARCA PERU VISOR Repository: \url{https://osf.io/qy4j6/overview}
 }
 \seealso{
 \code{\link[sf]{read_sf}}, \code{\link[sf]{st_geometry}}

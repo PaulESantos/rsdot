@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_densidad_poblacional.R
 \name{get_densidad_poblacional}
 \alias{get_densidad_poblacional}
-\title{Obtener Densidad y Crecimiento Poblacional por Departamento}
+\title{Get Population Density and Growth by Department}
 \usage{
 get_densidad_poblacional(
   departamento = NULL,
@@ -13,175 +13,173 @@ get_densidad_poblacional(
 )
 }
 \arguments{
-\item{departamento}{Character vector. Nombre(s) del/los departamento(s) a descargar.
-Opciones válidas: "AMAZONAS", "ANCASH", "APURIMAC", "AREQUIPA", "AYACUCHO",
+\item{departamento}{Character vector. Name(s) of the department(s) to download.
+Valid options: "AMAZONAS", "ANCASH", "APURIMAC", "AREQUIPA", "AYACUCHO",
 "CAJAMARCA", "CALLAO", "CUSCO", "HUANCAVELICA", "HUANUCO", "ICA", "JUNIN",
 "LA LIBERTAD", "LAMBAYEQUE", "LIMA", "LORETO", "MADRE DE DIOS", "MOQUEGUA",
 "PASCO", "PIURA", "PUNO", "SAN MARTIN", "TACNA", "TUMBES", "UCAYALI".
-No distingue entre mayúsculas y minúsculas. Si es \code{NULL}, muestra la
-lista de departamentos disponibles.}
+Case-insensitive. If \code{NULL}, shows the list of available departments.}
 
-\item{provincia}{Character vector. Nombre(s) de la(s) provincia(s) para filtrar
-dentro del/los departamento(s) especificado(s). Opcional.}
+\item{provincia}{Character vector. Name(s) of the province(s) to filter
+within the specified department(s). Optional.}
 
-\item{distrito}{Character vector. Nombre(s) del/los distrito(s) para filtrar
-dentro de la(s) provincia(s) especificada(s). Opcional.}
+\item{distrito}{Character vector. Name(s) of the district(s) to filter
+within the specified province(s). Optional.}
 
-\item{show_progress}{Logical. Si \code{TRUE} (por defecto), muestra mensajes
-informativos sobre el progreso de la descarga. Si \code{FALSE}, ejecuta de
-forma silenciosa.}
+\item{show_progress}{Logical. If \code{TRUE} (default), shows informative
+messages about download progress. If \code{FALSE}, executes silently.}
 
-\item{force_update}{Logical. Si \code{TRUE}, fuerza una nueva descarga del
-archivo incluso si existe en caché. Por defecto \code{FALSE}.}
+\item{force_update}{Logical. If \code{TRUE}, forces a new download of the
+file even if it exists in cache. Default \code{FALSE}.}
 }
 \value{
-Un objeto \code{sf} (simple feature) con información de densidad y
-crecimiento poblacional, incluyendo:
+An \code{sf} (simple feature) object with density and population growth
+information, including:
 \itemize{
-\item Geometría de los polígonos interpolados (con geometrías validadas)
-\item \code{ubigeo}: Código UBIGEO del distrito
-\item \code{nombdep}: Nombre del departamento
-\item \code{nombprov}: Nombre de la provincia
-\item \code{nombdist}: Nombre del distrito
-\item \code{nivel}: Nivel de crecimiento poblacional
-\item \code{rango}: Rango de tasa de crecimiento
-\item \code{descrip}: Descripción de la categoría
+\item Geometry of interpolated polygons (with validated geometries)
+\item \code{ubigeo}: District UBIGEO code
+\item \code{nombdep}: Department name
+\item \code{nombprov}: Province name
+\item \code{nombdist}: District name
+\item \code{nivel}: Population growth level
+\item \code{rango}: Growth rate range
+\item \code{descrip}: Category description
 }
 
-Si se solicitan múltiples departamentos, retorna un objeto sf combinado.
+If multiple departments are requested, it returns a combined sf object.
 }
 \description{
-Descarga y carga la información de densidad y crecimiento poblacional intercensal
-por departamento desde el repositorio OSF de DEMARCA. Los datos provienen de los
-censos de población 2007 y 2017 del INEI, procesados mediante interpolación espacial.
-Permite filtrado escalonado por departamento, provincia y distrito.
+Downloads and loads intercensal population density and growth information
+by department from the DEMARCA OSF repository. Data comes from INEI
+2007 and 2017 population censuses, processed through spatial interpolation.
+Allows stepwise filtering by department, province, and district.
 }
 \details{
-La función descarga datos desde OSF (Open Science Framework) y los almacena
-en caché durante la sesión de R. Los datos están en formato GeoPackage (.gpkg).
+The function downloads data from OSF (Open Science Framework) and stores it
+in cache during the R session. Data is in GeoPackage (.gpkg) format.
 
-\strong{Metodología de los datos:}
+\strong{Data Methodology:}
 \itemize{
-\item Fuente: Censos de Población INEI 2007 y 2017
-\item Cobertura: Centros poblados con población > 150 habitantes
-\item Técnica: Interpolación espacial para representación continua
-\item Variable: Tasa de crecimiento poblacional intercensal anual
+\item Source: INEI 2007 and 2017 Population Censuses
+\item Coverage: Population centers with > 150 inhabitants
+\item Technique: Spatial interpolation for continuous representation
+\item Variable: Annual intercensal population growth rate
 }
 
-\strong{Filtrado jerárquico:}
-Los filtros se aplican en cascada:
+\strong{Hierarchical Filtering:}
+Filters are applied in cascade:
 \enumerate{
-\item Primero se cargan los departamentos especificados
-\item Luego se filtran las provincias (si se especifican)
-\item Finalmente se filtran los distritos (si se especifican)
+\item Specified departments are loaded first
+\item Then provinces are filtered (if specified)
+\item Finally, districts are filtered (if specified)
 }
 
-El caché se almacena en: \code{tempdir()/DEMARCA_cache/densidad_poblacional/}
+Cache is stored in: \code{tempdir()/DEMARCA_cache/densidad_poblacional/}
 
-\strong{NOTA:} Las geometrías se validan automáticamente con \code{st_make_valid()}
-para prevenir errores en operaciones espaciales posteriores.
+\strong{NOTE:} Geometries are automatically validated with \code{st_make_valid()}
+to prevent errors in subsequent spatial operations.
 }
 \examples{
 \dontrun{
-# Ver departamentos disponibles
+# See available departments
 get_densidad_poblacional()
 
-# Cargar un departamento completo
+# Load a full department
 densidad_cusco <- get_densidad_poblacional(departamento = "CUSCO")
 
-# Cargar una provincia específica
+# Load a specific province
 densidad_prov_cusco <- get_densidad_poblacional(
   departamento = "CUSCO",
   provincia = "CUSCO"
 )
 
-# Cargar un distrito específico
+# Load a specific district
 densidad_wanchaq <- get_densidad_poblacional(
   departamento = "CUSCO",
   provincia = "CUSCO",
   distrito = "WANCHAQ"
 )
 
-# Cargar múltiples departamentos
+# Load multiple departments
 densidad_sur <- get_densidad_poblacional(
   departamento = c("CUSCO", "PUNO", "AREQUIPA")
 )
 
-# Filtrar múltiples provincias
+# Filter multiple provinces
 densidad_valle <- get_densidad_poblacional(
   departamento = "CUSCO",
   provincia = c("CUSCO", "URUBAMBA", "CALCA")
 )
 
-# Visualización con ggplot2
+# Visualization with ggplot2
 library(ggplot2)
 library(dplyr)
 
-# Mapa de nivel de crecimiento
+# Growth level map
 ggplot(densidad_cusco) +
   geom_sf(aes(fill = nivel), color = NA) +
   scale_fill_brewer(
     palette = "RdYlGn",
-    name = "Nivel de\nCrecimiento"
+    name = "Growth\nLevel"
   ) +
   labs(
-    title = "Crecimiento Poblacional por Nivel",
-    subtitle = "Departamento de Cusco (2007-2017)",
-    caption = "Fuente: INEI | Visor - SDOT"
+    title = "Population Growth by Level",
+    subtitle = "Department of Cusco (2007-2017)",
+    caption = "Source: INEI | Visor - SDOT"
   ) +
   theme_minimal()
 
-# Capa agregada por distrito (un polígono por distrito)
+# Aggregated layer by district (one polygon per district)
 distritos_anta <- prov_anta |>
- group_by(ubigeo, nombdist) |>
- summarise(.groups = "drop")
+  group_by(ubigeo, nombdist) |>
+  summarise(.groups = "drop")
 distritos_anta
 
-# Puntos para poner las etiquetas dentro de cada distrito
+# Points to place labels inside each district
 distritos_centroides <- st_point_on_surface(distritos_anta)
 distritos_centroides
 
 ggplot() +
- # 1. Celdas / polígonos con el nivel de crecimiento
- geom_sf(
-   data = prov_anta,
-   aes(fill = nivel),
-   color = NA
- ) +
- # 2. Contorno de distritos (para “hacerlos notar”)
- geom_sf(
-   data = distritos_anta,
-   fill  = NA,
-   color = "grey20",
-   linewidth = 0.4
- ) +
- # 3. Nombre de los distritos
- geom_sf_text(
-   data = distritos_centroides,
-   aes(label = nombdist),
-   size = 3
- ) +
- scale_fill_brewer(
-   palette = "RdYlGn",
-   name    = "Nivel de\ncrecimiento"
- ) +
- labs(
-   title    = "Crecimiento poblacional",
-   subtitle = "Provincia de Anta (2007–2017)",
-   caption  = "Fuente: INEI | Visor SDOT"
- ) +
- theme_minimal() +
- theme(
-   legend.position = "right",
-   panel.grid.major = element_line(linewidth = 0.2, colour = "grey90")
- )
+  # 1. Cells / polygons with growth level
+  geom_sf(
+    data = prov_anta,
+    aes(fill = nivel),
+    color = NA
+  ) +
+  # 2. District outline (to make them stand out)
+  geom_sf(
+    data = distritos_anta,
+    fill = NA,
+    color = "grey20",
+    linewidth = 0.4
+  ) +
+  # 3. District names
+  geom_sf_text(
+    data = distritos_centroides,
+    aes(label = nombdist),
+    size = 3
+  ) +
+  scale_fill_brewer(
+    palette = "RdYlGn",
+    name    = "Growth\nlevel"
+  ) +
+  labs(
+    title    = "Population Growth",
+    subtitle = "Province of Anta (2007–2017)",
+    caption  = "Source: INEI | Visor SDOT"
+  ) +
+  theme_minimal() +
+  theme(
+    legend.position = "right",
+    panel.grid.major = element_line(linewidth = 0.2, colour = "grey90")
+  )
 }
 
 }
 \references{
-INEI. Censos Nacionales de Población y Vivienda 2007 y 2017.
+INEI. National Population and Housing Censuses 2007 and 2017.
 
-Repositorio DEMARCA en OSF: \url{https://osf.io/qy4j6/}
+DEMARCA OSF Repository: \url{https://osf.io/qy4j6/}
 }
 \seealso{
 \code{\link{get_departamentos}}, \code{\link{get_provincias}},

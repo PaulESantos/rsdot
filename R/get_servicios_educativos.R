@@ -1,290 +1,288 @@
-#' Obtener Servicios Educativos del Perú
+#' Get Educational Services of Peru
 #'
-#' Descarga y carga la información de servicios educativos del Perú, elaborado por
-#' el Ministerio de Educación (MINEDU). Un servicio educativo es el conjunto de
-#' actividades educativas diseñadas y organizadas para lograr un objetivo de
-#' aprendizaje. Los datos incluyen geometría tipo POINT e información sobre
-#' nivel educativo, modalidad, gestión, turno y características del servicio.
-#' Permite filtrado escalonado por departamento, provincia y distrito.
+#' Downloads and loads information on educational services in Peru, prepared by
+#' the Ministry of Education (MINEDU). An educational service is a set of
+#' educational activities designed and organized to achieve a learning
+#' objective. Data includes POINT type geometry and information on educational
+#' level, modality, management, shift, and service characteristics.
+#' Allows stepwise filtering by department, province, and district.
 #'
-#' @param departamento Character vector. Nombre(s) del/los departamento(s) a descargar.
-#'   Opciones válidas: "AMAZONAS", "ANCASH", "APURIMAC", "AREQUIPA", "AYACUCHO",
+#' @param departamento Character vector. Name(s) of the department(s) to download.
+#'   Valid options: "AMAZONAS", "ANCASH", "APURIMAC", "AREQUIPA", "AYACUCHO",
 #'   "CAJAMARCA", "CALLAO", "CUSCO", "HUANCAVELICA", "HUANUCO", "ICA", "JUNIN",
 #'   "LA LIBERTAD", "LAMBAYEQUE", "LIMA", "LORETO", "MADRE DE DIOS", "MOQUEGUA",
 #'   "PASCO", "PIURA", "PUNO", "SAN MARTIN", "TACNA", "TUMBES", "UCAYALI".
-#'   No distingue entre mayúsculas y minúsculas. Si es \code{NULL}, muestra la
-#'   lista de departamentos disponibles.
-#' @param provincia Character vector. Nombre(s) de la(s) provincia(s) para filtrar
-#'   dentro del/los departamento(s) especificado(s). Opcional.
-#' @param show_progress Logical. Si \code{TRUE} (por defecto), muestra mensajes
-#'   informativos sobre el progreso de la descarga. Si \code{FALSE}, ejecuta de
-#'   forma silenciosa.
-#' @param force_update Logical. Si \code{TRUE}, fuerza una nueva descarga del
-#'   archivo incluso si existe en caché. Por defecto \code{FALSE}.
+#'   Case-insensitive. If \code{NULL}, shows the list of available departments.
+#' @param provincia Character vector. Name(s) of the province(s) to filter
+#'   within the specified department(s). Optional.
+#' @param show_progress Logical. If \code{TRUE} (default), shows informative
+#'   messages about download progress. If \code{FALSE}, executes silently.
+#' @param force_update Logical. If \code{TRUE}, forces a new download of the
+#'   file even if it exists in cache. Default \code{FALSE}.
 #'
-#' @return Un objeto \code{sf} (simple feature) con geometría tipo POINT que contiene
-#'   información de los servicios educativos, incluyendo:
+#' @return An \code{sf} (simple feature) object with POINT geometry containing
+#'   educational service information, including:
 #'
-#'   \strong{Identificación del servicio:}
+#'   \strong{Service Identification:}
 #'   \itemize{
-#'     \item Geometría POINT (coordenadas del servicio educativo)
-#'     \item \code{cod_mod}: Código modular del servicio educativo (identificador
-#'       único asignado por MINEDU)
-#'     \item \code{anexo}: Número de anexo del servicio educativo (0 si es sede
-#'       principal)
-#'     \item \code{cen_edu}: Nombre del centro educativo o institución
-#'     \item \code{codinst}: Código de la institución (RUC o código interno)
+#'     \item POINT geometry (educational service coordinates)
+#'     \item \code{cod_mod}: Modular code of the educational service (unique
+#'       identifier assigned by MINEDU)
+#'     \item \code{anexo}: Annex number of the educational service (0 if it is
+#'       the main headquarters)
+#'     \item \code{cen_edu}: Name of the educational center or institution
+#'     \item \code{codinst}: Institution code (RUC or internal code)
 #'   }
 #'
-#'   \strong{Nivel y modalidad educativa:}
+#'   \strong{Educational Level and Modality:}
 #'   \itemize{
-#'     \item \code{d_niv_mod}: Nivel y modalidad del servicio educativo
-#'     \item \code{d_forma}: Forma de atención:
+#'     \item \code{d_niv_mod}: Educational service level and modality
+#'     \item \code{d_forma}: Form of care:
 #'       \itemize{
-#'         \item ESCOLARIZADO: Educación presencial en aula
-#'         \item NO ESCOLARIZADO: Programas no escolarizados (PRONOEI, etc.)
-#'         \item NO APLICA:
+#'         \item ESCOLARIZADO: Classroom-based education
+#'         \item NO ESCOLARIZADO: Non-classroom programs (PRONOEI, etc.)
+#'         \item NO APLICA: Not applicable
 #'       }
 #'   }
 #'
-#'   \strong{Gestión y dependencia:}
+#'   \strong{Management and Dependency:}
 #'   \itemize{
-#'     \item \code{d_gestion}: Tipo de gestión:
+#'     \item \code{d_gestion}: Management type:
 #'       \itemize{
-#'         \item PÚBLICA DE GESTIÓN DIRECTA: Administrada directamente por el Estado
-#'         \item PÚBLICA DE GESTIÓN PRIVADA: Pública pero administrada por privados
-#'           (convenios)
-#'         \item PRIVADA: Administración particular
+#'         \item PÚBLICA DE GESTIÓN DIRECTA: Directly administered by the State
+#'         \item PÚBLICA DE GESTIÓN PRIVADA: Public but privately administered
+#'           (agreements)
+#'         \item PRIVADA: Private administration
 #'       }
-#'     \item \code{d_ges_dep}: Dependencia específica de la gestión
-#'     \item \code{d_dreugel}: DRE o UGEL de dependencia administrativa
+#'     \item \code{d_ges_dep}: Specific management dependency
+#'     \item \code{d_dreugel}: DRE or UGEL of administrative dependency
 #'   }
 #'
-#'   \strong{Características del servicio:}
+#'   \strong{Service Characteristics:}
 #'   \itemize{
-#'     \item \code{d_cod_car}: Característica del docente según número de grados
-#'       a cargo:
+#'     \item \code{d_cod_car}: Teacher characteristic based on number of grades
+#'       in charge:
 #'       \itemize{
-#'         \item POLIDOCENTE COMPLETO: Un docente por grado/sección
-#'         \item POLIDOCENTE MULTIGRADO: Docentes atienden varios grados
-#'         \item UNIDOCENTE: Un solo docente para todos los grados
-#'         \item NO APLICA: No corresponde al nivel educativo
-#'         \item NO DISPONIBLE:
+#'         \item POLIDOCENTE COMPLETO: One teacher per grade/section
+#'         \item POLIDOCENTE MULTIGRADO: Teachers attend several grades
+#'         \item UNIDOCENTE: A single teacher for all grades
+#'         \item NO APLICA: Does not correspond to the educational level
+#'         \item NO DISPONIBLE: Not available
 #'       }
-#'     \item \code{d_tipssexo}: Tipo de servicio según sexo de estudiantes:
+#'     \item \code{d_tipssexo}: Service type based on students' sex:
 #'       \itemize{
-#'         \item MIXTO: Atiende a ambos sexos
-#'         \item VARONES: Solo varones
-#'         \item MUJERES: Solo mujeres
-#'         \item NO APLICA
+#'         \item MIXTO: Attends both sexes
+#'         \item VARONES: Males only
+#'         \item MUJERES: Females only
+#'         \item NO APLICA: Not applicable
 #'       }
-#'     \item \code{d_tipoprog}: Tipo de programa (para servicios no escolarizados)
-#'     \item \code{d_cod_tur}: Turno de atención
+#'     \item \code{d_tipoprog}: Program type (for non-classroom services)
+#'     \item \code{d_cod_tur}: Service shift
 #'   }
 #'
-#'   \strong{Ubicación geográfica:}
+#'   \strong{Geographic Location:}
 #'   \itemize{
-#'     \item \code{departamen}: Nombre del departamento
-#'     \item \code{provincia}: Nombre de la provincia
-#'     \item \code{nlat_ie}: Latitud del servicio educativo (coordenada Y)
-#'     \item \code{nlong_ie}: Longitud del servicio educativo (coordenada X)
+#'     \item \code{departamen}: Department name
+#'     \item \code{provincia}: Province name
+#'     \item \code{nlat_ie}: Educational service latitude (Y coordinate)
+#'     \item \code{nlong_ie}: Educational service longitude (X coordinate)
 #'   }
 #'
-#'   Si se solicitan múltiples departamentos, retorna un objeto sf combinado.
+#'   If multiple departments are requested, it returns a combined sf object.
 #'
 #' @details
-#' La función descarga datos desde OSF (Open Science Framework) y los almacena
-#' en caché durante la sesión de R. Los datos están en formato GeoPackage (.gpkg).
+#' The function downloads data from OSF (Open Science Framework) and stores it
+#' in cache during the R session. Data is in GeoPackage (.gpkg) format.
 #'
-#' **Fuente de los datos:**
+#' **Data Source:**
 #' \itemize{
-#'   \item Fuente: Ministerio de Educación (MINEDU)
-#'   \item Registro: Padrón de Instituciones Educativas
-#'   \item Nivel: Servicio educativo
-#'   \item Aplicación: Análisis de oferta educativa, planificación de política
-#'     educativa y estudios de cobertura por nivel y modalidad
+#'   \item Source: Ministry of Education (MINEDU)
+#'   \item Registration: Educational Institutions Registry
+#'   \item Level: Educational service
+#'   \item Application: Educational offer analysis, educational policy
+#'     planning, and coverage studies by level and modality
 #' }
 #'
-#' **Diferencia entre local educativo y servicio educativo:**
+#' **Difference between educational facility and educational service:**
 #' \itemize{
-#'   \item \strong{Local educativo}: Infraestructura física (inmueble) donde
-#'     funcionan los servicios. Ver \code{\link{get_locales_educativos}}.
-#'   \item \strong{Servicio educativo}: Unidad de gestión pedagógica que brinda
-#'     un nivel o modalidad específica de educación. Un local puede albergar
-#'     múltiples servicios educativos.
+#'   \item \strong{Educational Facility}: Physical infrastructure (property) where
+#'     services operate. See \code{\link{get_locales_educativos}}.
+#'   \item \strong{Educational Service}: Pedagogical management unit that provides
+#'     a specific level or modality of education. A facility may house
+#'     multiple educational services.
 #' }
 #'
-#' **Sistema educativo peruano - Niveles y modalidades:**
+#' **Peruvian Educational System - Levels and Modalities:**
 #'
-#' \strong{Educación Básica Regular (EBR):}
+#' \strong{Regular Basic Education (EBR):}
 #' \itemize{
-#'   \item \strong{Inicial}: Cuna (0-2 años), Jardín (3-5 años)
-#'   \item \strong{Primaria}: 6 grados (6-11 años)
-#'   \item \strong{Secundaria}: 5 grados (12-16 años)
+#'   \item \strong{Initial}: Nursery (0-2 years), Kindergarten (3-5 years)
+#'   \item \strong{Primary}: 6 grades (6-11 years)
+#'   \item \strong{Secondary}: 5 grades (12-16 years)
 #' }
 #'
 #'
-#' **Clasificación por característica docente (d_cod_car):**
+#' **Classification by teacher characteristic (d_cod_car):**
 #' \itemize{
-#'   \item \strong{Polidocente completo}: Cada sección tiene su propio docente.
-#'     Típico en zonas urbanas.
-#'   \item \strong{Polidocente multigrado}: Varios docentes que atienden más de
-#'     un grado cada uno.
-#'   \item \strong{Unidocente}: Un solo docente atiende todos los grados.
-#'     Frecuente en zonas rurales con poca matrícula.
+#'   \item \strong{Full Polidocente}: Each section has its own teacher.
+#'     Typical in urban areas.
+#'   \item \strong{Multigrade Polidocente}: Several teachers who attend more than
+#'     one grade each.
+#'   \strong{Unidocente}: A single teacher attends all grades.
+#'     Frequent in rural areas with low enrollment.
 #' }
 #'
-#' **Filtrado jerárquico:**
-#' Los filtros se aplican en cascada:
+#' **Hierarchical Filtering:**
+#' Filters are applied in cascade:
 #' \enumerate{
-#'   \item Primero se cargan los departamentos especificados
-#'   \item Luego se filtran las provincias (si se especifican)
+#'   \item Specified departments are loaded first
+#'   \item Then provinces are filtered (if specified)
 #' }
 #'
-#' El caché se almacena en: \code{tempdir()/DEMARCA_cache/servicios_educativos/}
+#' Cache is stored in: \code{tempdir()/DEMARCA_cache/servicios_educativos/}
 #'
-#' **NOTA:** Las geometrías son tipo POINT (puntos) y representan la ubicación
-#' de cada servicio educativo.
+#' **NOTE:** Geometries are POINT type and represent the location
+#' of each educational service.
 #'
 #' @examples
 #' \dontrun{
-#' # Ver departamentos disponibles
+#' # See available departments
 #' get_servicios_educativos()
 #'
-#' # Cargar servicios educativos de un departamento completo
+#' # Load educational services of a full department
 #' serv_cusco <- get_servicios_educativos(departamento = "CUSCO")
 #'
-#' # Filtrar por provincia específica
+#' # Filter by specific province
 #' serv_prov_cusco <- get_servicios_educativos(
 #'   departamento = "CUSCO",
 #'   provincia = "CUSCO"
 #' )
 #'
-#' # Filtrar por distrito específico
+#' # Filter by specific province
 #' serv_prov_urubamba <- get_servicios_educativos(
 #'   departamento = "CUSCO",
 #'   provincia = "URUBAMBA"
 #' )
 #'
-#' # Cargar múltiples departamentos
+#' # Load multiple departments
 #' serv_sur <- get_servicios_educativos(
 #'   departamento = c("CUSCO", "PUNO", "AREQUIPA")
 #' )
 #'
-#' # Visualización con ggplot2
+#' # Visualization with ggplot2
 #' library(ggplot2)
 #' library(dplyr)
 #'
-#' # Mapa de servicios educativos por nivel
+#' # Map of educational services by level
 #' serv_cusco |>
 #'   filter(d_niv_mod %in% c("PRIMARIA", "SECUNDARIA", "INICIAL - JARDÍN")) |>
 #'   ggplot() +
 #'   geom_sf(aes(color = d_niv_mod), size = 1, alpha = 0.6) +
-#'   scale_color_brewer(palette = "Set1", name = "Nivel") +
+#'   scale_color_brewer(palette = "Set1", name = "Level") +
 #'   labs(
-#'     title = "Servicios Educativos por Nivel - Cusco",
-#'     subtitle = "Educación Básica Regular",
-#'     caption = "Fuente: MINEDU - Padrón de Instituciones Educativas"
+#'     title = "Educational Services by Level - Cusco",
+#'     subtitle = "Regular Basic Education",
+#'     caption = "Source: MINEDU - Educational Institutions Registry"
 #'   ) +
 #'   theme_minimal()
 #'
-#' # Resumen por nivel y modalidad
+#' # Summary by level and modality
 #' serv_cusco |>
 #'   sf::st_drop_geometry() |>
 #'   count(d_niv_mod, sort = TRUE)
 #'
-#' # Distribución por tipo de gestión
+#' # Summary by management type
 #' serv_cusco |>
 #'   sf::st_drop_geometry() |>
 #'   count(d_gestion, sort = TRUE)
 #'
-#' # Servicios públicos vs privados
+#' # Public vs private services
 #' serv_cusco |>
 #'   sf::st_drop_geometry() |>
 #'   count(d_ges_dep, sort = TRUE)
 #'
-#' # Filtrar solo educación inicial
-#' serv_inicial <- serv_cusco |>
+#' # Filter only initial education
+#' initial_serv <- serv_cusco |>
 #'   filter(grepl("INICIAL", d_niv_mod))
 #'
-#' # Filtrar servicios de secundaria pública
-#' serv_secund_publica <- serv_cusco |>
+#' # Filter public secondary services
+#' public_secondary_serv <- serv_cusco |>
 #'   filter(
 #'     d_niv_mod == "SECUNDARIA",
 #'     d_gestion == "PÚBLICA DE GESTIÓN DIRECTA"
 #'   )
 #'
-#' # Análisis de escuelas unidocentes (rurales)
-#' serv_unidocente <- serv_cusco |>
+#' # Analysis of unidocente schools (rural)
+#' unidocente_serv <- serv_cusco |>
 #'   filter(d_cod_car == "UNIDOCENTE")
 #'
-#' # Mapa de escuelas unidocentes
-#' ggplot(serv_unidocente) +
+#' # Map of unidocente schools
+#' ggplot(unidocente_serv) +
 #'   geom_sf(color = "darkred", size = 1.5, alpha = 0.7) +
 #'   labs(
-#'     title = "Servicios Educativos Unidocentes - Cusco",
-#'     subtitle = "Un docente para todos los grados",
-#'     caption = "Fuente: MINEDU"
+#'     title = "Unidocente Educational Services - Cusco",
+#'     subtitle = "One teacher for all grades",
+#'     caption = "Source: MINEDU"
 #'   ) +
 #'   theme_minimal()
 #'
-#' # Análisis por UGEL
+#' # Analysis by UGEL
 #' serv_cusco |>
 #'   sf::st_drop_geometry() |>
 #'   count(d_dreugel, sort = TRUE)
 #'
-#' # Distribución por turno de atención
+#' # Distribution by attendance shift
 #' serv_cusco |>
 #'   sf::st_drop_geometry() |>
 #'   count(d_cod_tur, sort = TRUE)
 #'
-#' # Servicios no escolarizados (PRONOEI, etc.)
-#' serv_no_escolarizado <- serv_cusco |>
+#' # Non-classroom services (PRONOEI, etc.)
+#' non_classroom_serv <- serv_cusco |>
 #'   filter(d_forma == "NO ESCOLARIZADO")
 #'
-#' # Análisis de cobertura por provincia y nivel
-#' cobertura <- serv_cusco |>
+#' # Coverage analysis by province and level
+#' coverage <- serv_cusco |>
 #'   sf::st_drop_geometry() |>
 #'   filter(d_niv_mod %in% c("PRIMARIA", "SECUNDARIA")) |>
 #'   group_by(provincia, d_niv_mod) |>
 #'   summarise(
-#'     total_servicios = n(),
-#'     pct_publica = round(
+#'     total_services = n(),
+#'     pct_public = round(
 #'       sum(d_gestion == "PÚBLICA DE GESTIÓN DIRECTA") / n() * 100, 1
 #'     ),
 #'     .groups = "drop"
 #'   ) |>
 #'   tidyr::pivot_wider(
 #'     names_from = d_niv_mod,
-#'     values_from = c(total_servicios, pct_publica)
+#'     values_from = c(total_services, pct_public)
 #'   )
 #'
-#' # Mapa comparativo público vs privado
+#' # Comparative map public vs private
 #' serv_cusco |>
 #'   filter(d_niv_mod == "SECUNDARIA") |>
 #'   mutate(
-#'     tipo_gestion = ifelse(
-#'       grepl("PÚBLICA", d_gestion), "Pública", "Privada"
+#'     management_type = ifelse(
+#'       grepl("PÚBLICA", d_gestion), "Public", "Private"
 #'     )
 #'   ) |>
 #'   ggplot() +
-#'   geom_sf(aes(color = tipo_gestion), size = 2, alpha = 0.6) +
+#'   geom_sf(aes(color = management_type), size = 2, alpha = 0.6) +
 #'   scale_color_manual(
-#'     values = c("Pública" = "darkblue", "Privada" = "darkred"),
-#'     name = "Gestión"
+#'     values = c("Public" = "darkblue", "Private" = "darkred"),
+#'     name = "Management"
 #'   ) +
 #'   labs(
-#'     title = "Servicios de Secundaria por Tipo de Gestión - Cusco",
-#'     caption = "Fuente: MINEDU"
+#'     title = "Secondary Services by Management Type - Cusco",
+#'     caption = "Source: MINEDU"
 #'   ) +
 #'   theme_minimal()
 #'
-#' # CETPRO - Educación técnico productiva
+#' # CETPRO - Technical productive education
 #' cetpro <- serv_cusco |>
 #'   filter(grepl("TÉCNICO PRODUCTIVA", d_niv_mod))
 #'
-#' # Institutos superiores
-#' superiores <- serv_cusco |>
+#' # Higher institutes
+#' higher_institutes <- serv_cusco |>
 #'   filter(grepl("SUPERIOR", d_niv_mod))
 #' }
 #'
@@ -294,12 +292,12 @@
 #' \code{\link[sf]{read_sf}}
 #'
 #' @references
-#' Ministerio de Educación del Perú (MINEDU). Padrón de Instituciones Educativas
-#' y Programas Educativos.
+#' Ministry of Education of Peru (MINEDU). Educational Institutions and
+#' Educational Programs Registry.
 #'
-#' ESCALE - Estadística de la Calidad Educativa: \url{https://escale.minedu.gob.pe/}
+#' ESCALE - Statistics of Educational Quality: \url{https://escale.minedu.gob.pe/}
 #'
-#' Repositorio DEMARCA en OSF: \url{https://osf.io/qy4j6/}
+#' DEMARCA OSF Repository: \url{https://osf.io/qy4j6/}
 #'
 #' @export
 #' @importFrom utils download.file
@@ -309,7 +307,6 @@ get_servicios_educativos <- function(departamento = NULL,
                                      provincia = NULL,
                                      show_progress = TRUE,
                                      force_update = FALSE) {
-
   # ==========================================================================
 
   # 1. TABLA DE REFERENCIA DE DEPARTAMENTOS Y URLs
@@ -365,44 +362,46 @@ get_servicios_educativos <- function(departamento = NULL,
   # ==========================================================================
 
   if (!is.logical(show_progress) || length(show_progress) != 1) {
-    stop("El par\u00e1metro 'show_progress' debe ser TRUE o FALSE", call. = FALSE)
+    stop("The 'show_progress' parameter must be TRUE or FALSE", call. = FALSE)
   }
 
   if (!is.logical(force_update) || length(force_update) != 1) {
-    stop("El par\u00e1metro 'force_update' debe ser TRUE o FALSE", call. = FALSE)
+    stop("The 'force_update' parameter must be TRUE or FALSE", call. = FALSE)
   }
 
   if (!is.null(provincia) && !is.character(provincia)) {
-    stop("El par\u00e1metro 'provincia' debe ser un vector de caracteres o NULL",
-         call. = FALSE)
+    stop("The 'provincia' parameter must be a character vector or NULL",
+      call. = FALSE
+    )
   }
 
-  # Si no se especifica departamento, mostrar lista
+  # If no department is specified, show list
   if (is.null(departamento)) {
-    message("Departamentos disponibles:")
+    message("Available departments:")
     message(paste0("  - ", tabla_departamentos$departamento, collapse = "\n"))
-    message("\nUso: get_servicios_educativos(departamento = 'CUSCO')")
+    message("\nUsage: get_servicios_educativos(departamento = 'CUSCO')")
     return(invisible(tabla_departamentos$departamento))
   }
 
   if (!is.character(departamento)) {
-    stop("El par\u00e1metro 'departamento' debe ser un vector de caracteres",
-         call. = FALSE)
+    stop("The 'departamento' parameter must be a character vector",
+      call. = FALSE
+    )
   }
 
   # Normalizar nombres (manejar "LA LIBERTAD", "SAN MARTIN", "MADRE DE DIOS")
   departamento_input <- toupper(trimws(departamento))
   departamento_input <- gsub("_", " ", departamento_input)
 
-  # Validar departamentos
+  # Validate departments
   departamentos_validos <- departamento_input %in% tabla_departamentos$departamento
 
   if (!all(departamentos_validos)) {
     departamentos_invalidos <- departamento_input[!departamentos_validos]
     stop(
-      "Departamento(s) no v\u00e1lido(s): ",
+      "Invalid department(s): ",
       paste(departamentos_invalidos, collapse = ", "), "\n",
-      "Use get_servicios_educativos() para ver la lista completa.",
+      "Use get_servicios_educativos() to see the full list.",
       call. = FALSE
     )
   }
@@ -435,13 +434,13 @@ get_servicios_educativos <- function(departamento = NULL,
     url_descarga <- paste0("https://osf.io/download/", id_osf, "/")
     archivo_local <- file.path(ruta_cache_dir, file_name)
 
-    # Descargar si no existe o si se fuerza
+    # Download if it doesn't exist or if force_update is TRUE
     if (!file.exists(archivo_local) || force_update) {
-      if (show_progress) message("Descargando: ", dep, "...")
+      if (show_progress) message("Downloading: ", dep, "...")
 
-      # Intentar descarga con timeout extendido
+      # Attempt download with extended timeout
       timeout_original <- getOption("timeout")
-      options(timeout = 300)  # 5 minutos
+      options(timeout = 300) # 5 minutes
 
       descarga_exitosa <- tryCatch(
         {
@@ -455,9 +454,9 @@ get_servicios_educativos <- function(departamento = NULL,
         },
         error = function(e) {
           warning(
-            "Error al descargar ", dep, ": ", e$message, "\n",
+            "Error downloading ", dep, ": ", e$message, "\n",
             "URL: ", url_descarga, "\n",
-            "Puede que el archivo no est\u00e9 disponible temporalmente.",
+            "The file may be temporarily unavailable.",
             call. = FALSE,
             immediate. = TRUE
           )
@@ -468,23 +467,23 @@ get_servicios_educativos <- function(departamento = NULL,
       options(timeout = timeout_original)
 
       if (descarga_exitosa && show_progress) {
-        message("\u2713 Descarga completada: ", dep)
+        message("\u2713 Download completed: ", dep)
       } else if (!descarga_exitosa) {
-        next  # Saltar a siguiente departamento
+        next # Skip to next department
       }
     } else {
-      if (show_progress) message("\u2713 Usando cach\u00e9: ", dep)
+      if (show_progress) message("\u2713 Using cache: ", dep)
     }
 
-    # Leer GeoPackage
+    # Read GeoPackage
     if (file.exists(archivo_local)) {
-      if (show_progress) message("Cargando datos: ", dep, "...")
+      if (show_progress) message("Loading data: ", dep, "...")
 
       tryCatch(
         {
           datos_dep <- sf::read_sf(archivo_local, quiet = TRUE)
 
-          # Aplicar corrección de codificación UTF-8
+          # Apply UTF-8 encoding correction
           cols_char <- names(datos_dep)[sapply(datos_dep, is.character)]
           for (col in cols_char) {
             if (col != "geom" && col != "geometry") {
@@ -492,18 +491,18 @@ get_servicios_educativos <- function(departamento = NULL,
             }
           }
 
-          # Normalizar nombres de columnas a minúsculas
+          # Normalize column names to lowercase
           colnames(datos_dep) <- tolower(colnames(datos_dep))
 
           lista_datos[[dep]] <- datos_dep
 
           if (show_progress) {
-            message("\u2713 Cargado: ", dep, " (", nrow(datos_dep), " servicios educativos)")
+            message("\u2713 Loaded: ", dep, " (", nrow(datos_dep), " educational services)")
           }
         },
         error = function(e) {
           warning(
-            "Error al leer archivo para ", dep, ": ", e$message,
+            "Error reading file for ", dep, ": ", e$message,
             call. = FALSE,
             immediate. = TRUE
           )
@@ -517,22 +516,22 @@ get_servicios_educativos <- function(departamento = NULL,
   # ==========================================================================
 
   if (length(lista_datos) == 0) {
-    stop("No se pudo cargar ning\u00fan departamento", call. = FALSE)
+    stop("Could not load any department", call. = FALSE)
   }
 
   if (length(lista_datos) == 1) {
     datos_final <- lista_datos[[1]]
   } else {
-    if (show_progress) message("Combinando datos de m\u00faltiples departamentos...")
+    if (show_progress) message("Combining data from multiple departments...")
 
-    # Usar rbind con manejo de errores
+    # Use rbind with error handling
     tryCatch(
       {
         datos_final <- do.call(rbind, lista_datos)
       },
       error = function(e) {
         stop(
-          "Error al combinar datos de m\u00faltiples departamentos: ",
+          "Error combining data from multiple departments: ",
           e$message,
           call. = FALSE
         )
@@ -544,7 +543,7 @@ get_servicios_educativos <- function(departamento = NULL,
   # 6. FILTRADO POR PROVINCIA Y DISTRITO
   # ==========================================================================
 
-  # Filtro por PROVINCIA
+  # Filter by PROVINCE
   if (!is.null(provincia)) {
     if ("provincia" %in% names(datos_final)) {
       prov_input <- toupper(trimws(provincia))
@@ -552,7 +551,7 @@ get_servicios_educativos <- function(departamento = NULL,
 
       if (nrow(datos_final) == 0) {
         warning(
-          "No se encontraron servicios educativos para la(s) provincia(s): ",
+          "No educational services found for the province(s): ",
           paste(provincia, collapse = ", "),
           call. = FALSE
         )
@@ -561,51 +560,51 @@ get_servicios_educativos <- function(departamento = NULL,
 
       if (show_progress) {
         message(
-          "\u2713 Filtrado por provincia: ",
+          "\u2713 Filtered by province: ",
           nrow(datos_final),
-          " servicios educativos"
+          " educational services"
         )
       }
     } else {
-      warning("No se encontr\u00f3 la columna 'provincia' para filtrar", call. = FALSE)
+      warning("Column 'provincia' not found for filtering", call. = FALSE)
     }
   }
 
   # Filtro por DISTRITO
- #if (!is.null(distrito)) {
- #  # Nota: En la estructura proporcionada no se ve columna 'distrito'
- #  # Verificar si existe en los datos reales
- #  col_distrito <- intersect(c("distrito", "nombdist"), names(datos_final))
+  # if (!is.null(distrito)) {
+  #  # Nota: En la estructura proporcionada no se ve columna 'distrito'
+  #  # Verificar si existe en los datos reales
+  #  col_distrito <- intersect(c("distrito", "nombdist"), names(datos_final))
 
- #  if (length(col_distrito) > 0) {
- #    col_usar <- col_distrito[1]
- #    dist_input <- toupper(trimws(distrito))
- #    datos_final <- datos_final[toupper(datos_final[[col_usar]]) %in% dist_input, ]
+  #  if (length(col_distrito) > 0) {
+  #    col_usar <- col_distrito[1]
+  #    dist_input <- toupper(trimws(distrito))
+  #    datos_final <- datos_final[toupper(datos_final[[col_usar]]) %in% dist_input, ]
 
- #    if (nrow(datos_final) == 0) {
- #      warning(
- #        "No se encontraron servicios educativos para el/los distrito(s): ",
- #        paste(distrito, collapse = ", "),
- #        call. = FALSE
- #      )
- #      return(sf::st_sf(geometry = sf::st_sfc(crs = 4326)))
- #    }
+  #    if (nrow(datos_final) == 0) {
+  #      warning(
+  #        "No se encontraron servicios educativos para el/los distrito(s): ",
+  #        paste(distrito, collapse = ", "),
+  #        call. = FALSE
+  #      )
+  #      return(sf::st_sf(geometry = sf::st_sfc(crs = 4326)))
+  #    }
 
- #    if (show_progress) {
- #      message(
- #        "\u2713 Filtrado por distrito: ",
- #        nrow(datos_final),
- #        " servicios educativos"
- #      )
- #    }
- #  } else {
- #    warning(
- #      "No se encontr\u00f3 columna de distrito para filtrar. ",
- #      "Los datos solo contienen: departamen, provincia",
- #      call. = FALSE
- #    )
- #  }
- #}
+  #    if (show_progress) {
+  #      message(
+  #        "\u2713 Filtrado por distrito: ",
+  #        nrow(datos_final),
+  #        " servicios educativos"
+  #      )
+  #    }
+  #  } else {
+  #    warning(
+  #      "No se encontr\u00f3 columna de distrito para filtrar. ",
+  #      "Los datos solo contienen: departamen, provincia",
+  #      call. = FALSE
+  #    )
+  #  }
+  # }
 
   # ==========================================================================
   # 7. MENSAJE FINAL
@@ -613,8 +612,8 @@ get_servicios_educativos <- function(departamento = NULL,
 
   if (show_progress) {
     message(
-      "\u2713 Datos cargados exitosamente: ",
-      nrow(datos_final), " servicios educativos"
+      "\u2713 Data loaded successfully: ",
+      nrow(datos_final), " educational services"
     )
   }
 

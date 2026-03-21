@@ -1,233 +1,231 @@
-#' Obtener Locales Educativos del Perú
+#' Get Educational Facilities of Peru
 #'
-#' Descarga y carga la información de locales educativos del Perú, elaborado por
-#' el Ministerio de Educación (MINEDU). Un local educativo es un inmueble en el
-#' cual funciona uno o más establecimientos educativos (servicios educativos).
-#' Los datos incluyen geometría tipo POINT e información sobre los servicios
-#' educativos que operan en cada local, ubicación y área censal.
-#' Permite filtrado escalonado por departamento, provincia y distrito.
+#' Downloads and loads information on educational facilities in Peru, prepared
+#' by the Ministry of Education (MINEDU). An educational facility is a property
+#' where one or more educational establishments (educational services) operate.
+#' Data includes POINT type geometry and information on educational services
+#' operating at each facility, location, and census area.
+#' Allows stepwise filtering by department, province, and district.
 #'
-#' @param departamento Character vector. Nombre(s) del/los departamento(s) a descargar.
-#'   Opciones válidas: "AMAZONAS", "ANCASH", "APURIMAC", "AREQUIPA", "AYACUCHO",
+#' @param departamento Character vector. Name(s) of the department(s) to download.
+#'   Valid options: "AMAZONAS", "ANCASH", "APURIMAC", "AREQUIPA", "AYACUCHO",
 #'   "CAJAMARCA", "CALLAO", "CUSCO", "HUANCAVELICA", "HUANUCO", "ICA", "JUNIN",
 #'   "LA LIBERTAD", "LAMBAYEQUE", "LIMA", "LORETO", "MADRE DE DIOS", "MOQUEGUA",
 #'   "PASCO", "PIURA", "PUNO", "SAN MARTIN", "TACNA", "TUMBES", "UCAYALI".
-#'   No distingue entre mayúsculas y minúsculas. Si es \code{NULL}, muestra la
-#'   lista de departamentos disponibles.
-#' @param provincia Character vector. Nombre(s) de la(s) provincia(s) para filtrar
-#'   dentro del/los departamento(s) especificado(s). Opcional.
-#' @param distrito Character vector. Nombre(s) del/los distrito(s) para filtrar
-#'   dentro de la(s) provincia(s) especificada(s). Opcional.
-#' @param show_progress Logical. Si \code{TRUE} (por defecto), muestra mensajes
-#'   informativos sobre el progreso de la descarga. Si \code{FALSE}, ejecuta de
-#'   forma silenciosa.
-#' @param force_update Logical. Si \code{TRUE}, fuerza una nueva descarga del
-#'   archivo incluso si existe en caché. Por defecto \code{FALSE}.
+#'   Case-insensitive. If \code{NULL}, shows the list of available departments.
+#' @param provincia Character vector. Name(s) of the province(s) to filter
+#'   within the specified department(s). Optional.
+#' @param distrito Character vector. Name(s) of the district(s) to filter
+#'   within the specified province(s). Optional.
+#' @param show_progress Logical. If \code{TRUE} (default), shows informative
+#'   messages about download progress. If \code{FALSE}, executes silently.
+#' @param force_update Logical. If \code{TRUE}, forces a new download of the
+#'   file even if it exists in cache. Default \code{FALSE}.
 #'
-#' @return Un objeto \code{sf} (simple feature) con geometría tipo POINT que contiene
-#'   información de los locales educativos, incluyendo:
+#' @return An \code{sf} (simple feature) object with POINT geometry containing
+#'   educational facility information, including:
 #'
-#'   \strong{Identificación del local:}
+#'   \strong{Facility Identification:}
 #'   \itemize{
-#'     \item Geometría POINT (coordenadas del local educativo)
-#'     \item \code{codlocal}: Código único del local educativo asignado por MINEDU
-#'     \item \code{servicios}: Lista de servicios educativos (instituciones educativas)
-#'       que funcionan en el local, incluyendo nombre, nivel y modalidad. Un mismo
-#'       local puede albergar múltiples servicios educativos (ej: inicial, primaria
-#'       y secundaria)
-#'     \item \code{dir_cen}: Dirección del local educativo
+#'     \item POINT geometry (facility coordinates)
+#'     \item \code{codlocal}: Unique educational facility code assigned by MINEDU
+#'     \item \code{servicios}: List of educational services (educational institutions)
+#'       operating in the facility, including name, level, and modality. A single
+#'       facility may house multiple educational services (e.g., initial, primary,
+#'       and secondary)
+#'     \item \code{dir_cen}: Educational facility address
 #'   }
 #'
-#'   \strong{Ubicación geográfica:}
+#'   \strong{Geographic Location:}
 #'   \itemize{
-#'     \item \code{localidad}: Nombre de la localidad donde se ubica el local
-#'     \item \code{codcp_inei}: Código de centro poblado según INEI
-#'     \item \code{codccpp}: Código de centro poblado (alternativo)
-#'     \item \code{centro_pob}: Nombre del centro poblado
-#'     \item \code{departamen}: Nombre del departamento
-#'     \item \code{provincia}: Nombre de la provincia
-#'     \item \code{distrito}: Nombre del distrito
+#'     \item \code{localidad}: Name of the locality where the facility is located
+#'     \item \code{codcp_inei}: Population center code according to INEI
+#'     \item \code{codccpp}: Population center code (alternative)
+#'     \item \code{centro_pob}: Population center name
+#'     \item \code{departamen}: Department name
+#'     \item \code{provincia}: Province name
+#'     \item \code{distrito}: District name
 #'   }
 #'
-#'   \strong{Características del local:}
+#'   \strong{Facility Characteristics:}
 #'   \itemize{
-#'     \item \code{area_censo}: Área censal donde se ubica el local:
+#'     \item \code{area_censo}: Census area where the facility is located:
 #'       \itemize{
-#'         \item URBANA: Zona urbana
-#'         \item RURAL: Zona rural
+#'         \item URBANA: Urban zone
+#'         \item RURAL: Rural zone
 #'       }
 #'   }
 #'
-#'   \strong{Coordenadas:}
+#'   \strong{Coordinates:}
 #'   \itemize{
-#'     \item \code{nlat_ie}: Latitud del local educativo (coordenada Y)
-#'     \item \code{nlong_ie}: Longitud del local educativo (coordenada X)
+#'     \item \code{nlat_ie}: Educational facility latitude (Y coordinate)
+#'     \item \code{nlong_ie}: Educational facility longitude (X coordinate)
 #'   }
 #'
-#'   Si se solicitan múltiples departamentos, retorna un objeto sf combinado.
+#'   If multiple departments are requested, it returns a combined sf object.
 #'
 #' @details
-#' La función descarga datos desde OSF (Open Science Framework) y los almacena
-#' en caché durante la sesión de R. Los datos están en formato GeoPackage (.gpkg).
+#' The function downloads data from OSF (Open Science Framework) and stores it
+#' in cache during the R session. Data is in GeoPackage (.gpkg) format.
 #'
-#' **Fuente de los datos:**
+#' **Data Source:**
 #' \itemize{
-#'   \item Fuente: Ministerio de Educación (MINEDU)
-#'   \item Registro: Padrón de Instituciones Educativas
-#'   \item Nivel: Local educativo
-#'   \item Aplicación: Análisis de cobertura educativa, planificación de
-#'     infraestructura escolar y estudios de accesibilidad
+#'   \item Source: Ministry of Education (MINEDU)
+#'   \item Registration: Educational Institutions Registry
+#'   \item Level: Educational facility
+#'   \item Application: Education coverage analysis, school infrastructure
+#'     planning, and accessibility studies
 #' }
 #'
-#' **Conceptos clave:**
+#' **Key Concepts:**
 #'
-#' \strong{Local educativo vs Institución educativa:}
+#' \strong{Educational Facility vs Educational Institution:}
 #' \itemize{
-#'   \item \strong{Local educativo}: Infraestructura física (inmueble) donde
-#'     funcionan los servicios educativos. Un local puede albergar múltiples
-#'     instituciones educativas.
-#'   \item \strong{Servicio/Institución educativa}: Unidad operativa del sistema
-#'     educativo que brinda un tipo específico de educación (inicial, primaria,
-#'     secundaria, CETPRO, etc.)
+#'   \item \strong{Educational Facility}: Physical infrastructure (property) where
+#'     educational services operate. A facility may house multiple
+#'     educational institutions.
+#'   \item \strong{Educational Service/Institution}: Operating unit of the
+#'     educational system that provides a specific type of education (initial,
+#'     primary, secondary, CETPRO, etc.)
 #' }
 #'
-#' **Niveles y modalidades educativas en Perú:**
+#' **Educational Levels and Modalities in Peru:**
 #' \itemize{
-#'   \item \strong{Educación Básica Regular (EBR)}:
+#'   \item \strong{Regular Basic Education (EBR)}:
 #'     \itemize{
-#'       \item Inicial (0-5 años): Cuna, Jardín
-#'       \item Primaria (6-11 años)
-#'       \item Secundaria (12-16 años)
+#'       \item Initial (0-5 years): Nursery, Kindergarten
+#'       \item Primary (6-11 years)
+#'       \item Secondary (12-16 years)
 #'     }
-#'   \item \strong{Educación Básica Alternativa (EBA)}: Para personas que no
-#'     accedieron oportunamente a EBR
-#'   \item \strong{Educación Básica Especial (EBE)}: Para personas con
-#'     discapacidad o talento superdotado
-#'   \item \strong{Educación Técnico-Productiva (CETPRO)}: Formación técnica
-#'     y capacitación laboral
-#'   \item \strong{Educación Superior}: Institutos y escuelas de educación
-#'     superior pedagógica, tecnológica y artística
+#'   \item \strong{Alternative Basic Education (EBA)}: For persons who did not
+#'     timely access EBR
+#'   \item \strong{Special Basic Education (EBE)}: For persons with
+#'     disabilities or gifted talent
+#'   \item \strong{Technical-Productive Education (CETPRO)}: Technical training
+#'     and vocational training
+#'   \item \strong{Higher Education}: Institutes and schools of pedagogical,
+#'     technological, and artistic higher education
 #' }
 #'
-#' **Interpretación del campo servicios:**
+#' **Interpretation of the servicios field:**
 #'
-#' El campo \code{servicios} contiene una cadena de texto con todos los servicios
-#' educativos que operan en el local, separados por comas. Cada servicio incluye
-#' el nombre de la institución y su nivel/modalidad entre paréntesis.
+#' The \code{servicios} field contains a text string with all educational services
+#' operating in the facility, separated by commas. Each service includes the
+#' name of the institution and its level/modality in parentheses.
 #'
-#' Ejemplo: "501330 (PRIMARIA), 501330 (SECUNDARIA)" indica que en ese local
-#' funcionan los niveles de primaria y secundaria de la IE 501330.
+#' Example: "501330 (PRIMARIA), 501330 (SECUNDARIA)" indicates that primary and
+#' secondary levels of IE 501330 operate in that facility.
 #'
-#' **Filtrado jerárquico:**
-#' Los filtros se aplican en cascada:
+#' **Hierarchical Filtering:**
+#' Filters are applied in cascade:
 #' \enumerate{
-#'   \item Primero se cargan los departamentos especificados
-#'   \item Luego se filtran las provincias (si se especifican)
-#'   \item Finalmente se filtran los distritos (si se especifican)
+#'   \item Specified departments are loaded first
+#'   \item Then provinces are filtered (if specified)
+#'   \item Finally districts are filtered (if specified)
 #' }
 #'
-#' El caché se almacena en: \code{tempdir()/DEMARCA_cache/locales_educativos/}
+#' Cache is stored in: \code{tempdir()/DEMARCA_cache/locales_educativos/}
 #'
-#' **NOTA:** Las geometrías son tipo POINT (puntos) y representan la ubicación
-#' de cada local educativo.
+#' **NOTE:** Geometries are POINT type and represent the location
+#' of each educational facility.
 #'
 #' @examples
 #' \dontrun{
-#' # Ver departamentos disponibles
+#' # See available departments
 #' get_locales_educativos()
 #'
-#' # Cargar locales educativos de un departamento completo
+#' # Load educational facilities of a full department
 #' locales_cusco <- get_locales_educativos(departamento = "CUSCO")
 #'
-#' # Filtrar por provincia específica
+#' # Filter by specific province
 #' locales_prov_cusco <- get_locales_educativos(
 #'   departamento = "CUSCO",
 #'   provincia = "CUSCO"
 #' )
 #'
-#' # Filtrar por distrito específico
+#' # Filter by specific district
 #' locales_wanchaq <- get_locales_educativos(
 #'   departamento = "CUSCO",
 #'   provincia = "CUSCO",
 #'   distrito = "WANCHAQ"
 #' )
 #'
-#' # Cargar múltiples departamentos
+#' # Load multiple departments
 #' locales_sur <- get_locales_educativos(
 #'   departamento = c("CUSCO", "PUNO", "AREQUIPA")
 #' )
 #'
-#' # Visualización con ggplot2
+#' # Visualization with ggplot2
 #' library(ggplot2)
 #' library(dplyr)
 #'
-#' # Mapa de locales educativos por área censal
+#' # Map of educational facilities by census area
 #' ggplot(locales_cusco) +
 #'   geom_sf(aes(color = area_censo), size = 1, alpha = 0.6) +
 #'   scale_color_manual(
 #'     values = c("URBANA" = "darkblue", "RURAL" = "darkgreen"),
-#'     name = "Área"
+#'     name = "Area"
 #'   ) +
 #'   labs(
-#'     title = "Locales Educativos del Departamento de Cusco",
-#'     subtitle = "Ministerio de Educación",
-#'     caption = "Fuente: MINEDU - Padrón de Instituciones Educativas"
+#'     title = "Educational Facilities of the Department of Cusco",
+#'     subtitle = "Ministry of Education",
+#'     caption = "Source: MINEDU - Educational Institutions Registry"
 #'   ) +
 #'   theme_minimal()
 #'
-#' # Resumen por área censal
+#' # Summary by census area
 #' locales_cusco |>
 #'   sf::st_drop_geometry() |>
 #'   count(area_censo)
 #'
-#' # Distribución por distrito
+#' # Distribution by district
 #' locales_cusco |>
 #'   sf::st_drop_geometry() |>
 #'   count(distrito, sort = TRUE) |>
 #'   head(10)
 #'
-#' # Filtrar locales con nivel inicial
-#' locales_inicial <- locales_cusco |>
+#' # Filter facilities with initial level
+#' initial_locales <- locales_cusco |>
 #'   filter(grepl("INICIAL", servicios, ignore.case = TRUE))
 #'
-#' # Filtrar locales con secundaria
-#' locales_secundaria <- locales_cusco |>
+#' # Filter facilities with secondary
+#' secondary_locales <- locales_cusco |>
 #'   filter(grepl("SECUNDARIA", servicios, ignore.case = TRUE))
 #'
-#' # Locales con múltiples niveles (inicial + primaria + secundaria)
-#' locales_completos <- locales_cusco |>
+#' # Facilities with multiple levels (initial + primary + secondary)
+#' complete_locales <- locales_cusco |>
 #'   filter(
 #'     grepl("INICIAL", servicios) &
-#'     grepl("PRIMARIA", servicios) &
-#'     grepl("SECUNDARIA", servicios)
+#'       grepl("PRIMARIA", servicios) &
+#'       grepl("SECUNDARIA", servicios)
 #'   )
 #'
-#' # Análisis de cobertura por provincia
-#' cobertura_provincia <- locales_cusco |>
+#' # Coverage analysis by province
+#' province_coverage <- locales_cusco |>
 #'   sf::st_drop_geometry() |>
 #'   group_by(provincia) |>
 #'   summarise(
 #'     total_locales = n(),
-#'     locales_urbanos = sum(area_censo == "URBANA"),
-#'     locales_rurales = sum(area_censo == "RURAL"),
+#'     urban_locales = sum(area_censo == "URBANA"),
+#'     rural_locales = sum(area_censo == "RURAL"),
 #'     pct_rural = round(sum(area_censo == "RURAL") / n() * 100, 1),
 #'     .groups = "drop"
 #'   ) |>
 #'   arrange(desc(total_locales))
 #'
-#' # Mapa de locales rurales
+#' # Map of rural facilities
 #' locales_cusco |>
 #'   filter(area_censo == "RURAL") |>
 #'   ggplot() +
 #'   geom_sf(color = "darkgreen", size = 0.8, alpha = 0.5) +
 #'   labs(
-#'     title = "Locales Educativos Rurales - Cusco",
+#'     title = "Rural Educational Facilities - Cusco",
 #'     subtitle = "MINEDU",
-#'     caption = "Fuente: MINEDU - Padrón de Instituciones Educativas"
+#'     caption = "Source: MINEDU - Educational Institutions Registry"
 #'   ) +
 #'   theme_minimal()
 #'
-#' # Contar servicios educativos por local
+#' # Count educational services per facility
 #' locales_cusco |>
 #'   sf::st_drop_geometry() |>
 #'   mutate(
@@ -235,8 +233,8 @@
 #'   ) |>
 #'   count(n_servicios, name = "n_locales")
 #'
-#' # Buscar locales por nombre de institución
-#' locales_emblematicos <- locales_cusco |>
+#' # Search facilities by institution name
+#' emblematic_locales <- locales_cusco |>
 #'   filter(grepl("INCA GARCILASO|CLORINDA MATTO", servicios, ignore.case = TRUE))
 #' }
 #'
@@ -246,12 +244,12 @@
 #' \code{\link[sf]{read_sf}}
 #'
 #' @references
-#' Ministerio de Educación del Perú (MINEDU). Padrón de Instituciones Educativas
-#' y Programas Educativos.
+#' Ministry of Education of Peru (MINEDU). Educational Institutions and
+#' Educational Programs Registry.
 #'
-#' ESCALE - Estadística de la Calidad Educativa: \url{https://escale.minedu.gob.pe/}
+#' ESCALE - Statistics of Educational Quality: \url{https://escale.minedu.gob.pe/}
 #'
-#' Repositorio DEMARCA en OSF: \url{https://osf.io/qy4j6/}
+#' DEMARCA OSF Repository: \url{https://osf.io/qy4j6/}
 #'
 #' @export
 #' @importFrom utils download.file
@@ -262,7 +260,6 @@ get_locales_educativos <- function(departamento = NULL,
                                    distrito = NULL,
                                    show_progress = TRUE,
                                    force_update = FALSE) {
-
   # ==========================================================================
   # 1. TABLA DE REFERENCIA DE DEPARTAMENTOS Y URLs
   # ==========================================================================
@@ -317,49 +314,52 @@ get_locales_educativos <- function(departamento = NULL,
   # ==========================================================================
 
   if (!is.logical(show_progress) || length(show_progress) != 1) {
-    stop("El par\u00e1metro 'show_progress' debe ser TRUE o FALSE", call. = FALSE)
+    stop("The 'show_progress' parameter must be TRUE or FALSE", call. = FALSE)
   }
 
   if (!is.logical(force_update) || length(force_update) != 1) {
-    stop("El par\u00e1metro 'force_update' debe ser TRUE o FALSE", call. = FALSE)
+    stop("The 'force_update' parameter must be TRUE or FALSE", call. = FALSE)
   }
 
   if (!is.null(provincia) && !is.character(provincia)) {
-    stop("El par\u00e1metro 'provincia' debe ser un vector de caracteres o NULL",
-         call. = FALSE)
+    stop("The 'provincia' parameter must be a character vector or NULL",
+      call. = FALSE
+    )
   }
 
   if (!is.null(distrito) && !is.character(distrito)) {
-    stop("El par\u00e1metro 'distrito' debe ser un vector de caracteres o NULL",
-         call. = FALSE)
+    stop("The 'distrito' parameter must be a character vector or NULL",
+      call. = FALSE
+    )
   }
 
-  # Si no se especifica departamento, mostrar lista
+  # If no department is specified, show list
   if (is.null(departamento)) {
-    message("Departamentos disponibles:")
+    message("Available departments:")
     message(paste0("  - ", tabla_departamentos$departamento, collapse = "\n"))
-    message("\nUso: get_locales_educativos(departamento = 'CUSCO')")
+    message("\nUsage: get_locales_educativos(departamento = 'CUSCO')")
     return(invisible(tabla_departamentos$departamento))
   }
 
   if (!is.character(departamento)) {
-    stop("El par\u00e1metro 'departamento' debe ser un vector de caracteres",
-         call. = FALSE)
+    stop("The 'departamento' parameter must be a character vector",
+      call. = FALSE
+    )
   }
 
   # Normalizar nombres (manejar "LA LIBERTAD", "SAN MARTIN", "MADRE DE DIOS")
   departamento_input <- toupper(trimws(departamento))
   departamento_input <- gsub("_", " ", departamento_input)
 
-  # Validar departamentos
+  # Validate departments
   departamentos_validos <- departamento_input %in% tabla_departamentos$departamento
 
   if (!all(departamentos_validos)) {
     departamentos_invalidos <- departamento_input[!departamentos_validos]
     stop(
-      "Departamento(s) no v\u00e1lido(s): ",
+      "Invalid department(s): ",
       paste(departamentos_invalidos, collapse = ", "), "\n",
-      "Use get_locales_educativos() para ver la lista completa.",
+      "Use get_locales_educativos() to see the full list.",
       call. = FALSE
     )
   }
@@ -392,13 +392,13 @@ get_locales_educativos <- function(departamento = NULL,
     url_descarga <- paste0("https://osf.io/download/", id_osf, "/")
     archivo_local <- file.path(ruta_cache_dir, file_name)
 
-    # Descargar si no existe o si se fuerza
+    # Download if it doesn't exist or if force_update is TRUE
     if (!file.exists(archivo_local) || force_update) {
-      if (show_progress) message("Descargando: ", dep, "...")
+      if (show_progress) message("Downloading: ", dep, "...")
 
-      # Intentar descarga con timeout extendido
+      # Attempt download with extended timeout
       timeout_original <- getOption("timeout")
-      options(timeout = 300)  # 5 minutos
+      options(timeout = 300) # 5 minutes
 
       descarga_exitosa <- tryCatch(
         {
@@ -412,9 +412,9 @@ get_locales_educativos <- function(departamento = NULL,
         },
         error = function(e) {
           warning(
-            "Error al descargar ", dep, ": ", e$message, "\n",
+            "Error downloading ", dep, ": ", e$message, "\n",
             "URL: ", url_descarga, "\n",
-            "Puede que el archivo no est\u00e9 disponible temporalmente.",
+            "The file may be temporarily unavailable.",
             call. = FALSE,
             immediate. = TRUE
           )
@@ -425,23 +425,23 @@ get_locales_educativos <- function(departamento = NULL,
       options(timeout = timeout_original)
 
       if (descarga_exitosa && show_progress) {
-        message("\u2713 Descarga completada: ", dep)
+        message("\u2713 Download completed: ", dep)
       } else if (!descarga_exitosa) {
-        next  # Saltar a siguiente departamento
+        next # Skip to next department
       }
     } else {
-      if (show_progress) message("\u2713 Usando cach\u00e9: ", dep)
+      if (show_progress) message("\u2713 Using cache: ", dep)
     }
 
-    # Leer GeoPackage
+    # Read GeoPackage
     if (file.exists(archivo_local)) {
-      if (show_progress) message("Cargando datos: ", dep, "...")
+      if (show_progress) message("Loading data: ", dep, "...")
 
       tryCatch(
         {
           datos_dep <- sf::read_sf(archivo_local, quiet = TRUE)
 
-          # Aplicar corrección de codificación UTF-8
+          # Apply UTF-8 encoding correction
           cols_char <- names(datos_dep)[sapply(datos_dep, is.character)]
           for (col in cols_char) {
             if (col != "geom" && col != "geometry") {
@@ -449,18 +449,18 @@ get_locales_educativos <- function(departamento = NULL,
             }
           }
 
-          # Normalizar nombres de columnas a minúsculas
+          # Normalize column names to lowercase
           colnames(datos_dep) <- tolower(colnames(datos_dep))
 
           lista_datos[[dep]] <- datos_dep
 
           if (show_progress) {
-            message("\u2713 Cargado: ", dep, " (", nrow(datos_dep), " locales educativos)")
+            message("\u2713 Loaded: ", dep, " (", nrow(datos_dep), " educational facilities)")
           }
         },
         error = function(e) {
           warning(
-            "Error al leer archivo para ", dep, ": ", e$message,
+            "Error reading file for ", dep, ": ", e$message,
             call. = FALSE,
             immediate. = TRUE
           )
@@ -474,22 +474,22 @@ get_locales_educativos <- function(departamento = NULL,
   # ==========================================================================
 
   if (length(lista_datos) == 0) {
-    stop("No se pudo cargar ning\u00fan departamento", call. = FALSE)
+    stop("Could not load any department", call. = FALSE)
   }
 
   if (length(lista_datos) == 1) {
     datos_final <- lista_datos[[1]]
   } else {
-    if (show_progress) message("Combinando datos de m\u00faltiples departamentos...")
+    if (show_progress) message("Combining data from multiple departments...")
 
-    # Usar rbind con manejo de errores
+    # Use rbind with error handling
     tryCatch(
       {
         datos_final <- do.call(rbind, lista_datos)
       },
       error = function(e) {
         stop(
-          "Error al combinar datos de m\u00faltiples departamentos: ",
+          "Error combining data from multiple departments: ",
           e$message,
           call. = FALSE
         )
@@ -501,7 +501,7 @@ get_locales_educativos <- function(departamento = NULL,
   # 6. FILTRADO POR PROVINCIA Y DISTRITO
   # ==========================================================================
 
-  # Filtro por PROVINCIA
+  # Filter by PROVINCE
   if (!is.null(provincia)) {
     if ("provincia" %in% names(datos_final)) {
       prov_input <- toupper(trimws(provincia))
@@ -509,7 +509,7 @@ get_locales_educativos <- function(departamento = NULL,
 
       if (nrow(datos_final) == 0) {
         warning(
-          "No se encontraron locales educativos para la(s) provincia(s): ",
+          "No educational facilities found for the province(s): ",
           paste(provincia, collapse = ", "),
           call. = FALSE
         )
@@ -518,17 +518,17 @@ get_locales_educativos <- function(departamento = NULL,
 
       if (show_progress) {
         message(
-          "\u2713 Filtrado por provincia: ",
+          "\u2713 Filtered by province: ",
           nrow(datos_final),
-          " locales educativos"
+          " educational facilities"
         )
       }
     } else {
-      warning("No se encontr\u00f3 la columna 'provincia' para filtrar", call. = FALSE)
+      warning("Column 'provincia' not found for filtering", call. = FALSE)
     }
   }
 
-  # Filtro por DISTRITO
+  # Filter by DISTRICT
   if (!is.null(distrito)) {
     if ("distrito" %in% names(datos_final)) {
       dist_input <- toupper(trimws(distrito))
@@ -536,7 +536,7 @@ get_locales_educativos <- function(departamento = NULL,
 
       if (nrow(datos_final) == 0) {
         warning(
-          "No se encontraron locales educativos para el/los distrito(s): ",
+          "No educational facilities found for the district(s): ",
           paste(distrito, collapse = ", "),
           call. = FALSE
         )
@@ -545,13 +545,13 @@ get_locales_educativos <- function(departamento = NULL,
 
       if (show_progress) {
         message(
-          "\u2713 Filtrado por distrito: ",
+          "\u2713 Filtered by district: ",
           nrow(datos_final),
-          " locales educativos"
+          " educational facilities"
         )
       }
     } else {
-      warning("No se encontr\u00f3 la columna 'distrito' para filtrar", call. = FALSE)
+      warning("Column 'distrito' not found for filtering", call. = FALSE)
     }
   }
 
@@ -561,8 +561,8 @@ get_locales_educativos <- function(departamento = NULL,
 
   if (show_progress) {
     message(
-      "\u2713 Datos cargados exitosamente: ",
-      nrow(datos_final), " locales educativos"
+      "\u2713 Data loaded successfully: ",
+      nrow(datos_final), " educational facilities"
     )
   }
 

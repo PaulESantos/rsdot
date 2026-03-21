@@ -1,115 +1,113 @@
-#' Obtener Red Vial Vecinal del Perú
+#' Get Local Road Network of Peru
 #'
-#' Descarga y carga la información de la Red Vial Vecinal actualizada por
-#' PROVÍAS DESCENTRALIZADO a julio 2022, según Clasificador de Rutas aprobado
-#' mediante Decreto Supremo 011-2016-MTC y sus modificatorias. Los datos incluyen
-#' geometría tipo MULTILINESTRING e información sobre trayectorias, estado y
-#' superficie de las carreteras vecinales o rurales. Permite filtrado escalonado
-#' por departamento y provincia.
+#' Downloads and loads information on the Local Road Network updated by
+#' PROVIAS DESCENTRALIZADO as of July 2022, according to the Route Classifier
+#' approved by Supreme Decree 011-2016-MTC and its amendments. Data includes
+#' MULTILINESTRING type geometry and information on trajectories, status, and
+#' surface of local or rural roads. Allows stepwise filtering by department and
+#' province.
 #'
-#' @param departamento Character vector. Nombre(s) del/los departamento(s) a descargar.
-#'   Opciones válidas: "AMAZONAS", "ANCASH", "APURIMAC", "AREQUIPA", "AYACUCHO",
+#' @param departamento Character vector. Name(s) of the department(s) to download.
+#'   Valid options: "AMAZONAS", "ANCASH", "APURIMAC", "AREQUIPA", "AYACUCHO",
 #'   "CAJAMARCA", "CUSCO", "HUANCAVELICA", "HUANUCO", "ICA", "JUNIN",
 #'   "LA LIBERTAD", "LAMBAYEQUE", "LIMA", "LORETO", "MADRE DE DIOS", "MOQUEGUA",
 #'   "PASCO", "PIURA", "PUNO", "SAN MARTIN", "TACNA", "TUMBES", "UCAYALI".
-#'   No distingue entre mayúsculas y minúsculas. Si es \code{NULL}, muestra la
-#'   lista de departamentos disponibles.
-#' @param provincia Character vector. Nombre(s) de la(s) provincia(s) para filtrar
-#'   dentro del/los departamento(s) especificado(s). Opcional.
-#' @param show_progress Logical. Si \code{TRUE} (por defecto), muestra mensajes
-#'   informativos sobre el progreso de la descarga. Si \code{FALSE}, ejecuta de
-#'   forma silenciosa.
-#' @param force_update Logical. Si \code{TRUE}, fuerza una nueva descarga del
-#'   archivo incluso si existe en caché. Por defecto \code{FALSE}.
+#'   Case-insensitive. If \code{NULL}, shows the list of available departments.
+#' @param provincia Character vector. Name(s) of the province(s) to filter
+#'   within the specified department(s). Optional.
+#' @param show_progress Logical. If \code{TRUE} (default), shows informative
+#'   messages about download progress. If \code{FALSE}, executes silently.
+#' @param force_update Logical. If \code{TRUE}, forces a new download of the
+#'   file even if it exists in cache. Default \code{FALSE}.
 #'
-#' @return Un objeto \code{sf} (simple feature) con geometría tipo MULTILINESTRING
-#'   que contiene información de la red vial vecinal, incluyendo:
+#' @return An \code{sf} (simple feature) object with MULTILINESTRING geometry
+#'   containing local road network information, including:
 #'   \itemize{
-#'     \item Geometría MULTILINESTRING (trayectoria de la vía)
-#'     \item \code{nombdep}: Nombre del departamento
-#'     \item \code{nombprov}: Nombre de la provincia
-#'     \item \code{iddpto}: Código del departamento
-#'     \item \code{jerarq}: Jerarquía de la ruta (RV = Red Vecinal)
-#'     \item \code{trayectori}: Descripción de la trayectoria de la ruta
-#'     \item \code{estado}: Estado numérico de la vía (1, 2, 3)
-#'     \item \code{codruta}: Código de la ruta vecinal (ej. LO-517, CU-123)
-#'     \item \code{superfic}: Código de tipo de superficie (1-4)
-#'     \item \code{longitud}: Longitud del tramo en kilómetros
-#'     \item \code{estado_l}: Estado descriptivo (Bueno, Regular, Malo)
-#'     \item \code{superfic_l}: Tipo de superficie (Pavimentado, Afirmado, Sin afirmar, Trocha)
+#'     \item MULTILINESTRING geometry (road trajectory)
+#'     \item \code{nombdep}: Department name
+#'     \item \code{nombprov}: Province name
+#'     \item \code{iddpto}: Department code
+#'     \item \code{jerarq}: Route hierarchy (RV = Red Vecinal)
+#'     \item \code{trayectori}: Description of the route trajectory
+#'     \item \code{estado}: Numeric road status (1, 2, 3)
+#'     \item \code{codruta}: Local route code (e.g., LO-517, CU-123)
+#'     \item \code{superfic}: Surface type code (1-4)
+#'     \item \code{longitud}: Segment length in kilometers
+#'     \item \code{estado_l}: Descriptive status (Good, Regular, Bad)
+#'     \item \code{superfic_l}: Surface type (Paved, Unpaved, Dirt, Track)
 #'   }
 #'
-#'   Si se solicitan múltiples departamentos, retorna un objeto sf combinado.
+#'   If multiple departments are requested, it returns a combined sf object.
 #'
 #' @details
-#' La función descarga datos desde OSF (Open Science Framework) y los almacena
-#' en caché durante la sesión de R. Los datos están en formato GeoPackage (.gpkg).
+#' The function downloads data from OSF (Open Science Framework) and stores it
+#' in cache during the R session. Data is in GeoPackage (.gpkg) format.
 #'
-#' **Fuente de los datos:**
+#' **Data Source:**
 #' \itemize{
-#'   \item Fuente: PROVÍAS DESCENTRALIZADO - Ministerio de Transportes y Comunicaciones
-#'   \item Actualización: Julio 2022
-#'   \item Base legal: Decreto Supremo 011-2016-MTC y modificatorias
-#'   \item Nivel: Red Vial Vecinal o Rural (Sistema Nacional de Carreteras - SINAC)
-#'   \item Aplicación: Planificación vial local y análisis de conectividad rural
+#'   \item Source: PROVIAS DESCENTRALIZADO - Ministry of Transport and Communications
+#'   \item Update: July 2022
+#'   \item Legal basis: Supreme Decree 011-2016-MTC and amendments
+#'   \item Level: Local or Rural Road Network (National Road System - SINAC)
+#'   \item Application: Local road planning and rural connectivity analysis
 #' }
 #'
-#' **Clasificación de superficie:**
+#' **Surface Classification:**
 #' \itemize{
-#'   \item 1 = Pavimentado
-#'   \item 2 = Afirmado
-#'   \item 3 = Sin afirmar
-#'   \item 4 = Trocha
+#'   \item 1 = Paved
+#'   \item 2 = Unpaved
+#'   \item 3 = Dirt
+#'   \item 4 = Track
 #' }
 #'
-#' **Clasificación de estado:**
+#' **Status Classification:**
 #' \itemize{
-#'   \item 1 = Bueno
+#'   \item 1 = Good
 #'   \item 2 = Regular
-#'   \item 3 = Malo
+#'   \item 3 = Bad
 #' }
 #'
-#' **Características de la Red Vecinal:**
-#' Las carreteras vecinales o rurales conectan centros poblados menores,
-#' caseríos y áreas de producción con la red vial departamental y nacional.
-#' Son de competencia de los gobiernos locales (municipalidades).
+#' **Local Road Network Characteristics:**
+#' Local or rural roads connect minor population centers, hamlets, and
+#' production areas with the departmental and national road networks.
+#' They are the responsibility of local governments (municipalities).
 #'
-#' **Filtrado jerárquico:**
-#' Los filtros se aplican en cascada:
+#' **Hierarchical Filtering:**
+#' Filters are applied in cascade:
 #' \enumerate{
-#'   \item Primero se cargan los departamentos especificados
-#'   \item Luego se filtran las provincias (si se especifican)
+#'   \item Specified departments are loaded first
+#'   \item Then provinces are filtered (if specified)
 #' }
 #'
-#' El caché se almacena en: \code{tempdir()/DEMARCA_cache/red_vial_vecinal/}
+#' Cache is stored in: \code{tempdir()/DEMARCA_cache/red_vial_vecinal/}
 #'
-#' **NOTA:** Las geometrías son tipo MULTILINESTRING (multilíneas) y representan
-#' las trayectorias de las carreteras vecinales.
+#' **NOTE:** Geometries are MULTILINESTRING type and represent the trajectories
+#' of local roads.
 #'
 #' @examples
 #' \dontrun{
-#' # Ver departamentos disponibles
+#' # See available departments
 #' get_red_vial_vecinal()
 #'
-#' # Cargar red vial vecinal de un departamento completo
+#' # Load local road network of a full department
 #' vias_cusco <- get_red_vial_vecinal(departamento = "CUSCO")
 #'
-#' # Filtrar por provincia específica
+#' # Filter by specific province
 #' vias_cusco_prov <- get_red_vial_vecinal(
 #'   departamento = "CUSCO",
 #'   provincia = "CUSCO"
 #' )
 #'
-#' # Cargar múltiples departamentos
+#' # Load multiple departments
 #' vias_sur <- get_red_vial_vecinal(
 #'   departamento = c("CUSCO", "PUNO", "AREQUIPA")
 #' )
 #'
-#' # Visualización con ggplot2
+#' # Visualization with ggplot2
 #' library(ggplot2)
 #' library(dplyr)
 #'
-#' # Mapa de red vial vecinal por tipo de superficie
+#' # Map of local road network by surface type
 #' ggplot(vias_cusco) +
 #'   geom_sf(aes(color = superfic_l), linewidth = 0.6) +
 #'   scale_color_manual(
@@ -119,16 +117,16 @@
 #'       "Sin afirmar" = "orange",
 #'       "Trocha" = "brown"
 #'     ),
-#'     name = "Tipo de Superficie"
+#'     name = "Surface Type"
 #'   ) +
 #'   labs(
-#'     title = "Red Vial Vecinal de Cusco",
-#'     subtitle = "Por Tipo de Superficie - PROVÍAS 2022",
-#'     caption = "Fuente: PROVÍAS DESCENTRALIZADO | Visor - SDOT"
+#'     title = "Local Road Network of Cusco",
+#'     subtitle = "By Surface Type - PROVIAS 2022",
+#'     caption = "Source: PROVIAS DESCENTRALIZADO | Visor - SDOT"
 #'   ) +
 #'   theme_minimal()
 #'
-#' # Mapa por estado de conservación
+#' # Map by conservation status
 #' ggplot(vias_cusco) +
 #'   geom_sf(aes(color = estado_l), linewidth = 0.8) +
 #'   scale_color_manual(
@@ -137,16 +135,16 @@
 #'       "Regular" = "orange",
 #'       "Malo" = "red"
 #'     ),
-#'     name = "Estado"
+#'     name = "Status"
 #'   ) +
 #'   labs(
-#'     title = "Estado de Conservación de la Red Vial Vecinal",
-#'     subtitle = "Departamento de Cusco",
-#'     caption = "Fuente: PROVÍAS DESCENTRALIZADO | Visor - SDOT"
+#'     title = "Conservation Status of the Local Road Network",
+#'     subtitle = "Department of Cusco",
+#'     caption = "Source: PROVIAS DESCENTRALIZADO | Visor - SDOT"
 #'   ) +
 #'   theme_minimal()
 #'
-#' # Análisis de longitud por tipo de superficie
+#' # Length analysis by surface type
 #' vias_cusco |>
 #'   st_drop_geometry() |>
 #'   group_by(superfic_l) |>
@@ -157,7 +155,7 @@
 #'   ) |>
 #'   arrange(desc(total_km))
 #'
-#' # Análisis por estado y superficie
+#' # Analysis by status and surface
 #' vias_cusco |>
 #'   st_drop_geometry() |>
 #'   group_by(estado_l, superfic_l) |>
@@ -167,11 +165,11 @@
 #'   ) |>
 #'   arrange(desc(longitud_total))
 #'
-#' # Filtrar vías en mal estado que necesitan intervención
+#' # Filter roads in bad condition needing intervention
 #' vias_mal_estado <- vias_cusco |>
 #'   filter(estado_l == "Malo")
 #'
-#' # Análisis por provincia
+#' # Analysis by province
 #' vias_cusco |>
 #'   st_drop_geometry() |>
 #'   group_by(nombprov) |>
@@ -184,7 +182,7 @@
 #'   ) |>
 #'   arrange(desc(longitud_total))
 #'
-#' # Gráfico de barras: km por provincia
+#' # Bar chart: km by province
 #' vias_prov_summary <- vias_cusco |>
 #'   st_drop_geometry() |>
 #'   group_by(nombprov) |>
@@ -196,15 +194,15 @@
 #'   geom_col(fill = "steelblue") +
 #'   coord_flip() +
 #'   labs(
-#'     title = "Top 10 Provincias con Mayor Red Vial Vecinal",
-#'     subtitle = "Departamento de Cusco",
-#'     x = "Provincia",
-#'     y = "Longitud Total (km)",
-#'     caption = "Fuente: PROVÍAS DESCENTRALIZADO"
+#'     title = "Top 10 Provinces with Largest Local Road Network",
+#'     subtitle = "Department of Cusco",
+#'     x = "Province",
+#'     y = "Total Length (km)",
+#'     caption = "Source: PROVIAS DESCENTRALIZADO"
 #'   ) +
 #'   theme_minimal()
 #'
-#' # Análisis de superficie por provincia
+#' # Surface analysis by province
 #' vias_cusco |>
 #'   st_drop_geometry() |>
 #'   group_by(nombprov, superfic_l) |>
@@ -212,11 +210,11 @@
 #'   pivot_wider(names_from = superfic_l, values_from = km, values_fill = 0) |>
 #'   arrange(desc(Trocha))
 #'
-#' # Filtrar solo vías pavimentadas o afirmadas
+#' # Filter only paved or unpaved roads
 #' vias_mejoradas <- vias_cusco |>
 #'   filter(superfic_l %in% c("Pavimentado", "Afirmado"))
 #'
-#' # Estadísticas generales
+#' # General statistics
 #' vias_cusco |>
 #'   st_drop_geometry() |>
 #'   summarise(
@@ -231,7 +229,7 @@
 #'     pct_mal_estado = (km_mal_estado / longitud_total) * 100
 #'   )
 #'
-#' # Comparación entre provincias
+#' # Comparison between provinces
 #' vias_cusco |>
 #'   st_drop_geometry() |>
 #'   group_by(nombprov) |>
@@ -244,7 +242,7 @@
 #'   ) |>
 #'   arrange(desc(total_km))
 #'
-#' # Visualizar una provincia específica
+#' # Visualize a specific province
 #' vias_prov <- vias_cusco |>
 #'   filter(nombprov == "CUSCO")
 #'
@@ -254,9 +252,9 @@
 #'     values = c("Bueno" = "green", "Regular" = "orange", "Malo" = "red")
 #'   ) +
 #'   labs(
-#'     title = "Red Vial Vecinal - Provincia de Cusco",
-#'     subtitle = "Estado de Conservación",
-#'     color = "Estado"
+#'     title = "Local Road Network - Province of Cusco",
+#'     subtitle = "Conservation Status",
+#'     color = "Status"
 #'   ) +
 #'   theme_minimal()
 #' }
@@ -267,12 +265,11 @@
 #' \code{\link[sf]{read_sf}}
 #'
 #' @references
-#' PROVÍAS DESCENTRALIZADO - MTC. Base Cartográfica de la Red Vial Vecinal 2022.
+#' PROVIAS DESCENTRALIZADO - MTC. Base Cartográfica de la Red Vial Vecinal 2022.
 #'
-#' Decreto Supremo 011-2016-MTC - Clasificador de Rutas del Sistema Nacional de
-#' Carreteras (SINAC).
+#' Supreme Decree 011-2016-MTC - Route Classifier of the National Road System (SINAC).
 #'
-#' Repositorio DEMARCA en OSF: \url{https://osf.io/qy4j6/}
+#' DEMARCA OSF Repository: \url{https://osf.io/qy4j6/}
 #'
 #' @export
 #' @importFrom utils download.file
@@ -282,7 +279,6 @@ get_red_vial_vecinal <- function(departamento = NULL,
                                  provincia = NULL,
                                  show_progress = TRUE,
                                  force_update = FALSE) {
-
   # ==========================================================================
   # 1. TABLA DE REFERENCIA DE DEPARTAMENTOS Y URLs
   # ==========================================================================
@@ -336,44 +332,46 @@ get_red_vial_vecinal <- function(departamento = NULL,
   # ==========================================================================
 
   if (!is.logical(show_progress) || length(show_progress) != 1) {
-    stop("El par\u00e1metro 'show_progress' debe ser TRUE o FALSE", call. = FALSE)
+    stop("The 'show_progress' parameter must be TRUE or FALSE", call. = FALSE)
   }
 
   if (!is.logical(force_update) || length(force_update) != 1) {
-    stop("El par\u00e1metro 'force_update' debe ser TRUE o FALSE", call. = FALSE)
+    stop("The 'force_update' parameter must be TRUE or FALSE", call. = FALSE)
   }
 
   if (!is.null(provincia) && !is.character(provincia)) {
-    stop("El par\u00e1metro 'provincia' debe ser un vector de caracteres o NULL",
-         call. = FALSE)
+    stop("The 'provincia' parameter must be a character vector or NULL",
+      call. = FALSE
+    )
   }
 
-  # Si no se especifica departamento, mostrar lista
+  # If no department is specified, show list
   if (is.null(departamento)) {
-    message("Departamentos disponibles:")
+    message("Available departments:")
     message(paste0("  - ", tabla_departamentos$departamento, collapse = "\n"))
-    message("\nUso: get_red_vial_vecinal(departamento = 'CUSCO')")
+    message("\nUsage: get_red_vial_vecinal(departamento = 'CUSCO')")
     return(invisible(tabla_departamentos$departamento))
   }
 
   if (!is.character(departamento)) {
-    stop("El par\u00e1metro 'departamento' debe ser un vector de caracteres",
-         call. = FALSE)
+    stop("The 'departamento' parameter must be a character vector",
+      call. = FALSE
+    )
   }
 
   # Normalizar nombres (manejar "LA LIBERTAD", "SAN MARTIN", "MADRE DE DIOS")
   departamento_input <- toupper(trimws(departamento))
   departamento_input <- gsub("_", " ", departamento_input)
 
-  # Validar departamentos
+  # Validate departments
   departamentos_validos <- departamento_input %in% tabla_departamentos$departamento
 
   if (!all(departamentos_validos)) {
     departamentos_invalidos <- departamento_input[!departamentos_validos]
     stop(
-      "Departamento(s) no v\u00e1lido(s): ",
+      "Invalid department(s): ",
       paste(departamentos_invalidos, collapse = ", "), "\n",
-      "Use get_red_vial_vecinal() para ver la lista completa.",
+      "Use get_red_vial_vecinal() to see the full list.",
       call. = FALSE
     )
   }
@@ -406,13 +404,13 @@ get_red_vial_vecinal <- function(departamento = NULL,
     url_descarga <- paste0("https://osf.io/download/", id_osf, "/")
     archivo_local <- file.path(ruta_cache_dir, file_name)
 
-    # Descargar si no existe o si se fuerza
+    # Download if it doesn't exist or if force_update is TRUE
     if (!file.exists(archivo_local) || force_update) {
-      if (show_progress) message("Descargando: ", dep, "...")
+      if (show_progress) message("Downloading: ", dep, "...")
 
-      # Intentar descarga con timeout extendido
+      # Attempt download with extended timeout
       timeout_original <- getOption("timeout")
-      options(timeout = 300)  # 5 minutos
+      options(timeout = 300) # 5 minutes
 
       descarga_exitosa <- tryCatch(
         {
@@ -426,9 +424,9 @@ get_red_vial_vecinal <- function(departamento = NULL,
         },
         error = function(e) {
           warning(
-            "Error al descargar ", dep, ": ", e$message, "\n",
+            "Error downloading ", dep, ": ", e$message, "\n",
             "URL: ", url_descarga, "\n",
-            "Puede que el archivo no est\u00e9 disponible temporalmente.",
+            "The file may be temporarily unavailable.",
             call. = FALSE,
             immediate. = TRUE
           )
@@ -439,23 +437,23 @@ get_red_vial_vecinal <- function(departamento = NULL,
       options(timeout = timeout_original)
 
       if (descarga_exitosa && show_progress) {
-        message("\u2713 Descarga completada: ", dep)
+        message("\u2713 Download completed: ", dep)
       } else if (!descarga_exitosa) {
-        next  # Saltar a siguiente departamento
+        next # Skip to next department
       }
     } else {
-      if (show_progress) message("\u2713 Usando cach\u00e9: ", dep)
+      if (show_progress) message("\u2713 Using cache: ", dep)
     }
 
-    # Leer GeoPackage
+    # Read GeoPackage
     if (file.exists(archivo_local)) {
-      if (show_progress) message("Cargando datos: ", dep, "...")
+      if (show_progress) message("Loading data: ", dep, "...")
 
       tryCatch(
         {
           datos_dep <- sf::read_sf(archivo_local, quiet = TRUE)
 
-          # Aplicar corrección de codificación UTF-8
+          # Apply UTF-8 encoding correction
           cols_char <- names(datos_dep)[sapply(datos_dep, is.character)]
           for (col in cols_char) {
             if (col != "geom" && col != "geometry") {
@@ -463,7 +461,7 @@ get_red_vial_vecinal <- function(departamento = NULL,
             }
           }
 
-          # Normalizar nombres de columnas
+          # Normalize column names
           colnames(datos_dep) <- tolower(colnames(datos_dep))
 
           lista_datos[[dep]] <- datos_dep
@@ -471,15 +469,15 @@ get_red_vial_vecinal <- function(departamento = NULL,
           if (show_progress) {
             longitud_total <- sum(datos_dep$longitud, na.rm = TRUE)
             message(
-              "\u2713 Cargado: ", dep,
-              " (", nrow(datos_dep), " tramos, ",
+              "\u2713 Loaded: ", dep,
+              " (", nrow(datos_dep), " segments, ",
               round(longitud_total, 1), " km)"
             )
           }
         },
         error = function(e) {
           warning(
-            "Error al leer archivo para ", dep, ": ", e$message,
+            "Error reading file for ", dep, ": ", e$message,
             call. = FALSE,
             immediate. = TRUE
           )
@@ -493,22 +491,22 @@ get_red_vial_vecinal <- function(departamento = NULL,
   # ==========================================================================
 
   if (length(lista_datos) == 0) {
-    stop("No se pudo cargar ning\u00fan departamento", call. = FALSE)
+    stop("Could not load any department", call. = FALSE)
   }
 
   if (length(lista_datos) == 1) {
     datos_final <- lista_datos[[1]]
   } else {
-    if (show_progress) message("Combinando datos de m\u00faltiples departamentos...")
+    if (show_progress) message("Combining data from multiple departments...")
 
-    # Usar rbind con manejo de errores
+    # Use rbind with error handling
     tryCatch(
       {
         datos_final <- do.call(rbind, lista_datos)
       },
       error = function(e) {
         stop(
-          "Error al combinar datos de m\u00faltiples departamentos: ",
+          "Error combining data from multiple departments: ",
           e$message,
           call. = FALSE
         )
@@ -520,7 +518,7 @@ get_red_vial_vecinal <- function(departamento = NULL,
   # 6. FILTRADO POR PROVINCIA
   # ==========================================================================
 
-  # Filtro por PROVINCIA
+  # Filter by PROVINCE
   if (!is.null(provincia)) {
     if ("nombprov" %in% names(datos_final)) {
       prov_input <- toupper(trimws(provincia))
@@ -528,7 +526,7 @@ get_red_vial_vecinal <- function(departamento = NULL,
 
       if (nrow(datos_final) == 0) {
         warning(
-          "No se encontraron v\u00edas para la(s) provincia(s): ",
+          "No roads found for the province(s): ",
           paste(provincia, collapse = ", "),
           call. = FALSE
         )
@@ -538,13 +536,13 @@ get_red_vial_vecinal <- function(departamento = NULL,
       if (show_progress) {
         longitud_filtrada <- sum(datos_final$longitud, na.rm = TRUE)
         message(
-          "\u2713 Filtrado por provincia: ",
-          nrow(datos_final), " tramos (",
+          "\u2713 Filtered by province: ",
+          nrow(datos_final), " segments (",
           round(longitud_filtrada, 1), " km)"
         )
       }
     } else {
-      warning("No se encontr\u00f3 la columna 'nombprov' para filtrar", call. = FALSE)
+      warning("Column 'nombprov' not found for filtering", call. = FALSE)
     }
   }
 
@@ -555,9 +553,9 @@ get_red_vial_vecinal <- function(departamento = NULL,
   if (show_progress) {
     longitud_total <- sum(datos_final$longitud, na.rm = TRUE)
     message(
-      "\u2713 Datos cargados exitosamente: ",
-      nrow(datos_final), " tramos (",
-      round(longitud_total, 1), " km totales)"
+      "\u2713 Data loaded successfully: ",
+      nrow(datos_final), " segments (",
+      round(longitud_total, 1), " total km)"
     )
   }
 

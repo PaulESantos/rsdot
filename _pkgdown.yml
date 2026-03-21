@@ -2,3 +2,41 @@ url: https://paulesantos.github.io/rsdot/
 template:
   bootstrap: 5
 
+reference:
+  - title: Census Limits
+    desc: Functions to get official census limits for Peru.
+    contents:
+      - get_departamentos
+      - get_provincias
+      - get_distritos
+  - title: Infrastructure and Services
+    desc: Geographic information on health, education, and transport.
+    contents:
+      - get_ipress
+      - get_locales_educativos
+      - get_servicios_educativos
+      - get_aerodromos
+  - title: Transportation Networks
+    desc: National, departmental, and local road networks.
+    contents:
+      - get_red_vial_nacional
+      - get_red_vial_departamental
+      - get_red_vial_vecinal
+  - title: Demographics and Territory
+    desc: Population density, growth, and other territorial layers.
+    contents:
+      - get_densidad_poblacional
+      - get_centros_poblados
+      - get_centros_poblados_crecimiento
+      - get_ccpp_tasa_crecimiento
+      - get_capitales
+      - get_tiempos_desplazamiento
+  - title: Communications
+    desc: Mobile coverage and other communication indicators.
+    contents:
+      - get_cobertura_movil_c
+  - title: System
+    desc: Package maintenance and system functions.
+    contents:
+      - clear_rsdot_cache
+

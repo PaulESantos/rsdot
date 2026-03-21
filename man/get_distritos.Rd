@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_distritos.R
 \name{get_distritos}
 \alias{get_distritos}
-\title{Obtener Límites Censales Distritales del Perú}
+\title{Get District Census Limits of Peru}
 \usage{
 get_distritos(
   distrito = NULL,
@@ -13,105 +13,101 @@ get_distritos(
 )
 }
 \arguments{
-\item{distrito}{Character vector. Nombre(s) del/los distrito(s) a filtrar.
-Puede ser un único distrito (ej: "WANCHAQ") o múltiples distritos
-(ej: c("CUSCO", "WANCHAQ", "SANTIAGO")). No distingue entre mayúsculas y
-minúsculas. Si es \code{NULL}, no filtra por distrito.}
+\item{distrito}{Character vector. Name(s) of the district(s) to filter.
+Can be a single district (e.g., "WANCHAQ") or multiple districts
+(e.g., c("CUSCO", "WANCHAQ", "SANTIAGO")). Case-insensitive.
+If \code{NULL}, no filtering is performed by district.}
 
-\item{provincia}{Character vector. Nombre de la provincia para filtrar
-todos sus distritos (ej: "CUSCO"). Si se especifica, retorna todos los
-distritos de la provincia indicada. No distingue entre mayúsculas y minúsculas.}
+\item{provincia}{Character vector. Name of the province to filter
+all its districts (e.g., "CUSCO"). If specified, it returns all the
+districts of the indicated province. Case-insensitive.}
 
-\item{departamento}{Character vector. Nombre del departamento para filtrar
-todos sus distritos (ej: "CUSCO"). Si se especifica, retorna todos los
-distritos del departamento indicado. No distingue entre mayúsculas y minúsculas.}
+\item{departamento}{Character vector. Name of the department to filter
+all its districts (e.g., "CUSCO"). If specified, it returns all the
+districts of the indicated department. Case-insensitive.}
 
-\item{show_progress}{Logical. Si \code{TRUE} (por defecto), muestra mensajes
-informativos sobre el progreso de la descarga. Si \code{FALSE}, ejecuta de
-forma silenciosa.}
+\item{show_progress}{Logical. If \code{TRUE} (default), shows informative
+messages about download progress. If \code{FALSE}, executes silently.}
 
-\item{force_update}{Logical. Si \code{TRUE}, fuerza una nueva descarga del
-archivo incluso si existe en caché. Por defecto \code{FALSE} para aprovechar
-datos en caché.}
+\item{force_update}{Logical. If \code{TRUE}, forces a new download of the
+file even if it exists in cache. Default \code{FALSE} to leverage cached data.}
 }
 \value{
-Un objeto \code{sf} (simple feature) con la geometría de los distritos
-solicitados, incluyendo sus atributos geográficos y administrativos.
+An \code{sf} (simple feature) object with the geometry of the requested
+districts, including their geographic and administrative attributes.
 }
 \description{
-Descarga y carga los límites distritales oficiales del INEI (2023) desde el
-repositorio OSF de DEMARCA. Implementa caché de sesión para optimizar descargas
-repetidas y mantiene la consola limpia durante la ejecución.
+Downloads and loads the official district limits from INEI (2023) from the
+DEMARCA OSF repository. Implements persistent caching to optimize repeated
+downloads and keeps the console clean during execution.
 }
 \details{
-La función descarga los datos directamente desde OSF (Open Science Framework)
-y los almacena en un directorio temporal de caché durante la sesión de R.
-Los datos corresponden a los límites censales oficiales del INEI 2023.
+The function downloads data directly from OSF (Open Science Framework)
+and stores it in the user's cache directory (\code{tools::R_user_dir("rsdot", "cache")}).
+The data corresponds to the official INEI 2023 census limits.
 
-El caché se almacena en: \code{tempdir()/DEMARCA_cache/}
+The function automatically handles special character encoding (accents, ñ)
+to ensure compatibility across different operating systems.
 
-La función maneja automáticamente la codificación de caracteres especiales
-(tildes, ñ) para asegurar compatibilidad entre diferentes sistemas operativos.
-
-Los filtros se pueden combinar jerárquicamente:
+Filters can be combined hierarchically:
 \itemize{
-\item Solo departamento: retorna todos los distritos del departamento
-\item Departamento + provincia: retorna todos los distritos de esa provincia
-\item Departamento + provincia + distrito: retorna distritos específicos
-\item Solo distrito: retorna ese distrito de cualquier parte del Perú
+\item Department only: returns all districts in the department
+\item Department + province: returns all districts in that province
+\item Department + province + district: returns specific districts
+\item District only: returns that district from anywhere in Peru
 }
 
-Fuente de datos: Repositorio DEMARCA en OSF (\url{https://osf.io/j9ax8/})
+Data source: DEMARCA Repository on OSF (\url{https://osf.io/j9ax8/})
 }
 \examples{
 \dontrun{
-# Cargar todos los distritos del Perú
+# Load all districts of Peru
 distritos_peru <- get_distritos()
 
-# Cargar un distrito específico
+# Load a specific district
 wanchaq <- get_distritos(distrito = "Wanchaq")
 
-# Cargar todos los distritos de una provincia
+# Load all districts of a province
 distritos_cusco <- get_distritos(provincia = "Cusco")
 
-# Cargar todos los distritos de un departamento
+# Load all districts of a department
 distritos_puno <- get_distritos(departamento = "Puno")
 
-# Cargar múltiples distritos específicos
+# Load multiple specific districts
 distritos_centrales <- get_distritos(
   distrito = c("CUSCO", "WANCHAQ", "SANTIAGO")
 )
 
-# Combinar filtros: distritos de una provincia específica
+# Combine filters: districts of a specific province
 costa_lima <- get_distritos(
   provincia = "CAÑETE",
   departamento = "LIMA"
 )
 
-# Filtro jerárquico completo
+# Full hierarchical filter
 distrito_especifico <- get_distritos(
   distrito = "SAN SEBASTIÁN",
   provincia = "CUSCO",
   departamento = "CUSCO"
 )
 
-# Forzar actualización de datos
-distritos_actualizados <- get_distritos(force_update = TRUE)
+# Force data update
+distritos_updated <- get_distritos(force_update = TRUE)
 
-# Ejecución silenciosa
+# Silent execution
 callao <- get_distritos(provincia = "CALLAO", show_progress = FALSE)
 
-# Visualización con ggplot2
+# Visualization with ggplot2
 library(ggplot2)
 
-# Mapa de todos los distritos de la provincia de Cusco
+# Map of all districts in the province of Cusco
 ggplot(distritos_cusco) +
   geom_sf(aes(fill = nombdist), color = "white", linewidth = 0.2) +
   labs(
-    title = "Distritos de la Provincia de Cusco",
-    subtitle = "Límites Censales INEI 2023",
-    fill = "Distrito",
-    caption = "Fuente: INEI | Visor - SDOT"
+    title = "Districts of the Province of Cusco",
+    subtitle = "INEI 2023 Census Limits",
+    fill = "District",
+    caption = "Source: INEI | Visor - SDOT"
   ) +
   scale_fill_brewer(palette = "Paired") +
   theme_minimal() +
@@ -120,40 +116,41 @@ ggplot(distritos_cusco) +
     legend.key.size = unit(0.4, "cm")
   )
 
-# Mapa de un distrito específico
+# Map of a specific district
 ggplot(wanchaq) +
   geom_sf(fill = "#FFA07A", color = "darkred", linewidth = 1.5) +
   labs(
-    title = "Distrito de Wanchaq",
-    subtitle = "Provincia y Departamento de Cusco",
-    caption = "Fuente: INEI | Visor - SDOT"
+    title = "District of Wanchaq",
+    subtitle = "Province and Department of Cusco",
+    caption = "Source: INEI | Visor - SDOT"
   ) +
   theme_minimal()
 
-# Mapa de distritos de Cañete
+# Map of districts in Cañete
 ggplot(costa_lima) +
   geom_sf(aes(fill = nombdist), color = "white", linewidth = 0.3) +
   labs(
-    title = "Distritos de la Provincia de Cañete",
-    subtitle = "Departamento de Lima",
-    fill = "Distrito",
-    caption = "Fuente: INEI | Visor - SDOT"
+    title = "Districts of the Province of Cañete",
+    fill = "District",
+    caption = "Source: INEI | Visor - SDOT"
   ) +
   theme_minimal() +
   theme(legend.position = "bottom")
 
-# Mapa de distritos centrales con etiquetas
+# Map of central districts with labels
 ggplot(distritos_centrales) +
   geom_sf(aes(fill = nombdist), color = "white", linewidth = 0.5) +
   geom_sf_text(aes(label = nombdist), size = 3, fontface = "bold") +
   labs(
-    title = "Distritos Centrales de Cusco",
-    fill = "Distrito",
-    caption = "Fuente: INEI | Visor - SDOT"
+    title = "Central Districts of Cusco",
+    fill = "District",
+    caption = "Source: INEI | Visor - SDOT"
   ) +
   scale_fill_manual(
-    values = c("CUSCO" = "#FF6B6B", "WANCHAQ" = "#4ECDC4",
-               "SANTIAGO" = "#45B7D1")
+    values = c(
+      "CUSCO" = "#FF6B6B", "WANCHAQ" = "#4ECDC4",
+      "SANTIAGO" = "#45B7D1"
+    )
   ) +
   theme_minimal() +
   theme(legend.position = "bottom")
@@ -161,8 +158,8 @@ ggplot(distritos_centrales) +
 
 }
 \references{
-INEI (2023). Límites Censales Distritales del Perú.
-Repositorio DEMARCA: \url{https://osf.io/j9ax8/}
+INEI (2023). District Census Limits of Peru.
+DEMARCA Repository: \url{https://osf.io/j9ax8/}
 }
 \seealso{
 \code{\link{get_departamentos}}, \code{\link{get_provincias}},

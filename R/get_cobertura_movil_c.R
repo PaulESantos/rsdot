@@ -1,67 +1,58 @@
-#' Obtener Cobertura de Servicio Móvil por Centros Poblados del Perú
+#' Get Mobile Coverage by Population Center
 #'
-#' Descarga y carga la información de cobertura de servicio móvil por centros
-#' poblados del Perú, elaborado por el Ministerio de Transportes y Comunicaciones
-#' (MTC) y el Organismo Supervisor de Inversión Privada en Telecomunicaciones (OSIPTEL).
-#' Los datos incluyen geometría tipo POINT e información sobre disponibilidad de
-#' tecnologías 2G, 3G, 4G y 5G, así como servicios de voz, SMS y datos.
-#' Permite filtrado escalonado por departamento, provincia y distrito.
+#' Downloads and loads information on mobile coverage by population center
+#' from the DEMARCA OSF repository. Data includes binary information
+#' (YES/NO) on the existence of 2G, 3G, and 4G coverage for each population
+#' center according to the SDOT Viewer.
 #'
-#' @param departamento Character vector. Nombre(s) del/los departamento(s) a descargar.
-#'   Opciones válidas: "AMAZONAS", "ANCASH", "APURIMAC", "AREQUIPA", "AYACUCHO",
+#' @param departamento Character vector. Name(s) of the department(s) to download.
+#'   Valid options: "AMAZONAS", "ANCASH", "APURIMAC", "AREQUIPA", "AYACUCHO",
 #'   "CAJAMARCA", "CALLAO", "CUSCO", "HUANCAVELICA", "HUANUCO", "ICA", "JUNIN",
 #'   "LA LIBERTAD", "LAMBAYEQUE", "LIMA", "LORETO", "MADRE DE DIOS", "MOQUEGUA",
 #'   "PASCO", "PIURA", "PUNO", "SAN MARTIN", "TACNA", "TUMBES", "UCAYALI".
-#'   No distingue entre mayúsculas y minúsculas. Si es \code{NULL}, muestra la
-#'   lista de departamentos disponibles.
-#' @param provincia Character vector. Nombre(s) de la(s) provincia(s) para filtrar
-#'   dentro del/los departamento(s) especificado(s). Opcional.
-#' @param distrito Character vector. Nombre(s) del/los distrito(s) para filtrar
-#'   dentro de la(s) provincia(s) especificada(s). Opcional.
-#' @param show_progress Logical. Si \code{TRUE} (por defecto), muestra mensajes
-#'   informativos sobre el progreso de la descarga. Si \code{FALSE}, ejecuta de
-#'   forma silenciosa.
-#' @param force_update Logical. Si \code{TRUE}, fuerza una nueva descarga del
-#'   archivo incluso si existe en caché. Por defecto \code{FALSE}.
+#' @param provincia Character vector. Name(s) of the province(s) to filter
+#'   within the specified department(s). Optional.
+#' @param distrito Character vector. Name(s) of the district(s) to filter
+#'   within the specified province(s). Optional.
+#' @param show_progress Logical. If \code{TRUE} (default), shows informative
+#'   messages about download progress. If \code{FALSE}, executes silently.
+#' @param force_update Logical. If \code{TRUE}, forces a new download of the
+#'   file even if it exists in cache. Default \code{FALSE}.
 #'
-#' @return Un objeto \code{sf} (simple feature) con geometría tipo POINT que contiene
-#'   información de cobertura móvil por centro poblado, incluyendo:
+#' @return An \code{sf} (simple feature) object with POINT geometry containing
+#'   mobile coverage information, including:
 #'
-#'   \strong{Identificación geográfica:}
+#'   \strong{Population Center Identification:}
 #'   \itemize{
-#'     \item Geometría POINT (coordenadas del centro poblado)
-#'     \item \code{n}: Número de registro
-#'     \item \code{ubigeo_ccp}: Código de ubicación geográfica del centro poblado
-#'     \item \code{departamen}: Nombre del departamento
-#'     \item \code{provincia}: Nombre de la provincia
-#'     \item \code{distrito}: Nombre del distrito
-#'     \item \code{centro_pob}: Nombre del centro poblado
-#'     \item \code{y_latitud}: Latitud del centro poblado
-#'     \item \code{x_longitud}: Longitud del centro poblado
-#'     \item \code{emoperador}: Indicador de presencia de operador
-#'     \item \code{layer}: Capa de origen
+#'     \item \code{ubigeo}: Ubigeo code of the population center
+#'     \item \code{nom_dep}: Department name
+#'     \item \code{nom_prov}: Province name
+#'     \item \code{nom_dist}: District name
+#'     \item \code{nomccpp}: Population center name
 #'   }
 #'
-#'   \strong{Tecnologías de red móvil} (valores: 1 = disponible, 0 = no disponible):
+#'   \strong{Mobile Network Technologies} (values: 1 = available, 0 = not available):
 #'   \itemize{
-#'     \item \code{2g}: Tecnología 2G declarada por la empresa operadora a nivel
-#'       de centro poblado
-#'     \item \code{3g}: Tecnología 3G declarada por la empresa operadora a nivel
-#'       de centro poblado
-#'     \item \code{4g}: Tecnología 4G declarada por la empresa operadora a nivel
-#'       de centro poblado
-#'     \item \code{5g}: Tecnología 5G declarada por la empresa operadora a nivel
-#'       de centro poblado
+#'     \item \code{2g}: 2G technology declared by the operator at population center level
+#'     \item \code{3g}: 3G technology declared by the operator at population center level
+#'     \item \code{4g}: 4G technology declared by the operator at population center level
+#'     \item \code{5g}: 5G technology declared by the operator at population center level
 #'   }
 #'
-#'   \strong{Servicios de comunicación} (valores: 1 = disponible, 0 = no disponible):
+#'   \strong{Communication Services} (values: 1 = available, 0 = not available):
 #'   \itemize{
-#'     \item \code{voz}: Servicio de voz brindado por la empresa operadora a nivel
-#'       de centro poblado
-#'     \item \code{sms}: Servicio de mensaje de texto corto (SMS) brindado por la
-#'       empresa operadora a nivel de centro poblado
-#'     \item \code{mms}: Servicio de mensaje multimedia (MMS) brindado por la
-#'       empresa operadora a nivel de centro poblado
+#'     \item \code{voz}: Voice service provided by the operator at population center level
+#'     \item \code{sms}: Short message service (SMS) provided by the operator at population center level
+#'     \item \code{mms}: Multimedia message service (MMS) provided by the operator at population center level
+#'     \item \code{internet}: Internet service provided by the operator at population center level
+#'   }
+#'
+#'   \strong{Other Indicators:}
+#'   \itemize{
+#'     \item \code{y_latitud}: Latitude of the population center
+#'     \item \code{x_longitud}: Longitude of the population center
+#'     \item \code{emoperador}: Operator presence indicator
+#'     \item \code{layer}: Source layer
 #'   }
 #'
 #'   \strong{Velocidad de internet móvil} (valores: 1 = disponible, 0 = no disponible):

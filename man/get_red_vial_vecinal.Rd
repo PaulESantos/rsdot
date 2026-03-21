@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_red_vial_vecinal.R
 \name{get_red_vial_vecinal}
 \alias{get_red_vial_vecinal}
-\title{Obtener Red Vial Vecinal del Perú}
+\title{Get Local Road Network of Peru}
 \usage{
 get_red_vial_vecinal(
   departamento = NULL,
@@ -12,121 +12,119 @@ get_red_vial_vecinal(
 )
 }
 \arguments{
-\item{departamento}{Character vector. Nombre(s) del/los departamento(s) a descargar.
-Opciones válidas: "AMAZONAS", "ANCASH", "APURIMAC", "AREQUIPA", "AYACUCHO",
+\item{departamento}{Character vector. Name(s) of the department(s) to download.
+Valid options: "AMAZONAS", "ANCASH", "APURIMAC", "AREQUIPA", "AYACUCHO",
 "CAJAMARCA", "CUSCO", "HUANCAVELICA", "HUANUCO", "ICA", "JUNIN",
 "LA LIBERTAD", "LAMBAYEQUE", "LIMA", "LORETO", "MADRE DE DIOS", "MOQUEGUA",
 "PASCO", "PIURA", "PUNO", "SAN MARTIN", "TACNA", "TUMBES", "UCAYALI".
-No distingue entre mayúsculas y minúsculas. Si es \code{NULL}, muestra la
-lista de departamentos disponibles.}
+Case-insensitive. If \code{NULL}, shows the list of available departments.}
 
-\item{provincia}{Character vector. Nombre(s) de la(s) provincia(s) para filtrar
-dentro del/los departamento(s) especificado(s). Opcional.}
+\item{provincia}{Character vector. Name(s) of the province(s) to filter
+within the specified department(s). Optional.}
 
-\item{show_progress}{Logical. Si \code{TRUE} (por defecto), muestra mensajes
-informativos sobre el progreso de la descarga. Si \code{FALSE}, ejecuta de
-forma silenciosa.}
+\item{show_progress}{Logical. If \code{TRUE} (default), shows informative
+messages about download progress. If \code{FALSE}, executes silently.}
 
-\item{force_update}{Logical. Si \code{TRUE}, fuerza una nueva descarga del
-archivo incluso si existe en caché. Por defecto \code{FALSE}.}
+\item{force_update}{Logical. If \code{TRUE}, forces a new download of the
+file even if it exists in cache. Default \code{FALSE}.}
 }
 \value{
-Un objeto \code{sf} (simple feature) con geometría tipo MULTILINESTRING
-que contiene información de la red vial vecinal, incluyendo:
+An \code{sf} (simple feature) object with MULTILINESTRING geometry
+containing local road network information, including:
 \itemize{
-\item Geometría MULTILINESTRING (trayectoria de la vía)
-\item \code{nombdep}: Nombre del departamento
-\item \code{nombprov}: Nombre de la provincia
-\item \code{iddpto}: Código del departamento
-\item \code{jerarq}: Jerarquía de la ruta (RV = Red Vecinal)
-\item \code{trayectori}: Descripción de la trayectoria de la ruta
-\item \code{estado}: Estado numérico de la vía (1, 2, 3)
-\item \code{codruta}: Código de la ruta vecinal (ej. LO-517, CU-123)
-\item \code{superfic}: Código de tipo de superficie (1-4)
-\item \code{longitud}: Longitud del tramo en kilómetros
-\item \code{estado_l}: Estado descriptivo (Bueno, Regular, Malo)
-\item \code{superfic_l}: Tipo de superficie (Pavimentado, Afirmado, Sin afirmar, Trocha)
+\item MULTILINESTRING geometry (road trajectory)
+\item \code{nombdep}: Department name
+\item \code{nombprov}: Province name
+\item \code{iddpto}: Department code
+\item \code{jerarq}: Route hierarchy (RV = Red Vecinal)
+\item \code{trayectori}: Description of the route trajectory
+\item \code{estado}: Numeric road status (1, 2, 3)
+\item \code{codruta}: Local route code (e.g., LO-517, CU-123)
+\item \code{superfic}: Surface type code (1-4)
+\item \code{longitud}: Segment length in kilometers
+\item \code{estado_l}: Descriptive status (Good, Regular, Bad)
+\item \code{superfic_l}: Surface type (Paved, Unpaved, Dirt, Track)
 }
 
-Si se solicitan múltiples departamentos, retorna un objeto sf combinado.
+If multiple departments are requested, it returns a combined sf object.
 }
 \description{
-Descarga y carga la información de la Red Vial Vecinal actualizada por
-PROVÍAS DESCENTRALIZADO a julio 2022, según Clasificador de Rutas aprobado
-mediante Decreto Supremo 011-2016-MTC y sus modificatorias. Los datos incluyen
-geometría tipo MULTILINESTRING e información sobre trayectorias, estado y
-superficie de las carreteras vecinales o rurales. Permite filtrado escalonado
-por departamento y provincia.
+Downloads and loads information on the Local Road Network updated by
+PROVIAS DESCENTRALIZADO as of July 2022, according to the Route Classifier
+approved by Supreme Decree 011-2016-MTC and its amendments. Data includes
+MULTILINESTRING type geometry and information on trajectories, status, and
+surface of local or rural roads. Allows stepwise filtering by department and
+province.
 }
 \details{
-La función descarga datos desde OSF (Open Science Framework) y los almacena
-en caché durante la sesión de R. Los datos están en formato GeoPackage (.gpkg).
+The function downloads data from OSF (Open Science Framework) and stores it
+in cache during the R session. Data is in GeoPackage (.gpkg) format.
 
-\strong{Fuente de los datos:}
+\strong{Data Source:}
 \itemize{
-\item Fuente: PROVÍAS DESCENTRALIZADO - Ministerio de Transportes y Comunicaciones
-\item Actualización: Julio 2022
-\item Base legal: Decreto Supremo 011-2016-MTC y modificatorias
-\item Nivel: Red Vial Vecinal o Rural (Sistema Nacional de Carreteras - SINAC)
-\item Aplicación: Planificación vial local y análisis de conectividad rural
+\item Source: PROVIAS DESCENTRALIZADO - Ministry of Transport and Communications
+\item Update: July 2022
+\item Legal basis: Supreme Decree 011-2016-MTC and amendments
+\item Level: Local or Rural Road Network (National Road System - SINAC)
+\item Application: Local road planning and rural connectivity analysis
 }
 
-\strong{Clasificación de superficie:}
+\strong{Surface Classification:}
 \itemize{
-\item 1 = Pavimentado
-\item 2 = Afirmado
-\item 3 = Sin afirmar
-\item 4 = Trocha
+\item 1 = Paved
+\item 2 = Unpaved
+\item 3 = Dirt
+\item 4 = Track
 }
 
-\strong{Clasificación de estado:}
+\strong{Status Classification:}
 \itemize{
-\item 1 = Bueno
+\item 1 = Good
 \item 2 = Regular
-\item 3 = Malo
+\item 3 = Bad
 }
 
-\strong{Características de la Red Vecinal:}
-Las carreteras vecinales o rurales conectan centros poblados menores,
-caseríos y áreas de producción con la red vial departamental y nacional.
-Son de competencia de los gobiernos locales (municipalidades).
+\strong{Local Road Network Characteristics:}
+Local or rural roads connect minor population centers, hamlets, and
+production areas with the departmental and national road networks.
+They are the responsibility of local governments (municipalities).
 
-\strong{Filtrado jerárquico:}
-Los filtros se aplican en cascada:
+\strong{Hierarchical Filtering:}
+Filters are applied in cascade:
 \enumerate{
-\item Primero se cargan los departamentos especificados
-\item Luego se filtran las provincias (si se especifican)
+\item Specified departments are loaded first
+\item Then provinces are filtered (if specified)
 }
 
-El caché se almacena en: \code{tempdir()/DEMARCA_cache/red_vial_vecinal/}
+Cache is stored in: \code{tempdir()/DEMARCA_cache/red_vial_vecinal/}
 
-\strong{NOTA:} Las geometrías son tipo MULTILINESTRING (multilíneas) y representan
-las trayectorias de las carreteras vecinales.
+\strong{NOTE:} Geometries are MULTILINESTRING type and represent the trajectories
+of local roads.
 }
 \examples{
 \dontrun{
-# Ver departamentos disponibles
+# See available departments
 get_red_vial_vecinal()
 
-# Cargar red vial vecinal de un departamento completo
+# Load local road network of a full department
 vias_cusco <- get_red_vial_vecinal(departamento = "CUSCO")
 
-# Filtrar por provincia específica
+# Filter by specific province
 vias_cusco_prov <- get_red_vial_vecinal(
   departamento = "CUSCO",
   provincia = "CUSCO"
 )
 
-# Cargar múltiples departamentos
+# Load multiple departments
 vias_sur <- get_red_vial_vecinal(
   departamento = c("CUSCO", "PUNO", "AREQUIPA")
 )
 
-# Visualización con ggplot2
+# Visualization with ggplot2
 library(ggplot2)
 library(dplyr)
 
-# Mapa de red vial vecinal por tipo de superficie
+# Map of local road network by surface type
 ggplot(vias_cusco) +
   geom_sf(aes(color = superfic_l), linewidth = 0.6) +
   scale_color_manual(
@@ -136,16 +134,16 @@ ggplot(vias_cusco) +
       "Sin afirmar" = "orange",
       "Trocha" = "brown"
     ),
-    name = "Tipo de Superficie"
+    name = "Surface Type"
   ) +
   labs(
-    title = "Red Vial Vecinal de Cusco",
-    subtitle = "Por Tipo de Superficie - PROVÍAS 2022",
-    caption = "Fuente: PROVÍAS DESCENTRALIZADO | Visor - SDOT"
+    title = "Local Road Network of Cusco",
+    subtitle = "By Surface Type - PROVIAS 2022",
+    caption = "Source: PROVIAS DESCENTRALIZADO | Visor - SDOT"
   ) +
   theme_minimal()
 
-# Mapa por estado de conservación
+# Map by conservation status
 ggplot(vias_cusco) +
   geom_sf(aes(color = estado_l), linewidth = 0.8) +
   scale_color_manual(
@@ -154,16 +152,16 @@ ggplot(vias_cusco) +
       "Regular" = "orange",
       "Malo" = "red"
     ),
-    name = "Estado"
+    name = "Status"
   ) +
   labs(
-    title = "Estado de Conservación de la Red Vial Vecinal",
-    subtitle = "Departamento de Cusco",
-    caption = "Fuente: PROVÍAS DESCENTRALIZADO | Visor - SDOT"
+    title = "Conservation Status of the Local Road Network",
+    subtitle = "Department of Cusco",
+    caption = "Source: PROVIAS DESCENTRALIZADO | Visor - SDOT"
   ) +
   theme_minimal()
 
-# Análisis de longitud por tipo de superficie
+# Length analysis by surface type
 vias_cusco |>
   st_drop_geometry() |>
   group_by(superfic_l) |>
@@ -174,7 +172,7 @@ vias_cusco |>
   ) |>
   arrange(desc(total_km))
 
-# Análisis por estado y superficie
+# Analysis by status and surface
 vias_cusco |>
   st_drop_geometry() |>
   group_by(estado_l, superfic_l) |>
@@ -184,11 +182,11 @@ vias_cusco |>
   ) |>
   arrange(desc(longitud_total))
 
-# Filtrar vías en mal estado que necesitan intervención
+# Filter roads in bad condition needing intervention
 vias_mal_estado <- vias_cusco |>
   filter(estado_l == "Malo")
 
-# Análisis por provincia
+# Analysis by province
 vias_cusco |>
   st_drop_geometry() |>
   group_by(nombprov) |>
@@ -201,7 +199,7 @@ vias_cusco |>
   ) |>
   arrange(desc(longitud_total))
 
-# Gráfico de barras: km por provincia
+# Bar chart: km by province
 vias_prov_summary <- vias_cusco |>
   st_drop_geometry() |>
   group_by(nombprov) |>
@@ -213,15 +211,15 @@ ggplot(vias_prov_summary, aes(x = reorder(nombprov, total_km), y = total_km)) +
   geom_col(fill = "steelblue") +
   coord_flip() +
   labs(
-    title = "Top 10 Provincias con Mayor Red Vial Vecinal",
-    subtitle = "Departamento de Cusco",
-    x = "Provincia",
-    y = "Longitud Total (km)",
-    caption = "Fuente: PROVÍAS DESCENTRALIZADO"
+    title = "Top 10 Provinces with Largest Local Road Network",
+    subtitle = "Department of Cusco",
+    x = "Province",
+    y = "Total Length (km)",
+    caption = "Source: PROVIAS DESCENTRALIZADO"
   ) +
   theme_minimal()
 
-# Análisis de superficie por provincia
+# Surface analysis by province
 vias_cusco |>
   st_drop_geometry() |>
   group_by(nombprov, superfic_l) |>
@@ -229,11 +227,11 @@ vias_cusco |>
   pivot_wider(names_from = superfic_l, values_from = km, values_fill = 0) |>
   arrange(desc(Trocha))
 
-# Filtrar solo vías pavimentadas o afirmadas
+# Filter only paved or unpaved roads
 vias_mejoradas <- vias_cusco |>
   filter(superfic_l \%in\% c("Pavimentado", "Afirmado"))
 
-# Estadísticas generales
+# General statistics
 vias_cusco |>
   st_drop_geometry() |>
   summarise(
@@ -248,7 +246,7 @@ vias_cusco |>
     pct_mal_estado = (km_mal_estado / longitud_total) * 100
   )
 
-# Comparación entre provincias
+# Comparison between provinces
 vias_cusco |>
   st_drop_geometry() |>
   group_by(nombprov) |>
@@ -261,7 +259,7 @@ vias_cusco |>
   ) |>
   arrange(desc(total_km))
 
-# Visualizar una provincia específica
+# Visualize a specific province
 vias_prov <- vias_cusco |>
   filter(nombprov == "CUSCO")
 
@@ -271,21 +269,20 @@ ggplot(vias_prov) +
     values = c("Bueno" = "green", "Regular" = "orange", "Malo" = "red")
   ) +
   labs(
-    title = "Red Vial Vecinal - Provincia de Cusco",
-    subtitle = "Estado de Conservación",
-    color = "Estado"
+    title = "Local Road Network - Province of Cusco",
+    subtitle = "Conservation Status",
+    color = "Status"
   ) +
   theme_minimal()
 }
 
 }
 \references{
-PROVÍAS DESCENTRALIZADO - MTC. Base Cartográfica de la Red Vial Vecinal 2022.
+PROVIAS DESCENTRALIZADO - MTC. Base Cartográfica de la Red Vial Vecinal 2022.
 
-Decreto Supremo 011-2016-MTC - Clasificador de Rutas del Sistema Nacional de
-Carreteras (SINAC).
+Supreme Decree 011-2016-MTC - Route Classifier of the National Road System (SINAC).
 
-Repositorio DEMARCA en OSF: \url{https://osf.io/qy4j6/}
+DEMARCA OSF Repository: \url{https://osf.io/qy4j6/}
 }
 \seealso{
 \code{\link{get_red_vial_departamental}}, \code{\link{get_red_vial_nacional}},

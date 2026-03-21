@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_red_vial_nacional.R
 \name{get_red_vial_nacional}
 \alias{get_red_vial_nacional}
-\title{Obtener Red Vial Nacional del Perú}
+\title{Get National Road Network of Peru}
 \usage{
 get_red_vial_nacional(
   departamento = NULL,
@@ -11,114 +11,111 @@ get_red_vial_nacional(
 )
 }
 \arguments{
-\item{departamento}{Character vector. Nombre(s) del/los departamento(s) a descargar.
-Opciones válidas: "AMAZONAS", "ANCASH", "APURIMAC", "AREQUIPA", "AYACUCHO",
+\item{departamento}{Character vector. Name(s) of the department(s) to download.
+Valid options: "AMAZONAS", "ANCASH", "APURIMAC", "AREQUIPA", "AYACUCHO",
 "CAJAMARCA", "CALLAO", "CUSCO", "HUANCAVELICA", "HUANUCO", "ICA", "JUNIN",
 "LA LIBERTAD", "LAMBAYEQUE", "LIMA", "LORETO", "MADRE DE DIOS", "MOQUEGUA",
 "PASCO", "PIURA", "PUNO", "SAN MARTIN", "TACNA", "TUMBES", "UCAYALI".
-No distingue entre mayúsculas y minúsculas. Si es \code{NULL}, muestra la
-lista de departamentos disponibles.}
+Case-insensitive. If \code{NULL}, shows the list of available departments.}
 
-\item{show_progress}{Logical. Si \code{TRUE} (por defecto), muestra mensajes
-informativos sobre el progreso de la descarga. Si \code{FALSE}, ejecuta de
-forma silenciosa.}
+\item{show_progress}{Logical. If \code{TRUE} (default), shows informative
+messages about download progress. If \code{FALSE}, executes silently.}
 
-\item{force_update}{Logical. Si \code{TRUE}, fuerza una nueva descarga del
-archivo incluso si existe en caché. Por defecto \code{FALSE}.}
+\item{force_update}{Logical. If \code{TRUE}, forces a new download of the
+file even if it exists in cache. Default \code{FALSE}.}
 }
 \value{
-Un objeto \code{sf} (simple feature) con geometría tipo MULTILINESTRING
-que contiene información de la red vial nacional, incluyendo:
+An \code{sf} (simple feature) object with MULTILINESTRING geometry
+containing national road network information, including:
 \itemize{
-\item Geometría MULTILINESTRING (trayectoria de la vía)
-\item \code{inicio}: Kilómetro de inicio del tramo
-\item \code{fin}: Kilómetro de fin del tramo
-\item \code{trayectori}: Descripción completa de la trayectoria de la ruta
-\item \code{nrocarril}: Número de carriles
-\item \code{ejeclas}: Eje de clasificación (Longitudinal de la Costa, Transversal, etc.)
-\item \code{iddpto}: Código del departamento
-\item \code{nombdep}: Nombre del departamento
-\item \code{codruta}: Código de la ruta (ej. PE-1S, PE-3N, PE-22A)
-\item \code{jerarq}: Jerarquía de la ruta (RN = Red Nacional)
-\item \code{superfic}: Código de tipo de superficie (1-11)
-\item \code{longitud}: Longitud del tramo en kilómetros
-\item \code{codconces}: Código de concesión (si aplica)
-\item \code{codclog}: Código de corredor logístico
-\item \code{superfic_l}: Tipo de superficie descriptivo (Pavimentado, Afirmado, etc.)
-\item \code{codclog_l}: Descripción del corredor logístico
-\item \code{estado}: Estado numérico de la vía (1-3)
-\item \code{estado_l}: Estado descriptivo (Bueno, Regular, Malo)
+\item MULTILINESTRING geometry (road trajectory)
+\item \code{inicio}: Start kilometer of the segment
+\item \code{fin}: End kilometer of the segment
+\item \code{trayectori}: Full description of the route trajectory
+\item \code{nrocarril}: Number of lanes
+\item \code{ejeclas}: Classification axis (Coast Longitudinal, Transversal, etc.)
+\item \code{iddpto}: Department code
+\item \code{nombdep}: Department name
+\item \code{codruta}: Route code (e.g., PE-1S, PE-3N, PE-22A)
+\item \code{jerarq}: Route hierarchy (RN = Red Nacional)
+\item \code{superfic}: Surface type code (1-11)
+\item \code{longitud}: Segment length in kilometers
+\item \code{codconces}: Concession code (if applicable)
+\item \code{codclog}: Logistic corridor code
+\item \code{superfic_l}: Descriptive surface type (Paved, Unpaved, etc.)
+\item \code{codclog_l}: Logistic corridor description
+\item \code{estado}: Numeric road status (1-3)
+\item \code{estado_l}: Descriptive status (Good, Regular, Bad)
 }
 
-Si se solicitan múltiples departamentos, retorna un objeto sf combinado.
+If multiple departments are requested, it returns a combined sf object.
 }
 \description{
-Descarga y carga la información de la Red Vial Nacional actualizada por
-PROVÍAS NACIONAL a julio 2022, según Clasificador de Rutas aprobado mediante
-Decreto Supremo 011-2016-MTC y sus modificatorias. Los datos incluyen geometría
-tipo MULTILINESTRING e información detallada sobre trayectorias, clasificación,
-estado, superficie y concesiones de las carreteras nacionales.
+Downloads and loads information on the National Road Network updated by
+PROVIAS NACIONAL as of July 2022, according to the Route Classifier approved
+by Supreme Decree 011-2016-MTC and its amendments. Data includes
+MULTILINESTRING type geometry and detailed information on trajectories,
+classification, status, surface, and concessions of national roads.
 }
 \details{
-La función descarga datos desde OSF (Open Science Framework) y los almacena
-en caché durante la sesión de R. Los datos están en formato GeoPackage (.gpkg).
+The function downloads data from OSF (Open Science Framework) and stores it
+in cache during the R session. Data is in GeoPackage (.gpkg) format.
 
-\strong{Fuente de los datos:}
+\strong{Data Source:}
 \itemize{
-\item Fuente: PROVÍAS NACIONAL - Ministerio de Transportes y Comunicaciones
-\item Actualización: Julio 2022
-\item Base legal: Decreto Supremo 011-2016-MTC y modificatorias
-\item Nivel: Red Vial Nacional (Sistema Nacional de Carreteras - SINAC)
-\item Aplicación: Planificación vial nacional y análisis de conectividad
+\item Source: PROVIAS NACIONAL - Ministry of Transport and Communications
+\item Update: July 2022
+\item Legal basis: Supreme Decree 011-2016-MTC and amendments
+\item Level: National Road Network (National Road System - SINAC)
+\item Application: National road planning and connectivity analysis
 }
 
-\strong{Clasificación de superficie:}
+\strong{Surface Classification:}
 \itemize{
-\item 1 = Pavimentado
-\item 2 = Afirmado
-\item 11 = Asfaltado económico
-\item Otros códigos según especificaciones técnicas de PROVÍAS
+\item 1 = Paved
+\item 2 = Unpaved
+\item 11 = Economic asphalt
+\item Other codes according to PROVIAS technical specifications
 }
 
-\strong{Clasificación de estado:}
+\strong{Status Classification:}
 \itemize{
-\item 1 = Bueno
+\item 1 = Good
 \item 2 = Regular
-\item 3 = Malo
+\item 3 = Bad
 }
 
-\strong{Ejes de clasificación (ejeclas):}
+\strong{Classification Axes (ejeclas):}
 \itemize{
-\item Longitudinal de la Costa (PE-1N, PE-1S)
-\item Longitudinal de la Sierra
-\item Longitudinal de la Selva
+\item Coast Longitudinal (PE-1N, PE-1S)
+\item Sierra Longitudinal
+\item Selva Longitudinal
 \item Transversal
 }
 
-El caché se almacena en: \code{tempdir()/DEMARCA_cache/red_vial_nacional/}
+Cache is stored in: \code{tempdir()/DEMARCA_cache/red_vial_nacional/}
 
-\strong{NOTA:} Las geometrías son tipo MULTILINESTRING (multilíneas) y representan
-las trayectorias de las carreteras nacionales. Algunos tramos pueden estar
-bajo concesión (campo \code{codconces}).
+\strong{NOTE:} Geometries are MULTILINESTRING type and represent the trajectories
+of national roads. Some segments may be under concession (field \code{codconces}).
 }
 \examples{
 \dontrun{
-# Ver departamentos disponibles
+# See available departments
 get_red_vial_nacional()
 
-# Cargar red vial nacional de un departamento
+# Load national road network of a department
 vias_cusco <- get_red_vial_nacional(departamento = "CUSCO")
 
-# Cargar múltiples departamentos
+# Load multiple departments
 vias_sur <- get_red_vial_nacional(
   departamento = c("CUSCO", "PUNO", "AREQUIPA")
 )
 
-# Visualización con ggplot2
+# Visualization with ggplot2
 library(ggplot2)
 library(dplyr)
 
-# Mapa de red vial nacional por tipo de superficie
+# Map of national road network by surface type
 ggplot(vias_cusco) +
   geom_sf(aes(color = superfic_l), linewidth = 1) +
   scale_color_manual(
@@ -127,16 +124,16 @@ ggplot(vias_cusco) +
       "Afirmado" = "darkgreen",
       "Asfaltado económico" = "purple"
     ),
-    name = "Superficie"
+    name = "Surface"
   ) +
   labs(
-    title = "Red Vial Nacional de Cusco",
-    subtitle = "Por Tipo de Superficie - PROVÍAS 2022",
-    caption = "Fuente: PROVÍAS NACIONAL | Visor - SDOT"
+    title = "National Road Network of Cusco",
+    subtitle = "By Surface Type - PROVIAS 2022",
+    caption = "Source: PROVIAS NACIONAL | Visor - SDOT"
   ) +
   theme_minimal()
 
-# Mapa por estado de conservación
+# Map by conservation status
 ggplot(vias_cusco) +
   geom_sf(aes(color = estado_l, linewidth = estado_l)) +
   scale_color_manual(
@@ -145,31 +142,31 @@ ggplot(vias_cusco) +
       "Regular" = "orange",
       "Malo" = "red"
     ),
-    name = "Estado"
+    name = "Status"
   ) +
   scale_linewidth_manual(
     values = c("Bueno" = 1.2, "Regular" = 0.8, "Malo" = 0.6),
-    name = "Estado"
+    name = "Status"
   ) +
   labs(
-    title = "Estado de Conservación - Red Vial Nacional",
-    subtitle = "Departamento de Cusco",
-    caption = "Fuente: PROVÍAS NACIONAL | Visor - SDOT"
+    title = "Conservation Status of the National Road Network",
+    subtitle = "Department of Cusco",
+    caption = "Source: PROVIAS NACIONAL | Visor - SDOT"
   ) +
   theme_minimal()
 
-# Mapa por código de ruta
+# Map by route code
 ggplot(vias_cusco) +
   geom_sf(aes(color = codruta), linewidth = 1.2) +
   labs(
-    title = "Red Vial Nacional - Códigos de Ruta",
+    title = "National Road Network - Route Codes",
     subtitle = "Cusco",
-    color = "Código de Ruta",
-    caption = "Fuente: PROVÍAS NACIONAL"
+    color = "Route Code",
+    caption = "Source: PROVIAS NACIONAL"
   ) +
   theme_minimal()
 
-# Análisis de longitud por tipo de superficie
+# Length analysis by surface type
 vias_cusco |>
   st_drop_geometry() |>
   group_by(superfic_l) |>
@@ -180,7 +177,7 @@ vias_cusco |>
   ) |>
   arrange(desc(total_km))
 
-# Análisis por eje de clasificación
+# Analysis by classification axis
 vias_cusco |>
   st_drop_geometry() |>
   group_by(ejeclas, estado_l) |>
@@ -190,11 +187,11 @@ vias_cusco |>
   ) |>
   arrange(ejeclas, desc(longitud_total))
 
-# Filtrar vías concesionadas
+# Filter roads under concession
 vias_concesion <- vias_cusco |>
   filter(!is.na(codconces))
 
-# Análisis de corredores logísticos
+# Analysis of logistic corridors
 vias_cusco |>
   st_drop_geometry() |>
   filter(!is.na(codclog_l)) |>
@@ -206,7 +203,7 @@ vias_cusco |>
   ) |>
   arrange(desc(longitud_total))
 
-# Análisis por número de carriles
+# Analysis by number of lanes
 vias_cusco |>
   st_drop_geometry() |>
   group_by(nrocarril) |>
@@ -216,7 +213,7 @@ vias_cusco |>
     .groups = "drop"
   )
 
-# Principales rutas nacionales
+# Main national routes
 vias_cusco |>
   st_drop_geometry() |>
   group_by(codruta) |>
@@ -228,20 +225,20 @@ vias_cusco |>
   ) |>
   arrange(desc(longitud_total))
 
-# Visualizar solo carreteras longitudinales
+# Visualize only longitudinal roads
 vias_long <- vias_cusco |>
   filter(grepl("Longitudinal", ejeclas))
 
 ggplot(vias_long) +
   geom_sf(aes(color = ejeclas), linewidth = 1.5) +
   labs(
-    title = "Carreteras Longitudinales",
-    subtitle = "Red Vial Nacional - Cusco",
-    color = "Eje de Clasificación"
+    title = "Longitudinal Roads",
+    subtitle = "National Road Network - Cusco",
+    color = "Classification Axis"
   ) +
   theme_minimal()
 
-# Estadísticas generales
+# General statistics
 vias_cusco |>
   st_drop_geometry() |>
   summarise(
@@ -257,12 +254,11 @@ vias_cusco |>
 
 }
 \references{
-PROVÍAS NACIONAL - MTC. Base Cartográfica de la Red Vial Nacional 2022.
+PROVIAS NACIONAL - MTC. Base Cartográfica de la Red Vial Nacional 2022.
 
-Decreto Supremo 011-2016-MTC - Clasificador de Rutas del Sistema Nacional de
-Carreteras (SINAC).
+Supreme Decree 011-2016-MTC - Route Classifier of the National Road System (SINAC).
 
-Repositorio DEMARCA en OSF: \url{https://osf.io/qy4j6/}
+DEMARCA OSF Repository: \url{https://osf.io/qy4j6/}
 }
 \seealso{
 \code{\link{get_red_vial_departamental}}, \code{\link{get_departamentos}},

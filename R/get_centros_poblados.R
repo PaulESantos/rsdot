@@ -1,39 +1,28 @@
-#' Obtener Centros Poblados y Asentamientos Dispersos del Perú
+#' Get Population Centers of Peru
 #'
-#' Descarga y carga la información de centros poblados y asentamientos dispersos
-#' recogidos en el Censo de Población y Vivienda 2017 del Instituto Nacional de
-#' Estadística e Informática (INEI). Comprende viviendas particulares con ocupantes
-#' presentes. Los datos incluyen geometría tipo POINT e información detallada sobre
-#' población, vivienda y ubicación geográfica.
+#' Downloads and loads information on population centers of Peru from the
+#' 2017 Population and Housing Census of the National Institute of Statistics
+#' and Informatics (INEI). Data includes demographic and geographic information
+#' at the departmental, provincial, and district levels, with POINT type geometry.
 #'
-#' @param departamento Character vector. Nombre(s) del/los departamento(s) a descargar.
-#'   Opciones válidas: "AMAZONAS", "ANCASH", "APURIMAC", "AREQUIPA", "AYACUCHO",
+#' @param departamento Character vector. Name(s) of the department(s) to download.
+#'   Valid options: "AMAZONAS", "ANCASH", "APURIMAC", "AREQUIPA", "AYACUCHO",
 #'   "CAJAMARCA", "CALLAO", "CUSCO", "HUANCAVELICA", "HUANUCO", "ICA", "JUNIN",
 #'   "LA LIBERTAD", "LAMBAYEQUE", "LIMA", "LORETO", "MADRE DE DIOS", "MOQUEGUA",
 #'   "PASCO", "PIURA", "PUNO", "SAN MARTIN", "TACNA", "TUMBES", "UCAYALI".
-#'   No distingue entre mayúsculas y minúsculas. Si es \code{NULL}, muestra la
-#'   lista de departamentos disponibles.
-#' @param provincia Character vector. Nombre(s) de provincia(s) para filtrar los
-#'   resultados (opcional). Se aplica después de cargar los datos.
-#' @param distrito Character vector. Nombre(s) de distrito(s) para filtrar los
-#'   resultados (opcional). Se aplica después de cargar los datos.
-#' @param show_progress Logical. Si \code{TRUE} (por defecto), muestra mensajes
-#'   informativos sobre el progreso de la descarga. Si \code{FALSE}, ejecuta de
-#'   forma silenciosa.
-#' @param force_update Logical. Si \code{TRUE}, fuerza una nueva descarga del
-#'   archivo incluso si existe en caché. Por defecto \code{FALSE}.
+#'   Case-insensitive. If \code{NULL}, shows the list of available departments.
+#' @param provincia Character vector. Name(s) of province(s) to filter the
+#'   results (optional). It is applied after loading the data.
+#' @param distrito Character vector. Name(s) of district(s) to filter the
+#'   results (optional). It is applied after loading the data.
+#' @param show_progress Logical. If \code{TRUE} (default), shows informative
+#'   messages about download progress. If \code{FALSE}, executes silently.
+#' @param force_update Logical. If \code{TRUE}, forces a new download of the
+#'   file even if it exists in cache. Default \code{FALSE}.
 #'
-#' @return Un objeto \code{sf} (simple feature) con geometría tipo POINT
-#'   que contiene información de centros poblados, incluyendo:
+#' @return An \code{sf} (simple feature) object with POINT type geometry
+#'   containing population center information, including:
 #'   \itemize{
-#'     \item Geometría POINT (ubicación del centro poblado)
-#'     \item \code{ubigeo}: Código de ubicación geográfica (6 dígitos)
-#'     \item \code{codccpp}: Código del centro poblado (10 dígitos)
-#'     \item \code{nombdep}: Nombre del departamento
-#'     \item \code{nombprov}: Nombre de la provincia
-#'     \item \code{nombdist}: Nombre del distrito
-#'     \item \code{cen_pob}: Nombre del centro poblado
-#'     \item \code{pob}: Población total
 #'     \item \code{viv}: Total de viviendas
 #'     \item \code{viv_part}: Viviendas particulares
 #'     \item \code{viv_part_o}: Viviendas particulares ocupadas
@@ -172,7 +161,6 @@ get_centros_poblados <- function(departamento = NULL,
                                  distrito = NULL,
                                  show_progress = TRUE,
                                  force_update = FALSE) {
-
   # ==========================================================================
   # 1. TABLA DE REFERENCIA DE DEPARTAMENTOS Y URLs
   # ==========================================================================
@@ -244,7 +232,8 @@ get_centros_poblados <- function(departamento = NULL,
 
   if (!is.character(departamento)) {
     stop("El par\u00e1metro 'departamento' debe ser un vector de caracteres",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
 
   # Normalizar nombres (manejar "LA LIBERTAD", "SAN MARTIN", "MADRE DE DIOS")
@@ -298,7 +287,7 @@ get_centros_poblados <- function(departamento = NULL,
 
       # Intentar descarga con timeout extendido
       timeout_original <- getOption("timeout")
-      options(timeout = 300)  # 5 minutos
+      options(timeout = 300) # 5 minutos
 
       descarga_exitosa <- tryCatch(
         {
@@ -327,7 +316,7 @@ get_centros_poblados <- function(departamento = NULL,
       if (descarga_exitosa && show_progress) {
         message("\u2713 Descarga completada: ", dep)
       } else if (!descarga_exitosa) {
-        next  # Saltar a siguiente departamento
+        next # Saltar a siguiente departamento
       }
     } else {
       if (show_progress) message("\u2713 Usando cach\u00e9: ", dep)
@@ -412,7 +401,8 @@ get_centros_poblados <- function(departamento = NULL,
   if (!is.null(provincia)) {
     if (!is.character(provincia)) {
       stop("El par\u00e1metro 'provincia' debe ser un vector de caracteres",
-           call. = FALSE)
+        call. = FALSE
+      )
     }
 
     provincia_input <- toupper(trimws(provincia))
@@ -436,7 +426,8 @@ get_centros_poblados <- function(departamento = NULL,
   if (!is.null(distrito)) {
     if (!is.character(distrito)) {
       stop("El par\u00e1metro 'distrito' debe ser un vector de caracteres",
-           call. = FALSE)
+        call. = FALSE
+      )
     }
 
     distrito_input <- toupper(trimws(distrito))

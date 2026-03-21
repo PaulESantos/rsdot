@@ -7,3 +7,4 @@
 docs
 get_tiempo_desplazamiento.R
 inst/doc
+^\.agent$
