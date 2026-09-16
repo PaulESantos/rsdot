@@ -61,7 +61,7 @@ geometry.
 The function downloads data from OSF (Open Science Framework) and stores it
 in cache during the R session. Data is in GeoPackage (.gpkg) format.
 
-Cache is stored in: \code{tempdir()/DEMARCA_cache/capitales/}
+Cache is stored in: \code{tools::R_user_dir("rsdot", which = "cache")/capitales/}
 
 \strong{NOTE:} Geometries are POINT type and represent the approximate geographic
 location of the capitals according to the 2017 Census. Population data

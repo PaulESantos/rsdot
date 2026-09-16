@@ -69,7 +69,7 @@ diferir de las registradas en otras bases de datos oficiales o levantamientos
 de campo específicos. Se recomienda validar las ubicaciones para estudios que
 requieran precisión espacial.
 
-El caché se almacena en: \code{tempdir()/DEMARCA_cache/centros_poblados/}
+El caché se almacena en: \code{tools::R_user_dir("rsdot", which = "cache")/centros_poblados/}
 
 \strong{NOTA:} Las geometrías son tipo POINT y representan la ubicación aproximada
 de los centros poblados según el Censo 2017. El sistema de coordenadas es

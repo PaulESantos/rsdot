@@ -7,4 +7,7 @@
 docs
 get_tiempo_desplazamiento.R
 inst/doc
-^\.agent$
+.agent
+.agent/
+/doc/
+/Meta/

@@ -63,7 +63,7 @@
 #'   \item Finally, districts are filtered (if specified)
 #' }
 #'
-#' Cache is stored in: \code{tempdir()/DEMARCA_cache/centros_poblados/}
+#' Cache is stored in: \code{tools::R_user_dir("rsdot", which = "cache")/centros_poblados/}
 #'
 #' **NOTE:** Geometries are POINT type and represent the location of each population center.
 #'
@@ -288,7 +288,7 @@ get_centros_poblados_crecimiento <- function(departamento = NULL,
   # 3. DIRECTORY SETUP
   # ==========================================================================
 
-  directorio_cache <- file.path(tempdir(), "DEMARCA_cache", "centros_poblados")
+  directorio_cache <- file.path(get_cache_dir(), "centros_poblados")
   if (!dir.exists(directorio_cache)) {
     dir.create(directorio_cache, recursive = TRUE)
   }

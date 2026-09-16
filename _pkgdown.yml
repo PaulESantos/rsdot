@@ -3,40 +3,53 @@ template:
   bootstrap: 5
 
 reference:
-  - title: Census Limits
-    desc: Functions to get official census limits for Peru.
+  - title: Census Limits and Territorial Organization
+    desc: Functions to retrieve official census administrative boundaries, population centers and capitals.
     contents:
       - get_departamentos
       - get_provincias
       - get_distritos
-  - title: Infrastructure and Services
-    desc: Geographic information on health, education, and transport.
-    contents:
-      - get_ipress
-      - get_locales_educativos
-      - get_servicios_educativos
-      - get_aerodromos
-  - title: Transportation Networks
-    desc: National, departmental, and local road networks.
+      - get_capitales
+      - get_centros_poblados
+
+  - title: Transportation Networks and Aerodromes
+    desc: National, departmental, and local road networks, as well as airports and airfields.
     contents:
       - get_red_vial_nacional
       - get_red_vial_departamental
       - get_red_vial_vecinal
-  - title: Demographics and Territory
-    desc: Population density, growth, and other territorial layers.
+      - get_aerodromos
+
+  - title: Social Infrastructure and Public Services
+    desc: Geographic information on health establishments and educational facilities.
+    contents:
+      - get_ipress
+      - get_locales_educativos
+      - get_servicios_educativos
+
+  - title: Demographics and Territorial Accessibility
+    desc: Population density, intercensal growth, and travel time isochrones.
     contents:
       - get_densidad_poblacional
-      - get_centros_poblados
       - get_centros_poblados_crecimiento
       - get_ccpp_tasa_crecimiento
-      - get_capitales
       - get_tiempos_desplazamiento
-  - title: Communications
-    desc: Mobile coverage and other communication indicators.
-    contents:
-      - get_cobertura_movil_c
-  - title: System
-    desc: Package maintenance and system functions.
-    contents:
-      - clear_rsdot_cache
 
+  - title: Telecommunications
+    desc: Mobile phone and data coverage (2G, 3G, 4G, 5G) by population center.
+    contents:
+      - get_cobertura_movil
+      - get_cobertura_movil_c
+
+  - title: Hazards and Disaster Risk Management
+    desc: Exposure areas, critical flood points, mass movement zones, and risk assessments.
+    contents:
+      - get_peligros
+      - get_riesgos
+
+  - title: Catalog Discovery and Maintenance Utilities
+    desc: Tools for catalog discovery, update verification, and cache management.
+    contents:
+      - list_available_layers
+      - rsdot_check_updates
+      - clear_rsdot_cache

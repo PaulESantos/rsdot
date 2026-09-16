@@ -10,3 +10,5 @@
 ^pkgdown$
 get_tiempo_desplazamiento.R
 ^\.agent
+^doc$
+^Meta$

@@ -41,3 +41,9 @@ test_that("download_file_safe handles errors", {
     )
     expect_false(res)
 })
+
+test_that("get_cache_dir returns valid path", {
+    cache_dir <- get_cache_dir()
+    expect_true(dir.exists(cache_dir))
+    expect_true(grepl("rsdot", cache_dir))
+})

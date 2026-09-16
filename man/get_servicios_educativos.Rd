@@ -155,7 +155,7 @@ Filters are applied in cascade:
 \item Then provinces are filtered (if specified)
 }
 
-Cache is stored in: \code{tempdir()/DEMARCA_cache/servicios_educativos/}
+Cache is stored in: \code{tools::R_user_dir("rsdot", which = "cache")/servicios_educativos/}
 
 \strong{NOTE:} Geometries are POINT type and represent the location
 of each educational service.

@@ -2,9 +2,18 @@
 % Please edit documentation in R/get_cobertura_movil_c.R
 \name{get_cobertura_movil_c}
 \alias{get_cobertura_movil_c}
+\alias{get_cobertura_movil}
 \title{Get Mobile Coverage by Population Center}
 \usage{
 get_cobertura_movil_c(
+  departamento = NULL,
+  provincia = NULL,
+  distrito = NULL,
+  show_progress = TRUE,
+  force_update = FALSE
+)
+
+get_cobertura_movil(
   departamento = NULL,
   provincia = NULL,
   distrito = NULL,
@@ -143,7 +152,7 @@ Los filtros se aplican en cascada:
 \item Finalmente se filtran los distritos (si se especifican)
 }
 
-El caché se almacena en: \code{tempdir()/DEMARCA_cache/cobertura_movil/}
+El caché se almacena en: \code{tools::R_user_dir("rsdot", which = "cache")/cobertura_movil/}
 
 \strong{NOTA:} Las geometrías son tipo POINT (puntos) y representan la ubicación
 de cada centro poblado con información de cobertura.

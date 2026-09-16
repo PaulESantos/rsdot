@@ -124,7 +124,7 @@
 #'   \item Finalmente se filtran los distritos (si se especifican)
 #' }
 #'
-#' El caché se almacena en: \code{tempdir()/DEMARCA_cache/cobertura_movil/}
+#' El caché se almacena en: \code{tools::R_user_dir("rsdot", which = "cache")/cobertura_movil/}
 #'
 #' **NOTA:** Las geometrías son tipo POINT (puntos) y representan la ubicación
 #' de cada centro poblado con información de cobertura.
@@ -320,7 +320,7 @@ get_cobertura_movil_c <- function(departamento = NULL,
   # 3. CONFIGURACIÓN DE DIRECTORIOS
   # ==========================================================================
 
-  ruta_cache_dir <- file.path(tempdir(), "DEMARCA_cache", "cobertura_movil")
+  ruta_cache_dir <- file.path(get_cache_dir(), "cobertura_movil")
   if (!dir.exists(ruta_cache_dir)) {
     dir.create(ruta_cache_dir, recursive = TRUE)
   }
@@ -515,3 +515,7 @@ get_cobertura_movil_c <- function(departamento = NULL,
 
   return(datos_final)
 }
+
+#' @rdname get_cobertura_movil_c
+#' @export
+get_cobertura_movil <- get_cobertura_movil_c

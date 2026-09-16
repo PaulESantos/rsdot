@@ -151,7 +151,7 @@
 #'   \item Finally districts are filtered (if specified)
 #' }
 #'
-#' Cache is stored in: \code{tempdir()/DEMARCA_cache/ipress/}
+#' Cache is stored in: \code{tools::R_user_dir("rsdot", which = "cache")/ipress/}
 #'
 #' **NOTE:** Geometries are POINT type and represent the location
 #' of each health establishment.
@@ -407,7 +407,7 @@ get_ipress <- function(departamento = NULL,
   # 3. CONFIGURACIÓN DE DIRECTORIOS
   # ==========================================================================
 
-  ruta_cache_dir <- file.path(tempdir(), "DEMARCA_cache", "ipress")
+  ruta_cache_dir <- file.path(get_cache_dir(), "ipress")
   if (!dir.exists(ruta_cache_dir)) {
     dir.create(ruta_cache_dir, recursive = TRUE)
   }

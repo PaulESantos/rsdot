@@ -45,15 +45,68 @@ legal demarcatorio.
   modernas
 - ✅ **Validación de geometrías** automática para operaciones espaciales
 
-### 📦 Funciones principales
+### 📦 Funciones Disponibles por Dominio Temático
 
-- `get_departamentos()` - Límites censales departamentales
-- `get_provincias()` - Límites censales provinciales
-- `get_distritos()` - Límites censales distritales
-- `get_tiempos_desplazamiento()` - Tiempos de desplazamiento a capitales
-- `get_densidad_poblacional()` - Densidad y crecimiento poblacional
-  intercensal
+#### 🏛️ Límites Censales y Organización Territorial
+- `get_departamentos()` - Límites censales departamentales (INEI 2023).
+- `get_provincias(departamento)` - Límites censales provinciales.
+- `get_distritos(departamento, provincia)` - Límites censales distritales.
+- `get_capitales()` - Coordenadas de capitales departamentales, provinciales y distritales.
+- `get_centros_poblados(departamento, ...)` - Centros poblados y asentamientos dispersos.
 
+#### 🛣️ Redes de Transporte y Aeródromos
+- `get_red_vial_nacional()` - Red vial nacional (SINAC / MTC).
+- `get_red_vial_departamental(departamento, ...)` - Red vial departamental.
+- `get_red_vial_vecinal(departamento, ...)` - Red vial vecinal / rural.
+- `get_aerodromos(departamento)` - Aeropuertos, aeródromos y pistas de aterrizaje.
+
+#### 🏥 Infraestructura Social y Servicios Públicos
+- `get_ipress(departamento, ...)` - Establecimientos de salud (IPRESS - MINSA/SDOT).
+- `get_locales_educativos(departamento, ...)` - Locales escolares y educativos (MINEDU).
+- `get_servicios_educativos(departamento, ...)` - Servicios educativos por nivel/modalidad.
+
+#### 📈 Demografía y Accesibilidad Territorial
+- `get_densidad_poblacional(departamento, ...)` - Densidad poblacional intercensal (2007-2017).
+- `get_centros_poblados_crecimiento(departamento)` - Tasa de crecimiento intercensal de centros poblados.
+- `get_tiempos_desplazamiento(departamento)` - Isócronas de tiempo de desplazamiento y accesibilidad a capitales.
+
+#### 📶 Telecomunicaciones
+- `get_cobertura_movil(departamento, ...)` - Cobertura móvil (2G, 3G, 4G, 5G) por centro poblado.
+- `get_cobertura_movil_c(departamento, ...)` - Detalle de servicios de comunicación y estaciones base.
+
+#### 🌋 Peligros y Gestión del Riesgo de Desastres
+- `get_peligros(dataset, departamento)` - Áreas de inundación, puntos críticos y movimientos en masa.
+- `get_riesgos(dataset, departamento)` - Evaluaciones de riesgo y zonas de riesgo no mitigable.
+
+#### ⚙️ Descubrimiento de Catálogo y Mantenimiento
+- `list_available_layers(domain = NULL)` - Consultar el catálogo completo de capas disponibles y sus metadatos.
+- `rsdot_check_updates()` - Verificar el estado, peso y fechas de las capas en la caché local.
+- `clear_rsdot_cache()` - Limpiar la memoria caché local para liberar espacio o forzar recarga.
+
+---
+
+### 🗺️ Matriz de Cobertura de Capas (GeoSDOT vs rsdot)
+
+| Dominio | Capa Fuente en GeoSDOT | Función en rsdot | Nivel de Partición |
+| :--- | :--- | :--- | :--- |
+| Límites | `geoportal:v_departamentos_2023` | `get_departamentos()` | Nacional |
+| Límites | `geoportal:v_provincias_2023` | `get_provincias()` | Nacional / Departamental |
+| Límites | `geoportal:v_distritos_2023` | `get_distritos()` | Nacional / Departamental / Provincial |
+| Límites | `geoportal:v_capitales` | `get_capitales()` | Nacional / Departamental |
+| Límites | `geoportal:ccpp_asentamientos_dispersos` | `get_centros_poblados()` | Departamental / Provincial / Distrital |
+| Transporte | `geoportal:v_red_vial_nacional` | `get_red_vial_nacional()` | Nacional |
+| Transporte | `geoportal:v_red_vial_departamental` | `get_red_vial_departamental()` | Departamental / Provincial |
+| Transporte | `geoportal:v_red_vial_vecinal` | `get_red_vial_vecinal()` | Departamental / Provincial |
+| Transporte | `geoportal:v_aerodromos` | `get_aerodromos()` | Departamental |
+| Servicios | `geoportal:v_ipress` | `get_ipress()` | Departamental / Provincial / Distrital |
+| Servicios | `geoportal:v_locales_educativos` | `get_locales_educativos()` | Departamental / Provincial / Distrital |
+| Servicios | `geoportal:v_servicios_educativos` | `get_servicios_educativos()` | Departamental / Provincial / Distrital |
+| Demografía | `geoportal:v_densidad_poblacional` | `get_densidad_poblacional()` | Departamental / Provincial / Distrital |
+| Demografía | `geoportal:v_ccpp_crecimiento` | `get_centros_poblados_crecimiento()` | Departamental |
+| Accesibilidad | `geoportal:v_tiempo_desplazamiento` | `get_tiempos_desplazamiento()` | Departamental / Polígono personalizado |
+| Telecom | `geoportal:cobertura_movil_oper` | `get_cobertura_movil()` | Departamental / Provincial / Distrital |
+| Peligros | `geoportal:v_peligros_*` | `get_peligros()` | Departamental |
+| Riesgos | `geoportal:v_riesgos_*` | `get_riesgos()` | Departamental |
 ## 📦 Instalación
 
 Instalar la versión de desarrollo desde GitHub:

@@ -143,7 +143,7 @@ Filters are applied in cascade:
 \item Finally districts are filtered (if specified)
 }
 
-Cache is stored in: \code{tempdir()/DEMARCA_cache/locales_educativos/}
+Cache is stored in: \code{tools::R_user_dir("rsdot", which = "cache")/locales_educativos/}
 
 \strong{NOTE:} Geometries are POINT type and represent the location
 of each educational facility.

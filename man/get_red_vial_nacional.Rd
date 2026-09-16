@@ -93,7 +93,7 @@ in cache during the R session. Data is in GeoPackage (.gpkg) format.
 \item Transversal
 }
 
-Cache is stored in: \code{tempdir()/DEMARCA_cache/red_vial_nacional/}
+Cache is stored in: \code{tools::R_user_dir("rsdot", which = "cache")/red_vial_nacional/}
 
 \strong{NOTE:} Geometries are MULTILINESTRING type and represent the trajectories
 of national roads. Some segments may be under concession (field \code{codconces}).

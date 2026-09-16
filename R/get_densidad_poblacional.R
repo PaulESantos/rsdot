@@ -55,7 +55,7 @@
 #'   \item Finally, districts are filtered (if specified)
 #' }
 #'
-#' Cache is stored in: \code{tempdir()/DEMARCA_cache/densidad_poblacional/}
+#' Cache is stored in: \code{tools::R_user_dir("rsdot", which = "cache")/densidad_poblacional/}
 #'
 #' **NOTE:** Geometries are automatically validated with \code{st_make_valid()}
 #' to prevent errors in subsequent spatial operations.
@@ -245,7 +245,7 @@ get_densidad_poblacional <- function(departamento = NULL,
   # 3. DIRECTORY CONFIGURATION
   # ==========================================================================
 
-  ruta_cache_dir <- file.path(tempdir(), "DEMARCA_cache", "densidad_poblacional")
+  ruta_cache_dir <- file.path(get_cache_dir(), "densidad_poblacional")
   if (!dir.exists(ruta_cache_dir)) {
     dir.create(ruta_cache_dir, recursive = TRUE)
   }

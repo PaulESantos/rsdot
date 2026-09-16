@@ -92,7 +92,7 @@ Filters are applied in cascade:
 \item Then provinces are filtered (if specified)
 }
 
-Cache is stored in: \code{tempdir()/DEMARCA_cache/red_vial_departamental/}
+Cache is stored in: \code{tools::R_user_dir("rsdot", which = "cache")/red_vial_departamental/}
 
 \strong{NOTE:} Geometries are MULTILINESTRING type and represent the trajectories
 of departmental roads.

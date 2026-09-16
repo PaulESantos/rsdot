@@ -44,14 +44,68 @@ The INEI census limits provided by this package are **referential** and do not c
 - ✅ **Compatible** with `sf`, `ggplot2`, `dplyr`, and modern GIS tools
 - ✅ **Automatic geometry validation** for spatial operations
 
-### 📦 Key Functions
+### 📦 Available Functions by Domain
 
-- `get_departamentos()` - Departmental census limits
-- `get_provincias()` - Provincial census limits
-- `get_distritos()` - District census limits
-- `get_tiempos_desplazamiento()` - Travel times to capitals
-- `get_densidad_poblacional()` - Intercensal population density and growth
+#### 🏛️ Census Limits and Territorial Organization
+- `get_departamentos()` - Departmental census boundaries (INEI 2023).
+- `get_provincias(departamento)` - Provincial census boundaries.
+- `get_distritos(departamento, provincia)` - District census boundaries.
+- `get_capitales()` - Departmental, provincial, and district capital coordinates.
+- `get_centros_poblados(departamento, ...)` - Dispersed population centers and settlements.
 
+#### 🛣️ Transportation Networks and Aerodromes
+- `get_red_vial_nacional()` - National road network (SINAC / MTC).
+- `get_red_vial_departamental(departamento, ...)` - Departmental road network.
+- `get_red_vial_vecinal(departamento, ...)` - Local/rural road network.
+- `get_aerodromos(departamento)` - Airports and airfields across Peru.
+
+#### 🏥 Social Infrastructure and Public Services
+- `get_ipress(departamento, ...)` - Health establishments (IPRESS - MINSA/SDOT).
+- `get_locales_educativos(departamento, ...)` - Educational buildings and campuses (MINEDU).
+- `get_servicios_educativos(departamento, ...)` - Educational services by level/modality.
+
+#### 📈 Demographics and Territorial Accessibility
+- `get_densidad_poblacional(departamento, ...)` - Intercensal population density (2007-2017).
+- `get_centros_poblados_crecimiento(departamento)` - Intercensal growth rate for population centers.
+- `get_tiempos_desplazamiento(departamento)` - Travel time isochrones and accessibility to capitals.
+
+#### 📶 Telecommunications
+- `get_cobertura_movil(departamento, ...)` - Mobile coverage (2G, 3G, 4G, 5G) by population center.
+- `get_cobertura_movil_c(departamento, ...)` - Detailed mobile services and base stations.
+
+#### 🌋 Hazards and Disaster Risk Management
+- `get_peligros(dataset, departamento)` - Geological hazards, mass movements, and flood zones.
+- `get_riesgos(dataset, departamento)` - Disaster risk evaluations and non-mitigable risk zones.
+
+#### ⚙️ Catalog Discovery and Maintenance Utilities
+- `list_available_layers(domain = NULL)` - Explore the complete catalog of spatial layers and their metadata.
+- `rsdot_check_updates()` - Check status, sizes, and modification dates of cached datasets.
+- `clear_rsdot_cache()` - Remove all locally cached datasets to free up space or force updates.
+
+---
+
+### 🗺️ Layer Coverage Matrix (GeoSDOT vs rsdot)
+
+| Domain | GeoSDOT Source Layer | rsdot Function | Granularity / Partition |
+| :--- | :--- | :--- | :--- |
+| Limits | `geoportal:v_departamentos_2023` | `get_departamentos()` | National |
+| Limits | `geoportal:v_provincias_2023` | `get_provincias()` | National / Department |
+| Limits | `geoportal:v_distritos_2023` | `get_distritos()` | National / Department / Province |
+| Limits | `geoportal:v_capitales` | `get_capitales()` | National / Department |
+| Limits | `geoportal:ccpp_asentamientos_dispersos` | `get_centros_poblados()` | Department / Province / District |
+| Transport | `geoportal:v_red_vial_nacional` | `get_red_vial_nacional()` | National |
+| Transport | `geoportal:v_red_vial_departamental` | `get_red_vial_departamental()` | Department / Province |
+| Transport | `geoportal:v_red_vial_vecinal` | `get_red_vial_vecinal()` | Department / Province |
+| Transport | `geoportal:v_aerodromos` | `get_aerodromos()` | Department |
+| Services | `geoportal:v_ipress` | `get_ipress()` | Department / Province / District |
+| Services | `geoportal:v_locales_educativos` | `get_locales_educativos()` | Department / Province / District |
+| Services | `geoportal:v_servicios_educativos` | `get_servicios_educativos()` | Department / Province / District |
+| Demographics | `geoportal:v_densidad_poblacional` | `get_densidad_poblacional()` | Department / Province / District |
+| Demographics | `geoportal:v_ccpp_crecimiento` | `get_centros_poblados_crecimiento()` | Department |
+| Accessibility | `geoportal:v_tiempo_desplazamiento` | `get_tiempos_desplazamiento()` | Department / Custom AOI |
+| Telecom | `geoportal:cobertura_movil_oper` | `get_cobertura_movil()` | Department / Province / District |
+| Hazards | `geoportal:v_peligros_*` | `get_peligros()` | Department |
+| Risks | `geoportal:v_riesgos_*` | `get_riesgos()` | Department |
 Once the package is on CRAN, you can install it with:
 ```r
 install.packages("rsdot")

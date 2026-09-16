@@ -50,7 +50,7 @@
 #' de campo específicos. Se recomienda validar las ubicaciones para estudios que
 #' requieran precisión espacial.
 #'
-#' El caché se almacena en: \code{tempdir()/DEMARCA_cache/centros_poblados/}
+#' El caché se almacena en: \code{tools::R_user_dir("rsdot", which = "cache")/centros_poblados/}
 #'
 #' **NOTA:** Las geometrías son tipo POINT y representan la ubicación aproximada
 #' de los centros poblados según el Censo 2017. El sistema de coordenadas es
@@ -262,7 +262,7 @@ get_centros_poblados <- function(departamento = NULL,
   # 3. CONFIGURACIÓN DE DIRECTORIOS
   # ==========================================================================
 
-  ruta_cache_dir <- file.path(tempdir(), "DEMARCA_cache", "centros_poblados")
+  ruta_cache_dir <- file.path(get_cache_dir(), "centros_poblados")
   if (!dir.exists(ruta_cache_dir)) {
     dir.create(ruta_cache_dir, recursive = TRUE)
   }

@@ -1,5 +1,5 @@
 ## Test environments
-* local Windows 11, R 4.4.1
+* local Windows 11 x64, R 4.6.1 (2026-06-24 ucrt)
 * github actions (windows-latest, ubuntu-latest, macos-latest)
 
 ## R CMD check results
@@ -8,7 +8,12 @@
 
 * This is a new release.
 
+## Notes
+
+* The NOTE regarding "checking for future file timestamps" occurs due to testing in an offline environment without external time synchronization.
+
 ## Method References
 There are no published references describing the methods in this package.
-The package implements original functionality for accessing and processing
-official geospatial data from Peruvian government web services and repositories.
+The package implements original functionality for accessing, caching, and processing
+official geospatial data from Peruvian government web services and repositories
+(SDOT-PCM / INEI).

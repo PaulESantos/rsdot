@@ -8,11 +8,14 @@ test_that("get_aerodromos suggests departments when null", {
     expect_match(msg, "Available departments", all = FALSE)
 })
 
-test_that("get_aerodromos returns empty sf for empty filter", {
-    # Mock internal fetching/reading logic to avoid network calls
-    # This requires mocking get_rsdot_catalog, download_file_safe, read_sf_safe
-    # For now, we test the logic that doesn't reach network or assumes successful mock if we could mock.
-
-    # Since valid inputs trigger network, we'll focus on validation tests above
-    # and perhaps a test that mocks the utilities if 'mockery' is available.
+test_that("get_aerodromos validates filter parameters", {
+    expect_error(
+        get_aerodromos(departamento = "CUSCO", provincia = 123),
+        "provincia.*character vector"
+    )
+    expect_error(
+        get_aerodromos(departamento = "CUSCO", distrito = 123),
+        "distrito.*character vector"
+    )
 })
+

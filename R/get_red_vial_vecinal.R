@@ -79,7 +79,7 @@
 #'   \item Then provinces are filtered (if specified)
 #' }
 #'
-#' Cache is stored in: \code{tempdir()/DEMARCA_cache/red_vial_vecinal/}
+#' Cache is stored in: \code{tools::R_user_dir("rsdot", which = "cache")/red_vial_vecinal/}
 #'
 #' **NOTE:** Geometries are MULTILINESTRING type and represent the trajectories
 #' of local roads.
@@ -385,7 +385,7 @@ get_red_vial_vecinal <- function(departamento = NULL,
   # 3. CONFIGURACIÓN DE DIRECTORIOS
   # ==========================================================================
 
-  ruta_cache_dir <- file.path(tempdir(), "DEMARCA_cache", "red_vial_vecinal")
+  ruta_cache_dir <- file.path(get_cache_dir(), "red_vial_vecinal")
   if (!dir.exists(ruta_cache_dir)) {
     dir.create(ruta_cache_dir, recursive = TRUE)
   }

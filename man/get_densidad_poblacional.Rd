@@ -74,7 +74,7 @@ Filters are applied in cascade:
 \item Finally, districts are filtered (if specified)
 }
 
-Cache is stored in: \code{tempdir()/DEMARCA_cache/densidad_poblacional/}
+Cache is stored in: \code{tools::R_user_dir("rsdot", which = "cache")/densidad_poblacional/}
 
 \strong{NOTE:} Geometries are automatically validated with \code{st_make_valid()}
 to prevent errors in subsequent spatial operations.

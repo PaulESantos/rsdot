@@ -78,7 +78,7 @@
 #'   \item Transversal
 #' }
 #'
-#' Cache is stored in: \code{tempdir()/DEMARCA_cache/red_vial_nacional/}
+#' Cache is stored in: \code{tools::R_user_dir("rsdot", which = "cache")/red_vial_nacional/}
 #'
 #' **NOTE:** Geometries are MULTILINESTRING type and represent the trajectories
 #' of national roads. Some segments may be under concession (field \code{codconces}).
@@ -356,7 +356,7 @@ get_red_vial_nacional <- function(departamento = NULL,
   # 3. CONFIGURACIÓN DE DIRECTORIOS
   # ==========================================================================
 
-  ruta_cache_dir <- file.path(tempdir(), "DEMARCA_cache", "red_vial_nacional")
+  ruta_cache_dir <- file.path(get_cache_dir(), "red_vial_nacional")
   if (!dir.exists(ruta_cache_dir)) {
     dir.create(ruta_cache_dir, recursive = TRUE)
   }
