@@ -8,16 +8,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r setup, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  fig.width = 8,
-  fig.height = 6,
-  warning = FALSE,
-  message = FALSE
-)
-```
+
 
 ## Introducción
 
@@ -63,7 +54,8 @@ El paquete `rsdot` proporciona dos funciones principales:
 
 Ambas funciones utilizan datos georreferenciados del Censo 2017, accesibles a través de la plataforma **VIsor SDOT** de la PCM.
 
-```{r load-packages}
+
+``` r
 library(rsdot)
 library(ggplot2)
 library(dplyr)
@@ -86,20 +78,39 @@ El campo `capital` indica la jerarquía administrativa:
 
 ### Uso Básico
 
-```{r capitales-basico}
+
+``` r
 # Obtener todas las capitales de Cusco
 capitales_cusco <- get_capitales(departamento = "CUSCO")
 
 # Ver estructura de los datos
 head(capitales_cusco)
+#> Simple feature collection with 6 features and 9 fields
+#> Geometry type: POINT
+#> Dimension:     XY
+#> Bounding box:  xmin: -72.05914 ymin: -13.58477 xmax: -71.88359 ymax: -13.49446
+#> Geodetic CRS:  WGS 84
+#> # A tibble: 6 × 10
+#>     gid ubigeo nombdep nombprov nombdist      codccpp    cen_pob     pob capital
+#>   <int> <chr>  <chr>   <chr>    <chr>         <chr>      <chr>     <int> <chr>  
+#> 1 33390 080101 CUSCO   CUSCO    CUSCO         0801010001 CUSCO    111930 1      
+#> 2 33426 080102 CUSCO   CUSCO    CCORCA        0801020001 CCORCA      265 3      
+#> 3 33448 080103 CUSCO   CUSCO    POROY         0801030001 POROY      1410 3      
+#> 4 33465 080104 CUSCO   CUSCO    SAN JERONIMO  0801040001 SAN JER…  55335 3      
+#> 5 33491 080105 CUSCO   CUSCO    SAN SEBASTIAN 0801050001 SAN SEB… 109915 3      
+#> 6 33505 080106 CUSCO   CUSCO    SANTIAGO      0801060001 SANTIAGO  92729 3      
+#> # ℹ 1 more variable: geom <POINT [°]>
 
 # Resumen estadístico
 summary(capitales_cusco$pob)
+#>    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+#>     168     691    1448    6634    2759  111930
 ```
 
 ### Análisis por Jerarquía
 
-```{r analisis-jerarquia}
+
+``` r
 # Clasificar capitales por tipo
 capitales_cusco %>%
   st_drop_geometry() %>%
@@ -117,11 +128,18 @@ capitales_cusco %>%
     pob_promedio = round(mean(pob, na.rm = TRUE)),
     pob_mediana = median(pob, na.rm = TRUE)
   )
+#> # A tibble: 3 × 5
+#>   tipo          n_capitales pob_total pob_promedio pob_mediana
+#>   <chr>               <int>     <int>        <dbl>       <dbl>
+#> 1 Departamental           1    111930       111930      111930
+#> 2 Distrital              99    466653         4714        1391
+#> 3 Provincial             12    164388        13699       10176
 ```
 
 ### Identificar Capitales Provinciales
 
-```{r capitales-provinciales}
+
+``` r
 # Las capitales provinciales son centros urbanos importantes
 capitales_prov <- capitales_cusco %>%
   filter(capital == 2)
@@ -130,11 +148,27 @@ capitales_prov %>%
   st_drop_geometry() %>%
   select(nombprov, cen_pob, pob) %>%
   arrange(desc(pob))
+#> # A tibble: 12 × 3
+#>    nombprov      cen_pob       pob
+#>    <chr>         <chr>       <int>
+#>  1 CANCHIS       SICUANI     46102
+#>  2 ESPINAR       YAURI       28888
+#>  3 LA CONVENCION QUILLABAMBA 23985
+#>  4 URUBAMBA      URUBAMBA    13942
+#>  5 CALCA         CALCA       13519
+#>  6 ANTA          ANTA        10182
+#>  7 CHUMBIVILCAS  SANTO TOMAS 10170
+#>  8 QUISPICANCHI  URCOS        5968
+#>  9 PAUCARTAMBO   PAUCARTAMBO  3990
+#> 10 CANAS         YANAOCA      3307
+#> 11 ACOMAYO       ACOMAYO      2516
+#> 12 PARURO        PARURO       1819
 ```
 
 ### Visualización de la Jerarquía Administrativa
 
-```{r mapa-jerarquia, fig.width=9, fig.height=7}
+
+``` r
 # Crear categorías para visualización
 capitales_cusco <- capitales_cusco %>%
   mutate(
@@ -179,6 +213,8 @@ ggplot(capitales_cusco) +
   )
 ```
 
+![plot of chunk mapa-jerarquia](fig-sis-mapa-jerarquia-1.png)
+
 ---
 
 ## Función 2: get_centros_poblados()
@@ -203,24 +239,46 @@ La función proporciona información detallada sobre:
 
 ### Uso Básico
 
-```{r centros-poblados-basico}
+
+``` r
 # Obtener centros poblados de Tacna (departamento pequeño para ejemplo)
 cp_tacna <- get_centros_poblados(departamento = "TACNA")
 
 # Estructura de los datos
 head(cp_tacna)
+#> Simple feature collection with 6 features and 20 fields
+#> Geometry type: POINT
+#> Dimension:     XY
+#> Bounding box:  xmin: -70.50587 ymin: -18.0234 xmax: -69.54312 ymax: -17.4228
+#> Geodetic CRS:  WGS 84
+#> # A tibble: 6 × 21
+#>   ubigeo codccpp    nombdep nombprov nombdist cen_pob       pob   viv viv_part
+#>   <chr>  <chr>      <chr>   <chr>    <chr>    <chr>       <int> <int>    <int>
+#> 1 230105 2301050019 TACNA   TACNA    INCLAN   PROTER SAMA   423   431      431
+#> 2 230107 2301070006 TACNA   TACNA    PALCA    JAJNUNI         2    10       10
+#> 3 230107 2301070009 TACNA   TACNA    PALCA    SIQUINE         1    12       12
+#> 4 230107 2301070059 TACNA   TACNA    PALCA    ATASPACA       61    32       32
+#> 5 230101 2301010001 TACNA   TACNA    TACNA    TACNA       86977 30558    30324
+#> 6 230101 2301010005 TACNA   TACNA    TACNA    PARA GRANDE    10    69       69
+#> # ℹ 12 more variables: viv_part_o <int>, viv_part_1 <int>, pob_viv_pa <int>,
+#> #   y <dbl>, x <dbl>, fuente <chr>, revision <chr>, cap <chr>, capital <chr>,
+#> #   iddpto <chr>, idprov <chr>, geom <POINT [°]>
 
 # Estadísticas generales
 cat("Total de asentamientos censados:", nrow(cp_tacna), "\n")
+#> Total de asentamientos censados: 944
 cat("Población total:", format(sum(cp_tacna$pob, na.rm = TRUE), big.mark = ","), "\n")
+#> Población total: 329,332
 cat("Viviendas totales:", format(sum(cp_tacna$viv, na.rm = TRUE), big.mark = ","), "\n")
+#> Viviendas totales: 151,445
 ```
 
 ### Clasificación por Tamaño Poblacional
 
 Siguiendo los criterios del INEI para clasificación urbano-rural:
 
-```{r clasificacion-tamano}
+
+``` r
 # Clasificar centros poblados según tamaño
 cp_clasificados <- cp_tacna %>%
   mutate(
@@ -261,11 +319,22 @@ distribucion <- cp_clasificados %>%
   )
 
 print(distribucion)
+#> # A tibble: 6 × 7
+#>   categoria   n_asentamientos pob_total pob_promedio viv_total pct_asentamientos
+#>   <fct>                 <int>     <int>        <dbl>     <int>             <dbl>
+#> 1 Urbano Gra…               5    279499        55900    108299               0.5
+#> 2 Urbano Med…               3     11768         3923      6257               0.3
+#> 3 Urbano Peq…              12      9460          788      6028               1.3
+#> 4 Rural Conc…              59     17502          297     13542               6.2
+#> 5 Rural Disp…              71      6458           91      5930               7.5
+#> 6 Asentamien…             794      4645            6     11389              84.1
+#> # ℹ 1 more variable: pct_poblacion <dbl>
 ```
 
 ### Visualización del Sistema de Asentamientos
 
-```{r mapa-sistema-completo, fig.width=10, fig.height=8}
+
+``` r
 # Mapa del sistema completo de asentamientos
 ggplot(cp_clasificados) +
   geom_sf(aes(color = categoria, size = pob), alpha = 0.6) +
@@ -292,9 +361,12 @@ ggplot(cp_clasificados) +
   )
 ```
 
+![plot of chunk mapa-sistema-completo](fig-sis-mapa-sistema-completo-1.png)
+
 ### Análisis de Concentración Urbana vs Rural
 
-```{r urbano-rural}
+
+``` r
 # Clasificación urbano-rural según INEI (> 2000 hab = urbano)
 cp_tacna_ur <- cp_tacna %>%
   mutate(
@@ -316,15 +388,25 @@ concentracion <- cp_tacna_ur %>%
   )
 
 print(concentracion)
+#> # A tibble: 2 × 6
+#>   clasificacion  n_asentamientos pob_total viv_total pct_asentamientos
+#>   <chr>                    <int>     <int>     <int>             <dbl>
+#> 1 Rural/Disperso             936     38065     36889              99.2
+#> 2 Urbano                       8    291267    114556               0.8
+#> # ℹ 1 more variable: pct_poblacion <dbl>
 
 # Interpretación
 cat("\nInterpretación:\n")
+#> 
+#> Interpretación:
 cat("- Los asentamientos urbanos (≥2,000 hab.) representan el", 
     concentracion$pct_asentamientos[concentracion$clasificacion == "Urbano"], 
     "% de los asentamientos\n")
+#> - Los asentamientos urbanos (≥2,000 hab.) representan el 0.8 % de los asentamientos
 cat("- Pero concentran el", 
     concentracion$pct_poblacion[concentracion$clasificacion == "Urbano"], 
     "% de la población total\n")
+#> - Pero concentran el 88.4 % de la población total
 ```
 
 ---
@@ -333,7 +415,8 @@ cat("- Pero concentran el",
 
 ### Comparar Capitales con su Contexto Poblacional
 
-```{r analisis-integrado}
+
+``` r
 # Obtener datos completos de Cusco
 capitales <- get_capitales(departamento = "CUSCO")
 centros <- get_centros_poblados(departamento = "CUSCO")
@@ -370,11 +453,21 @@ comparacion <- centros %>%
   arrange(desc(pob_total))
 
 print(comparacion)
+#> # A tibble: 5 × 7
+#>   tipo_asentamiento         n pob_total pob_promedio viv_total pct_asentamientos
+#>   <chr>                 <int>     <int>        <dbl>     <int>             <dbl>
+#> 1 Capital (administrat…   112    742971         6634    232353               1.2
+#> 2 Asentamiento Disperso  8105    228559           28    122551              90.4
+#> 3 Centro Poblado Peque…   671    165563          247     67742               7.5
+#> 4 Centro Poblado Rural     77     61313          796     21447               0.9
+#> 5 Centro Poblado Urbano     3      7121         2374      2776               0  
+#> # ℹ 1 more variable: pct_poblacion <dbl>
 ```
 
 ### Visualización del Sistema Completo
 
-```{r mapa-sistema-integrado, fig.width=10, fig.height=8}
+
+``` r
 # Mapa que muestra la jerarquía completa del sistema de asentamientos
 ggplot() +
   # Primero: asentamientos dispersos y pequeños (fondo)
@@ -423,13 +516,16 @@ ggplot() +
   )
 ```
 
+![plot of chunk mapa-sistema-integrado](fig-sis-mapa-sistema-integrado-1.png)
+
 ---
 
 ## Análisis de Vivienda y Servicios
 
 ### Características Habitacionales por Tipo de Asentamiento
 
-```{r analisis-vivienda}
+
+``` r
 # Análisis de vivienda por tipo de asentamiento
 vivienda_stats <- centros %>%
   st_drop_geometry() %>%
@@ -453,11 +549,20 @@ vivienda_stats <- centros %>%
   )
 
 print(vivienda_stats)
+#> # A tibble: 4 × 7
+#>   tipo     n_asentamientos pob_total viv_total viv_ocupadas pob_por_vivienda
+#>   <chr>              <int>     <int>     <int>        <int>            <dbl>
+#> 1 Capital              112    742971    232353       211481             3.2 
+#> 2 Disperso            8776    394122    190293       171082             2.07
+#> 3 Rural                 77     61313     21447        18917             2.86
+#> 4 Urbano                 3      7121      2776         2393             2.57
+#> # ℹ 1 more variable: tasa_ocupacion <dbl>
 ```
 
 ### Densidad Habitacional
 
-```{r densidad-habitacional, fig.width=8, fig.height=6}
+
+``` r
 # Análisis de densidad habitacional
 cp_densidad <- centros %>%
   filter(viv > 0) %>%
@@ -488,13 +593,16 @@ ggplot(cp_densidad %>% st_drop_geometry(),
   theme(legend.position = "none")
 ```
 
+![plot of chunk densidad-habitacional](fig-sis-densidad-habitacional-1.png)
+
 ---
 
 ## Análisis Provincial y Distrital
 
 ### Distribución de Asentamientos por Distrito
 
-```{r por-distrito}
+
+``` r
 # Análisis por distrito
 dist_stats <- centros %>%
   st_drop_geometry() %>%
@@ -512,6 +620,20 @@ dist_stats <- centros %>%
   head(10)
 
 print(dist_stats)
+#> # A tibble: 10 × 8
+#>    nombdist      n_asentamientos n_capitales n_urbanos n_rurales n_dispersos
+#>    <chr>                   <int>       <int>     <int>     <int>       <int>
+#>  1 CUSCO                      36           1         1         6          29
+#>  2 SAN SEBASTIAN              14           1         1         6           7
+#>  3 SANTIAGO                   23           1         1         5          17
+#>  4 WANCHAQ                     1           1         1         0           0
+#>  5 SICUANI                   302           1         1        18         283
+#>  6 SAN JERONIMO               26           1         1         3          22
+#>  7 ESPINAR                   202           1         1         3         198
+#>  8 SANTA ANA                  86           1         1         5          80
+#>  9 ECHARATE 3                296           1         0        25         271
+#> 10 PICHARI                    69           1         3        13          53
+#> # ℹ 2 more variables: pob_total <int>, viv_total <int>
 ```
 
 ---
@@ -520,7 +642,8 @@ print(dist_stats)
 
 ### 1. Análisis de Accesibilidad a Servicios
 
-```{r accesibilidad, eval=FALSE}
+
+``` r
 # Ejemplo: Calcular distancia de asentamientos rurales a centros urbanos
 library(sf)
 
@@ -549,7 +672,8 @@ summary(rurales_con_dist$distancia_km)
 
 ### 2. Jerarquía Urbana Regional
 
-```{r jerarquia-urbana}
+
+``` r
 # Análisis de jerarquía urbana usando regla rango-tamaño
 centros_urbanos <- centros %>%
   filter(pob >= 2000) %>%
@@ -567,11 +691,25 @@ top_urbanos <- centros_urbanos %>%
   head(10)
 
 print(top_urbanos)
+#> # A tibble: 10 × 6
+#>    rango cen_pob       nombdist         pob pob_esperada ratio
+#>    <int> <chr>         <chr>          <int>        <dbl> <dbl>
+#>  1     1 CUSCO         CUSCO         111930      111930   1   
+#>  2     2 SAN SEBASTIAN SAN SEBASTIAN 109915       55965   1.96
+#>  3     3 SANTIAGO      SANTIAGO       92729       37310   2.49
+#>  4     4 WANCHAQ       WANCHAQ        58541       27982.  2.09
+#>  5     5 SAN JERONIMO  SAN JERONIMO   55335       22386   2.47
+#>  6     6 SICUANI       SICUANI        46102       18655   2.47
+#>  7     7 YAURI         ESPINAR        28888       15990   1.81
+#>  8     8 QUILLABAMBA   SANTA ANA      23985       13991.  1.71
+#>  9     9 URUBAMBA      URUBAMBA       13942       12437.  1.12
+#> 10    10 CALCA         CALCA          13519       11193   1.21
 ```
 
 ### 3. Patrón de Dispersión Rural
 
-```{r patron-dispersion, fig.width=8, fig.height=6}
+
+``` r
 # Análisis del patrón de asentamientos rurales dispersos
 dispersos <- centros %>%
   filter(pob < 150)
@@ -588,6 +726,8 @@ ggplot(dispersos %>% st_drop_geometry(), aes(x = pob)) +
   ) +
   theme_minimal()
 ```
+
+![plot of chunk patron-dispersion](fig-sis-patron-dispersion-1.png)
 
 ---
 

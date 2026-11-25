@@ -1,0 +1,115 @@
+---
+title: "Modelamiento Territorial, Flujos de Movilidad y Límites 2025"
+author: "Paul Efren Santos Andrade"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Modelamiento Territorial, Flujos de Movilidad y Límites 2025}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 5,
+  fig.path = "fig-mod-",
+  warning = FALSE,
+  message = FALSE
+)
+```
+
+## Introducción
+
+A partir de la versión `0.2.0`, `rsdot` amplía su cobertura territorial conectando directamente con las capas de modelamiento geográfico, flujos de movilidad y límites censales actualizados (2025) alojadas en el repositorio OSF de SDOT-PCM.
+
+En esta viñeta se muestra cómo acceder y visualizar:
+
+1. **Límites distritales actualizados 2025**: `get_distritos_2025()` y `get_distritos(ano = 2025)`.
+2. **Densidades de actividades económicas y viviendas**: `get_densidad_comercio()`, `get_densidad_viviendas()`, `get_densidad_mercados()`, `get_densidad_financiero()` y `get_densidad_inmobiliario()`.
+3. **Valor Agregado Bruto (VAB) de Centros Poblados**: `get_vab_ccpp()`.
+4. **Flujos de movilidad interdistrital**: `get_flujos_estudiantes()` y `get_flujos_trabajadores()`.
+5. **Tiempos de desplazamiento a la capital más cercana**: `get_tiempos_desplazamiento()`.
+
+```{r load-packages}
+library(rsdot)
+library(sf)
+library(dplyr)
+library(ggplot2)
+```
+
+## 1. Límites Distritales Actualizados (2025)
+
+La función `get_distritos_2025()` descarga el GeoPackage oficial con la actualización distrital 2025 y permite filtrar por departamento, provincia o distrito de forma insensible a mayúsculas.
+
+```{r distritos-2025}
+tumbes_2025 <- get_distritos_2025(departamento = "TUMBES", show_progress = FALSE)
+nrow(tumbes_2025)
+head(tumbes_2025[, c("ubigeo", "nombdep", "nombprov", "nombdist")])
+```
+
+```{r plot-distritos-2025}
+ggplot(tumbes_2025) +
+  geom_sf(aes(fill = nombprov), color = "white", linewidth = 0.4) +
+  scale_fill_viridis_d(option = "cividis", name = "Provincia") +
+  theme_minimal() +
+  labs(
+    title = "Distritos del Departamento de Tumbes (Actualización 2025)",
+    subtitle = "Referencia censal SDOT / INEI",
+    caption = "Fuente: GeoSDOT - PCM"
+  )
+```
+
+## 2. Modelamiento Geográfico: Densidades y VAB
+
+Las grillas de densidad permiten identificar polos de concentración comercial, financiera, inmobiliaria, de mercados y de viviendas. Todas comparten una estructura uniforme y pueden filtrarse espacialmente por departamento.
+
+```{r densidad-comercio}
+dens_com <- get_densidad_comercio(show_progress = FALSE)
+dens_com |>
+  st_drop_geometry() |>
+  select(gridcode, nivel, rango)
+```
+
+También es posible consultar el **Valor Agregado Bruto (VAB)** modelado a nivel de centros poblados (grilla de 150 m) para Lima Metropolitana, Callao o el ámbito nacional (`"total"`).
+
+```{r vab-callao}
+vab_callao <- get_vab_ccpp(cobertura = "callao", show_progress = FALSE)
+nrow(vab_callao)
+head(st_drop_geometry(vab_callao))
+```
+
+## 3. Flujos de Movilidad Interdistrital
+
+Las capas de análisis geográfico representan vectores origen-destino diarios para estudiantes y trabajadores segmentados por rangos de volumen de viajes.
+
+```{r flujos-movilidad}
+# Flujos de estudiantes entre 100 y 1,000 viajes
+flujos_est <- get_flujos_estudiantes(rango = "100_1000", show_progress = FALSE)
+nrow(flujos_est)
+head(st_drop_geometry(flujos_est))
+```
+
+## 4. Tiempos de Desplazamiento a la Capital más Cercana
+
+La función `get_tiempos_desplazamiento()` devuelve las isócronas departamentales de accesibilidad hacia la capital más cercana.
+
+```{r tiempos-callao}
+tiempos_callao <- get_tiempos_desplazamiento(departamento = "CALLAO", show_progress = FALSE)
+tiempos_callao |>
+  st_drop_geometry() |>
+  head(5)
+```
+
+```{r plot-tiempos-callao}
+ggplot(tiempos_callao) +
+  geom_sf(aes(fill = cat_tiempo), color = NA) +
+  scale_fill_viridis_d(option = "inferno", direction = -1, name = "Tiempo") +
+  theme_minimal() +
+  labs(
+    title = "Tiempos de Desplazamiento a la Capital más Cercana - Callao",
+    caption = "Fuente: Modelamiento Geográfico SDOT - PCM"
+  )
+```
