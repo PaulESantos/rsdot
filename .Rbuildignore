@@ -10,5 +10,7 @@
 ^pkgdown$
 get_tiempo_desplazamiento.R
 ^\.agent
+^\.Rhistory$
+^\.gitignore$
 ^doc$
 ^Meta$

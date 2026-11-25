@@ -26,238 +26,30 @@ file even if it exists in cache. Default \code{FALSE}.}
 }
 \value{
 An \code{sf} (simple feature) object with MULTILINESTRING geometry
-containing national road network information, including:
-\itemize{
-\item MULTILINESTRING geometry (road trajectory)
-\item \code{inicio}: Start kilometer of the segment
-\item \code{fin}: End kilometer of the segment
-\item \code{trayectori}: Full description of the route trajectory
-\item \code{nrocarril}: Number of lanes
-\item \code{ejeclas}: Classification axis (Coast Longitudinal, Transversal, etc.)
-\item \code{iddpto}: Department code
-\item \code{nombdep}: Department name
-\item \code{codruta}: Route code (e.g., PE-1S, PE-3N, PE-22A)
-\item \code{jerarq}: Route hierarchy (RN = Red Nacional)
-\item \code{superfic}: Surface type code (1-11)
-\item \code{longitud}: Segment length in kilometers
-\item \code{codconces}: Concession code (if applicable)
-\item \code{codclog}: Logistic corridor code
-\item \code{superfic_l}: Descriptive surface type (Paved, Unpaved, etc.)
-\item \code{codclog_l}: Logistic corridor description
-\item \code{estado}: Numeric road status (1-3)
-\item \code{estado_l}: Descriptive status (Good, Regular, Bad)
-}
-
-If multiple departments are requested, it returns a combined sf object.
+containing national road network information.
 }
 \description{
-Downloads and loads information on the National Road Network updated by
-PROVIAS NACIONAL as of July 2022, according to the Route Classifier approved
-by Supreme Decree 011-2016-MTC and its amendments. Data includes
-MULTILINESTRING type geometry and detailed information on trajectories,
-classification, status, surface, and concessions of national roads.
+Downloads and loads information on the National Road Network (Red Vial Nacional - RVN)
+of Peru updated to 2022, prepared by PROVIAS NACIONAL and the Ministry of
+Transport and Communications (MTC). Data includes MULTILINESTRING geometry
+and detailed attributes for each road section.
 }
 \details{
 The function downloads data from OSF (Open Science Framework) and stores it
-in cache during the R session. Data is in GeoPackage (.gpkg) format.
-
-\strong{Data Source:}
-\itemize{
-\item Source: PROVIAS NACIONAL - Ministry of Transport and Communications
-\item Update: July 2022
-\item Legal basis: Supreme Decree 011-2016-MTC and amendments
-\item Level: National Road Network (National Road System - SINAC)
-\item Application: National road planning and connectivity analysis
-}
-
-\strong{Surface Classification:}
-\itemize{
-\item 1 = Paved
-\item 2 = Unpaved
-\item 11 = Economic asphalt
-\item Other codes according to PROVIAS technical specifications
-}
-
-\strong{Status Classification:}
-\itemize{
-\item 1 = Good
-\item 2 = Regular
-\item 3 = Bad
-}
-
-\strong{Classification Axes (ejeclas):}
-\itemize{
-\item Coast Longitudinal (PE-1N, PE-1S)
-\item Sierra Longitudinal
-\item Selva Longitudinal
-\item Transversal
-}
-
-Cache is stored in: \code{tools::R_user_dir("rsdot", which = "cache")/red_vial_nacional/}
-
-\strong{NOTE:} Geometries are MULTILINESTRING type and represent the trajectories
-of national roads. Some segments may be under concession (field \code{codconces}).
+in cache: \code{tools::R_user_dir("rsdot", which = "cache")/red_vial_nacional/}.
 }
 \examples{
 \dontrun{
 # See available departments
 get_red_vial_nacional()
 
-# Load national road network of a department
+# Load road network for Cusco
 vias_cusco <- get_red_vial_nacional(departamento = "CUSCO")
-
-# Load multiple departments
-vias_sur <- get_red_vial_nacional(
-  departamento = c("CUSCO", "PUNO", "AREQUIPA")
-)
-
-# Visualization with ggplot2
-library(ggplot2)
-library(dplyr)
-
-# Map of national road network by surface type
-ggplot(vias_cusco) +
-  geom_sf(aes(color = superfic_l), linewidth = 1) +
-  scale_color_manual(
-    values = c(
-      "Pavimentado" = "darkblue",
-      "Afirmado" = "darkgreen",
-      "Asfaltado económico" = "purple"
-    ),
-    name = "Surface"
-  ) +
-  labs(
-    title = "National Road Network of Cusco",
-    subtitle = "By Surface Type - PROVIAS 2022",
-    caption = "Source: PROVIAS NACIONAL | Visor - SDOT"
-  ) +
-  theme_minimal()
-
-# Map by conservation status
-ggplot(vias_cusco) +
-  geom_sf(aes(color = estado_l, linewidth = estado_l)) +
-  scale_color_manual(
-    values = c(
-      "Bueno" = "darkgreen",
-      "Regular" = "orange",
-      "Malo" = "red"
-    ),
-    name = "Status"
-  ) +
-  scale_linewidth_manual(
-    values = c("Bueno" = 1.2, "Regular" = 0.8, "Malo" = 0.6),
-    name = "Status"
-  ) +
-  labs(
-    title = "Conservation Status of the National Road Network",
-    subtitle = "Department of Cusco",
-    caption = "Source: PROVIAS NACIONAL | Visor - SDOT"
-  ) +
-  theme_minimal()
-
-# Map by route code
-ggplot(vias_cusco) +
-  geom_sf(aes(color = codruta), linewidth = 1.2) +
-  labs(
-    title = "National Road Network - Route Codes",
-    subtitle = "Cusco",
-    color = "Route Code",
-    caption = "Source: PROVIAS NACIONAL"
-  ) +
-  theme_minimal()
-
-# Length analysis by surface type
-vias_cusco |>
-  st_drop_geometry() |>
-  group_by(superfic_l) |>
-  summarise(
-    total_km = sum(longitud, na.rm = TRUE),
-    n_tramos = n(),
-    km_promedio = mean(longitud, na.rm = TRUE)
-  ) |>
-  arrange(desc(total_km))
-
-# Analysis by classification axis
-vias_cusco |>
-  st_drop_geometry() |>
-  group_by(ejeclas, estado_l) |>
-  summarise(
-    longitud_total = sum(longitud, na.rm = TRUE),
-    .groups = "drop"
-  ) |>
-  arrange(ejeclas, desc(longitud_total))
-
-# Filter roads under concession
-vias_concesion <- vias_cusco |>
-  filter(!is.na(codconces))
-
-# Analysis of logistic corridors
-vias_cusco |>
-  st_drop_geometry() |>
-  filter(!is.na(codclog_l)) |>
-  group_by(codclog_l) |>
-  summarise(
-    longitud_total = sum(longitud, na.rm = TRUE),
-    n_tramos = n(),
-    .groups = "drop"
-  ) |>
-  arrange(desc(longitud_total))
-
-# Analysis by number of lanes
-vias_cusco |>
-  st_drop_geometry() |>
-  group_by(nrocarril) |>
-  summarise(
-    longitud_total = sum(longitud, na.rm = TRUE),
-    pct = (longitud_total / sum(vias_cusco$longitud, na.rm = TRUE)) * 100,
-    .groups = "drop"
-  )
-
-# Main national routes
-vias_cusco |>
-  st_drop_geometry() |>
-  group_by(codruta) |>
-  summarise(
-    longitud_total = sum(longitud, na.rm = TRUE),
-    km_inicio = min(inicio, na.rm = TRUE),
-    km_fin = max(fin, na.rm = TRUE),
-    .groups = "drop"
-  ) |>
-  arrange(desc(longitud_total))
-
-# Visualize only longitudinal roads
-vias_long <- vias_cusco |>
-  filter(grepl("Longitudinal", ejeclas))
-
-ggplot(vias_long) +
-  geom_sf(aes(color = ejeclas), linewidth = 1.5) +
-  labs(
-    title = "Longitudinal Roads",
-    subtitle = "National Road Network - Cusco",
-    color = "Classification Axis"
-  ) +
-  theme_minimal()
-
-# General statistics
-vias_cusco |>
-  st_drop_geometry() |>
-  summarise(
-    longitud_total = sum(longitud, na.rm = TRUE),
-    n_rutas = n_distinct(codruta),
-    km_pavimentado = sum(longitud[superfic_l == "Pavimentado"], na.rm = TRUE),
-    km_afirmado = sum(longitud[superfic_l == "Afirmado"], na.rm = TRUE),
-    pct_pavimentado = (km_pavimentado / longitud_total) * 100,
-    km_buen_estado = sum(longitud[estado_l == "Bueno"], na.rm = TRUE),
-    pct_buen_estado = (km_buen_estado / longitud_total) * 100
-  )
 }
 
 }
 \references{
 PROVIAS NACIONAL - MTC. Base Cartográfica de la Red Vial Nacional 2022.
-
-Supreme Decree 011-2016-MTC - Route Classifier of the National Road System (SINAC).
-
 DEMARCA OSF Repository: \url{https://osf.io/qy4j6/}
 }
 \seealso{

@@ -2,6 +2,12 @@
 % Please edit documentation in R/get_peligros.R
 \name{get_peligros}
 \alias{get_peligros}
+\alias{get_puntos_criticos}
+\alias{get_tramos_criticos}
+\alias{get_zonas_criticas}
+\alias{get_areas_inundacion}
+\alias{get_areas_movimientos_masa}
+\alias{get_inventario_inundaciones}
 \title{Get Natural Hazards Spatial Data of Peru}
 \usage{
 get_peligros(
@@ -10,8 +16,21 @@ get_peligros(
   provincia = NULL,
   distrito = NULL,
   show_progress = TRUE,
-  force_update = FALSE
+  force_update = FALSE,
+  ...
 )
+
+get_puntos_criticos(...)
+
+get_tramos_criticos(...)
+
+get_zonas_criticas(...)
+
+get_areas_inundacion(...)
+
+get_areas_movimientos_masa(...)
+
+get_inventario_inundaciones(...)
 }
 \arguments{
 \item{tipo}{Character. The type of hazard layer to retrieve. Valid options:
@@ -35,6 +54,8 @@ Case-insensitive. If \code{NULL}, lists available departments for the selected t
 \item{show_progress}{Logical. If \code{TRUE} (default), shows informative messages.}
 
 \item{force_update}{Logical. If \code{TRUE}, forces a new download of files. Default \code{FALSE}.}
+
+\item{...}{Additional arguments passed to internal functions or wrapper methods.}
 }
 \value{
 An \code{sf} (simple feature) object representing the requested hazard layer.

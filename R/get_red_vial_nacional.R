@@ -1,10 +1,9 @@
 #' Get National Road Network of Peru
 #'
-#' Downloads and loads information on the National Road Network updated by
-#' PROVIAS NACIONAL as of July 2022, according to the Route Classifier approved
-#' by Supreme Decree 011-2016-MTC and its amendments. Data includes
-#' MULTILINESTRING type geometry and detailed information on trajectories,
-#' classification, status, surface, and concessions of national roads.
+#' Downloads and loads information on the National Road Network (Red Vial Nacional - RVN)
+#' of Peru updated to 2022, prepared by PROVIAS NACIONAL and the Ministry of
+#' Transport and Communications (MTC). Data includes MULTILINESTRING geometry
+#' and detailed attributes for each road section.
 #'
 #' @param departamento Character vector. Name(s) of the department(s) to download.
 #'   Valid options: "AMAZONAS", "ANCASH", "APURIMAC", "AREQUIPA", "AYACUCHO",
@@ -18,223 +17,19 @@
 #'   file even if it exists in cache. Default \code{FALSE}.
 #'
 #' @return An \code{sf} (simple feature) object with MULTILINESTRING geometry
-#'   containing national road network information, including:
-#'   \itemize{
-#'     \item MULTILINESTRING geometry (road trajectory)
-#'     \item \code{inicio}: Start kilometer of the segment
-#'     \item \code{fin}: End kilometer of the segment
-#'     \item \code{trayectori}: Full description of the route trajectory
-#'     \item \code{nrocarril}: Number of lanes
-#'     \item \code{ejeclas}: Classification axis (Coast Longitudinal, Transversal, etc.)
-#'     \item \code{iddpto}: Department code
-#'     \item \code{nombdep}: Department name
-#'     \item \code{codruta}: Route code (e.g., PE-1S, PE-3N, PE-22A)
-#'     \item \code{jerarq}: Route hierarchy (RN = Red Nacional)
-#'     \item \code{superfic}: Surface type code (1-11)
-#'     \item \code{longitud}: Segment length in kilometers
-#'     \item \code{codconces}: Concession code (if applicable)
-#'     \item \code{codclog}: Logistic corridor code
-#'     \item \code{superfic_l}: Descriptive surface type (Paved, Unpaved, etc.)
-#'     \item \code{codclog_l}: Logistic corridor description
-#'     \item \code{estado}: Numeric road status (1-3)
-#'     \item \code{estado_l}: Descriptive status (Good, Regular, Bad)
-#'   }
-#'
-#'   If multiple departments are requested, it returns a combined sf object.
+#'   containing national road network information.
 #'
 #' @details
 #' The function downloads data from OSF (Open Science Framework) and stores it
-#' in cache during the R session. Data is in GeoPackage (.gpkg) format.
-#'
-#' **Data Source:**
-#' \itemize{
-#'   \item Source: PROVIAS NACIONAL - Ministry of Transport and Communications
-#'   \item Update: July 2022
-#'   \item Legal basis: Supreme Decree 011-2016-MTC and amendments
-#'   \item Level: National Road Network (National Road System - SINAC)
-#'   \item Application: National road planning and connectivity analysis
-#' }
-#'
-#' **Surface Classification:**
-#' \itemize{
-#'   \item 1 = Paved
-#'   \item 2 = Unpaved
-#'   \item 11 = Economic asphalt
-#'   \item Other codes according to PROVIAS technical specifications
-#' }
-#'
-#' **Status Classification:**
-#' \itemize{
-#'   \item 1 = Good
-#'   \item 2 = Regular
-#'   \item 3 = Bad
-#' }
-#'
-#' **Classification Axes (ejeclas):**
-#' \itemize{
-#'   \item Coast Longitudinal (PE-1N, PE-1S)
-#'   \item Sierra Longitudinal
-#'   \item Selva Longitudinal
-#'   \item Transversal
-#' }
-#'
-#' Cache is stored in: \code{tools::R_user_dir("rsdot", which = "cache")/red_vial_nacional/}
-#'
-#' **NOTE:** Geometries are MULTILINESTRING type and represent the trajectories
-#' of national roads. Some segments may be under concession (field \code{codconces}).
+#' in cache: \code{tools::R_user_dir("rsdot", which = "cache")/red_vial_nacional/}.
 #'
 #' @examples
 #' \dontrun{
 #' # See available departments
 #' get_red_vial_nacional()
 #'
-#' # Load national road network of a department
+#' # Load road network for Cusco
 #' vias_cusco <- get_red_vial_nacional(departamento = "CUSCO")
-#'
-#' # Load multiple departments
-#' vias_sur <- get_red_vial_nacional(
-#'   departamento = c("CUSCO", "PUNO", "AREQUIPA")
-#' )
-#'
-#' # Visualization with ggplot2
-#' library(ggplot2)
-#' library(dplyr)
-#'
-#' # Map of national road network by surface type
-#' ggplot(vias_cusco) +
-#'   geom_sf(aes(color = superfic_l), linewidth = 1) +
-#'   scale_color_manual(
-#'     values = c(
-#'       "Pavimentado" = "darkblue",
-#'       "Afirmado" = "darkgreen",
-#'       "Asfaltado económico" = "purple"
-#'     ),
-#'     name = "Surface"
-#'   ) +
-#'   labs(
-#'     title = "National Road Network of Cusco",
-#'     subtitle = "By Surface Type - PROVIAS 2022",
-#'     caption = "Source: PROVIAS NACIONAL | Visor - SDOT"
-#'   ) +
-#'   theme_minimal()
-#'
-#' # Map by conservation status
-#' ggplot(vias_cusco) +
-#'   geom_sf(aes(color = estado_l, linewidth = estado_l)) +
-#'   scale_color_manual(
-#'     values = c(
-#'       "Bueno" = "darkgreen",
-#'       "Regular" = "orange",
-#'       "Malo" = "red"
-#'     ),
-#'     name = "Status"
-#'   ) +
-#'   scale_linewidth_manual(
-#'     values = c("Bueno" = 1.2, "Regular" = 0.8, "Malo" = 0.6),
-#'     name = "Status"
-#'   ) +
-#'   labs(
-#'     title = "Conservation Status of the National Road Network",
-#'     subtitle = "Department of Cusco",
-#'     caption = "Source: PROVIAS NACIONAL | Visor - SDOT"
-#'   ) +
-#'   theme_minimal()
-#'
-#' # Map by route code
-#' ggplot(vias_cusco) +
-#'   geom_sf(aes(color = codruta), linewidth = 1.2) +
-#'   labs(
-#'     title = "National Road Network - Route Codes",
-#'     subtitle = "Cusco",
-#'     color = "Route Code",
-#'     caption = "Source: PROVIAS NACIONAL"
-#'   ) +
-#'   theme_minimal()
-#'
-#' # Length analysis by surface type
-#' vias_cusco |>
-#'   st_drop_geometry() |>
-#'   group_by(superfic_l) |>
-#'   summarise(
-#'     total_km = sum(longitud, na.rm = TRUE),
-#'     n_tramos = n(),
-#'     km_promedio = mean(longitud, na.rm = TRUE)
-#'   ) |>
-#'   arrange(desc(total_km))
-#'
-#' # Analysis by classification axis
-#' vias_cusco |>
-#'   st_drop_geometry() |>
-#'   group_by(ejeclas, estado_l) |>
-#'   summarise(
-#'     longitud_total = sum(longitud, na.rm = TRUE),
-#'     .groups = "drop"
-#'   ) |>
-#'   arrange(ejeclas, desc(longitud_total))
-#'
-#' # Filter roads under concession
-#' vias_concesion <- vias_cusco |>
-#'   filter(!is.na(codconces))
-#'
-#' # Analysis of logistic corridors
-#' vias_cusco |>
-#'   st_drop_geometry() |>
-#'   filter(!is.na(codclog_l)) |>
-#'   group_by(codclog_l) |>
-#'   summarise(
-#'     longitud_total = sum(longitud, na.rm = TRUE),
-#'     n_tramos = n(),
-#'     .groups = "drop"
-#'   ) |>
-#'   arrange(desc(longitud_total))
-#'
-#' # Analysis by number of lanes
-#' vias_cusco |>
-#'   st_drop_geometry() |>
-#'   group_by(nrocarril) |>
-#'   summarise(
-#'     longitud_total = sum(longitud, na.rm = TRUE),
-#'     pct = (longitud_total / sum(vias_cusco$longitud, na.rm = TRUE)) * 100,
-#'     .groups = "drop"
-#'   )
-#'
-#' # Main national routes
-#' vias_cusco |>
-#'   st_drop_geometry() |>
-#'   group_by(codruta) |>
-#'   summarise(
-#'     longitud_total = sum(longitud, na.rm = TRUE),
-#'     km_inicio = min(inicio, na.rm = TRUE),
-#'     km_fin = max(fin, na.rm = TRUE),
-#'     .groups = "drop"
-#'   ) |>
-#'   arrange(desc(longitud_total))
-#'
-#' # Visualize only longitudinal roads
-#' vias_long <- vias_cusco |>
-#'   filter(grepl("Longitudinal", ejeclas))
-#'
-#' ggplot(vias_long) +
-#'   geom_sf(aes(color = ejeclas), linewidth = 1.5) +
-#'   labs(
-#'     title = "Longitudinal Roads",
-#'     subtitle = "National Road Network - Cusco",
-#'     color = "Classification Axis"
-#'   ) +
-#'   theme_minimal()
-#'
-#' # General statistics
-#' vias_cusco |>
-#'   st_drop_geometry() |>
-#'   summarise(
-#'     longitud_total = sum(longitud, na.rm = TRUE),
-#'     n_rutas = n_distinct(codruta),
-#'     km_pavimentado = sum(longitud[superfic_l == "Pavimentado"], na.rm = TRUE),
-#'     km_afirmado = sum(longitud[superfic_l == "Afirmado"], na.rm = TRUE),
-#'     pct_pavimentado = (km_pavimentado / longitud_total) * 100,
-#'     km_buen_estado = sum(longitud[estado_l == "Bueno"], na.rm = TRUE),
-#'     pct_buen_estado = (km_buen_estado / longitud_total) * 100
-#'   )
 #' }
 #'
 #' @seealso
@@ -243,264 +38,23 @@
 #'
 #' @references
 #' PROVIAS NACIONAL - MTC. Base Cartográfica de la Red Vial Nacional 2022.
-#'
-#' Supreme Decree 011-2016-MTC - Route Classifier of the National Road System (SINAC).
-#'
 #' DEMARCA OSF Repository: \url{https://osf.io/qy4j6/}
 #'
 #' @export
-#' @importFrom utils download.file
-#' @importFrom sf read_sf st_sf st_sfc st_drop_geometry
-#' @importFrom utils head
+#' @importFrom sf read_sf
 get_red_vial_nacional <- function(departamento = NULL,
                                   show_progress = TRUE,
                                   force_update = FALSE) {
-  # ==========================================================================
-  # 1. TABLA DE REFERENCIA DE DEPARTAMENTOS Y URLs
-  # ==========================================================================
-
-  tabla_departamentos <- data.frame(
-    departamento = c(
-      "AMAZONAS", "ANCASH", "APURIMAC", "AREQUIPA", "AYACUCHO",
-      "CAJAMARCA", "CALLAO", "CUSCO", "HUANCAVELICA", "HUANUCO",
-      "ICA", "JUNIN", "LA LIBERTAD", "LAMBAYEQUE", "LIMA",
-      "LORETO", "MADRE DE DIOS", "MOQUEGUA", "PASCO", "PIURA",
-      "PUNO", "SAN MARTIN", "TACNA", "TUMBES", "UCAYALI"
-    ),
-    file_name = c(
-      "red_vial_nacional_amazonas.gpkg",
-      "red_vial_nacional_ancash.gpkg",
-      "red_vial_nacional_apurimac.gpkg",
-      "red_vial_nacional_arequipa.gpkg",
-      "red_vial_nacional_ayacucho.gpkg",
-      "red_vial_nacional_cajamarca.gpkg",
-      "red_vial_nacional_callao.gpkg",
-      "red_vial_nacional_cusco.gpkg",
-      "red_vial_nacional_huancavelica.gpkg",
-      "red_vial_nacional_huanuco.gpkg",
-      "red_vial_nacional_ica.gpkg",
-      "red_vial_nacional_junin.gpkg",
-      "red_vial_nacional_la_libertad.gpkg",
-      "red_vial_nacional_lambayeque.gpkg",
-      "red_vial_nacional_lima.gpkg",
-      "red_vial_nacional_loreto.gpkg",
-      "red_vial_nacional_madre_de_dios.gpkg",
-      "red_vial_nacional_moquegua.gpkg",
-      "red_vial_nacional_pasco.gpkg",
-      "red_vial_nacional_piura.gpkg",
-      "red_vial_nacional_puno.gpkg",
-      "red_vial_nacional_san_martin.gpkg",
-      "red_vial_nacional_tacna.gpkg",
-      "red_vial_nacional_tumbes.gpkg",
-      "red_vial_nacional_ucayali.gpkg"
-    ),
-    id_osf = c(
-      "w5jt2", "n2j4d", "ngqva", "8b6nh", "wjv57",
-      "j72un", "rtxk6", "8qh4b", "3bgpf", "knzjs",
-      "ycdez", "mya95", "9hcsg", "ud4fk", "t6j9a",
-      "qr675", "92pag", "c6f5b", "2kwsy", "54dnw",
-      "9fnqp", "7w5tn", "f4bj7", "msbj5", "5ch8q"
-    ),
-    stringsAsFactors = FALSE
+  load_departmental_spatial_data(
+    dataset_key = "red_vial_nacional",
+    departamento = departamento,
+    provincia = NULL,
+    distrito = NULL,
+    show_progress = show_progress,
+    force_update = force_update,
+    subfolder = "red_vial_nacional",
+    item_label = "road sections",
+    usage_fn = "get_red_vial_nacional",
+    lang = "en"
   )
-
-  # ==========================================================================
-  # 2. VALIDACIÓN DE PARÁMETROS
-  # ==========================================================================
-
-  if (!is.logical(show_progress) || length(show_progress) != 1) {
-    stop("The 'show_progress' parameter must be TRUE or FALSE", call. = FALSE)
-  }
-
-  if (!is.logical(force_update) || length(force_update) != 1) {
-    stop("The 'force_update' parameter must be TRUE or FALSE", call. = FALSE)
-  }
-
-  # If no department is specified, show list
-  if (is.null(departamento)) {
-    message("Available departments:")
-    message(paste0("  - ", tabla_departamentos$departamento, collapse = "\n"))
-    message("\nUsage: get_red_vial_nacional(departamento = 'CUSCO')")
-    return(invisible(tabla_departamentos$departamento))
-  }
-
-  if (!is.character(departamento)) {
-    stop("The 'departamento' parameter must be a character vector",
-      call. = FALSE
-    )
-  }
-
-  # Normalizar nombres (manejar "LA LIBERTAD", "SAN MARTIN", "MADRE DE DIOS")
-  departamento_input <- toupper(trimws(departamento))
-  departamento_input <- gsub("_", " ", departamento_input)
-
-  # Validate departments
-  departamentos_validos <- departamento_input %in% tabla_departamentos$departamento
-
-  if (!all(departamentos_validos)) {
-    departamentos_invalidos <- departamento_input[!departamentos_validos]
-    stop(
-      "Invalid department(s): ",
-      paste(departamentos_invalidos, collapse = ", "), "\n",
-      "Use get_red_vial_nacional() to see the full list.",
-      call. = FALSE
-    )
-  }
-
-  # Filtrar tabla
-  tabla_filtrada <- tabla_departamentos[
-    tabla_departamentos$departamento %in% departamento_input,
-  ]
-
-  # ==========================================================================
-  # 3. CONFIGURACIÓN DE DIRECTORIOS
-  # ==========================================================================
-
-  ruta_cache_dir <- file.path(get_cache_dir(), "red_vial_nacional")
-  if (!dir.exists(ruta_cache_dir)) {
-    dir.create(ruta_cache_dir, recursive = TRUE)
-  }
-
-  # ==========================================================================
-  # 4. DESCARGA Y CARGA DE DATOS
-  # ==========================================================================
-
-  lista_datos <- list()
-
-  for (i in seq_len(nrow(tabla_filtrada))) {
-    dep <- tabla_filtrada$departamento[i]
-    file_name <- tabla_filtrada$file_name[i]
-    id_osf <- tabla_filtrada$id_osf[i]
-
-    url_descarga <- paste0("https://osf.io/download/", id_osf, "/")
-    archivo_local <- file.path(ruta_cache_dir, file_name)
-
-    # Download if it doesn't exist or if force_update is TRUE
-    if (!file.exists(archivo_local) || force_update) {
-      if (show_progress) message("Downloading: ", dep, "...")
-
-      # Attempt download with extended timeout
-      timeout_original <- getOption("timeout")
-      options(timeout = 300) # 5 minutes
-
-      descarga_exitosa <- tryCatch(
-        {
-          utils::download.file(
-            url = url_descarga,
-            destfile = archivo_local,
-            mode = "wb",
-            quiet = !show_progress
-          )
-          TRUE
-        },
-        error = function(e) {
-          warning(
-            "Error downloading ", dep, ": ", e$message, "\n",
-            "URL: ", url_descarga, "\n",
-            "The file may be temporarily unavailable.",
-            call. = FALSE,
-            immediate. = TRUE
-          )
-          FALSE
-        }
-      )
-
-      options(timeout = timeout_original)
-
-      if (descarga_exitosa && show_progress) {
-        message("\u2713 Download completed: ", dep)
-      } else if (!descarga_exitosa) {
-        next # Skip to next department
-      }
-    } else {
-      if (show_progress) message("\u2713 Using cache: ", dep)
-    }
-
-    # Read GeoPackage
-    if (file.exists(archivo_local)) {
-      if (show_progress) message("Loading data: ", dep, "...")
-
-      tryCatch(
-        {
-          datos_dep <- sf::read_sf(archivo_local, quiet = TRUE)
-
-          # Apply UTF-8 encoding correction
-          cols_char <- names(datos_dep)[sapply(datos_dep, is.character)]
-          for (col in cols_char) {
-            if (col != "geom" && col != "geometry") {
-              datos_dep[[col]] <- fix_double_utf8(datos_dep[[col]])
-            }
-          }
-
-          # Normalize column names
-          colnames(datos_dep) <- tolower(colnames(datos_dep))
-
-          lista_datos[[dep]] <- datos_dep
-
-          if (show_progress) {
-            longitud_total <- sum(datos_dep$longitud, na.rm = TRUE)
-            n_rutas <- length(unique(datos_dep$codruta))
-            message(
-              "\u2713 Loaded: ", dep,
-              " (", nrow(datos_dep), " segments, ",
-              n_rutas, " routes, ",
-              round(longitud_total, 1), " km)"
-            )
-          }
-        },
-        error = function(e) {
-          warning(
-            "Error reading file for ", dep, ": ", e$message,
-            call. = FALSE,
-            immediate. = TRUE
-          )
-        }
-      )
-    }
-  }
-
-  # ==========================================================================
-  # 5. COMBINAR DATOS
-  # ==========================================================================
-
-  if (length(lista_datos) == 0) {
-    stop("Could not load any department", call. = FALSE)
-  }
-
-  if (length(lista_datos) == 1) {
-    datos_final <- lista_datos[[1]]
-  } else {
-    if (show_progress) message("Combining data from multiple departments...")
-
-    # Use rbind with error handling
-    tryCatch(
-      {
-        datos_final <- do.call(rbind, lista_datos)
-      },
-      error = function(e) {
-        stop(
-          "Error combining data from multiple departments: ",
-          e$message,
-          call. = FALSE
-        )
-      }
-    )
-  }
-
-  # ==========================================================================
-  # 6. MENSAJE FINAL
-  # ==========================================================================
-
-  if (show_progress) {
-    longitud_total <- sum(datos_final$longitud, na.rm = TRUE)
-    n_rutas <- length(unique(datos_final$codruta))
-    message(
-      "\u2713 Data loaded successfully: ",
-      nrow(datos_final), " segments (",
-      n_rutas, " national routes, ",
-      round(longitud_total, 1), " total km)"
-    )
-  }
-
-  return(datos_final)
 }

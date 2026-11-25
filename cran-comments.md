@@ -1,19 +1,25 @@
 ## Test environments
-* local Windows 11 x64, R 4.6.1 (2026-06-24 ucrt)
-* github actions (windows-latest, ubuntu-latest, macos-latest)
+* local Windows 11 x64 (build 26300), R 4.6.1 (2026-06-24 ucrt)
+* local Windows 11 x64, R 4.6.2 (2026-10-29 ucrt)
+* GitHub Actions (windows-latest, ubuntu-latest, macos-latest)
 
 ## R CMD check results
 
 0 errors | 0 warnings | 1 note
 
-* This is a new release.
+* Initial submission to CRAN.
 
-## Notes
+### Notes
 
-* The NOTE regarding "checking for future file timestamps" occurs due to testing in an offline environment without external time synchronization.
+* checking CRAN incoming feasibility ... NOTE
+  Maintainer: 'Paul Efren Santos Andrade <paulefrens@gmail.com>'
+  New submission
+  (Expected note for first submission to CRAN).
 
-## Method References
-There are no published references describing the methods in this package.
-The package implements original functionality for accessing, caching, and processing
-official geospatial data from Peruvian government web services and repositories
-(SDOT-PCM / INEI).
+* Expanded coverage to 35 spatial layers across 8 thematic domains.
+* Fully updated OSF repository connection with direct GeoPackage binary downloads.
+* All functions, examples, and shortcuts documented with clean CRAN compliance.
+
+## Downstream dependencies
+There are currently no downstream dependencies on CRAN for this package.
+

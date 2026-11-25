@@ -67,10 +67,6 @@ get_tiempos_desplazamiento()
 
 # Load times for a specific department
 tiempos_cusco <- get_tiempos_desplazamiento(departamento = "CUSCO")
-
-# Using area of interest (clipping)
-my_area <- get_distritos(departamento = "CUSCO", provincia = "CUSCO")
-tiempos_clip <- get_tiempos_desplazamiento(area_interes = my_area)
 }
 
 }

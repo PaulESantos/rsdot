@@ -9,7 +9,8 @@ list_available_layers(domain = NULL, show_details = FALSE)
 \arguments{
 \item{domain}{Character. Optional filter by thematic domain:
 \code{"limits"}, \code{"transport"}, \code{"services"}, \code{"demography"},
-\code{"telecom"}, \code{"hazards"}, or \code{NULL} (default, returns all).}
+\code{"telecom"}, \code{"hazards"}, \code{"mobility"}, \code{"cadastre"},
+or \code{NULL} (default, returns all).}
 
 \item{show_details}{Logical. If \code{TRUE}, returns additional technical metadata
 such as GeoServer layer names and partition columns. Default is \code{FALSE}.}

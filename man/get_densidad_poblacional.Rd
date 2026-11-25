@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_densidad_poblacional.R
 \name{get_densidad_poblacional}
 \alias{get_densidad_poblacional}
-\title{Get Population Density and Growth by Department}
+\title{Get Intercensal Population Density and Growth of Peru}
 \usage{
 get_densidad_poblacional(
   departamento = NULL,
@@ -33,156 +33,35 @@ messages about download progress. If \code{FALSE}, executes silently.}
 file even if it exists in cache. Default \code{FALSE}.}
 }
 \value{
-An \code{sf} (simple feature) object with density and population growth
-information, including:
-\itemize{
-\item Geometry of interpolated polygons (with validated geometries)
-\item \code{ubigeo}: District UBIGEO code
-\item \code{nombdep}: Department name
-\item \code{nombprov}: Province name
-\item \code{nombdist}: District name
-\item \code{nivel}: Population growth level
-\item \code{rango}: Growth rate range
-\item \code{descrip}: Category description
-}
-
-If multiple departments are requested, it returns a combined sf object.
+An \code{sf} (simple feature) object with MULTIPOLYGON geometry containing
+population density and growth attributes.
 }
 \description{
-Downloads and loads intercensal population density and growth information
-by department from the DEMARCA OSF repository. Data comes from INEI
-2007 and 2017 population censuses, processed through spatial interpolation.
+Downloads and loads information on intercensal population density and growth
+(2007-2017) of Peru, prepared by INEI and distributed through the SDOT Viewer.
+Data includes MULTIPOLYGON geometry at the block or census area level with
+indicators of density, population change, and growth categories.
 Allows stepwise filtering by department, province, and district.
 }
 \details{
 The function downloads data from OSF (Open Science Framework) and stores it
-in cache during the R session. Data is in GeoPackage (.gpkg) format.
-
-\strong{Data Methodology:}
-\itemize{
-\item Source: INEI 2007 and 2017 Population Censuses
-\item Coverage: Population centers with > 150 inhabitants
-\item Technique: Spatial interpolation for continuous representation
-\item Variable: Annual intercensal population growth rate
-}
-
-\strong{Hierarchical Filtering:}
-Filters are applied in cascade:
-\enumerate{
-\item Specified departments are loaded first
-\item Then provinces are filtered (if specified)
-\item Finally, districts are filtered (if specified)
-}
-
-Cache is stored in: \code{tools::R_user_dir("rsdot", which = "cache")/densidad_poblacional/}
-
-\strong{NOTE:} Geometries are automatically validated with \code{st_make_valid()}
-to prevent errors in subsequent spatial operations.
+in cache: \code{tools::R_user_dir("rsdot", which = "cache")/densidad_poblacional/}.
 }
 \examples{
 \dontrun{
 # See available departments
 get_densidad_poblacional()
 
-# Load a full department
-densidad_cusco <- get_densidad_poblacional(departamento = "CUSCO")
-
-# Load a specific province
-densidad_prov_cusco <- get_densidad_poblacional(
-  departamento = "CUSCO",
-  provincia = "CUSCO"
-)
-
-# Load a specific district
-densidad_wanchaq <- get_densidad_poblacional(
-  departamento = "CUSCO",
-  provincia = "CUSCO",
-  distrito = "WANCHAQ"
-)
-
-# Load multiple departments
-densidad_sur <- get_densidad_poblacional(
-  departamento = c("CUSCO", "PUNO", "AREQUIPA")
-)
-
-# Filter multiple provinces
-densidad_valle <- get_densidad_poblacional(
-  departamento = "CUSCO",
-  provincia = c("CUSCO", "URUBAMBA", "CALCA")
-)
-
-# Visualization with ggplot2
-library(ggplot2)
-library(dplyr)
-
-# Growth level map
-ggplot(densidad_cusco) +
-  geom_sf(aes(fill = nivel), color = NA) +
-  scale_fill_brewer(
-    palette = "RdYlGn",
-    name = "Growth\nLevel"
-  ) +
-  labs(
-    title = "Population Growth by Level",
-    subtitle = "Department of Cusco (2007-2017)",
-    caption = "Source: INEI | Visor - SDOT"
-  ) +
-  theme_minimal()
-
-# Aggregated layer by district (one polygon per district)
-distritos_anta <- prov_anta |>
-  group_by(ubigeo, nombdist) |>
-  summarise(.groups = "drop")
-distritos_anta
-
-# Points to place labels inside each district
-distritos_centroides <- st_point_on_surface(distritos_anta)
-distritos_centroides
-
-ggplot() +
-  # 1. Cells / polygons with growth level
-  geom_sf(
-    data = prov_anta,
-    aes(fill = nivel),
-    color = NA
-  ) +
-  # 2. District outline (to make them stand out)
-  geom_sf(
-    data = distritos_anta,
-    fill = NA,
-    color = "grey20",
-    linewidth = 0.4
-  ) +
-  # 3. District names
-  geom_sf_text(
-    data = distritos_centroides,
-    aes(label = nombdist),
-    size = 3
-  ) +
-  scale_fill_brewer(
-    palette = "RdYlGn",
-    name    = "Growth\nlevel"
-  ) +
-  labs(
-    title    = "Population Growth",
-    subtitle = "Province of Anta (2007–2017)",
-    caption  = "Source: INEI | Visor SDOT"
-  ) +
-  theme_minimal() +
-  theme(
-    legend.position = "right",
-    panel.grid.major = element_line(linewidth = 0.2, colour = "grey90")
-  )
+# Load population density for Cusco
+dens_cusco <- get_densidad_poblacional(departamento = "CUSCO")
 }
 
 }
 \references{
 INEI. National Population and Housing Censuses 2007 and 2017.
-
 DEMARCA OSF Repository: \url{https://osf.io/qy4j6/}
 }
 \seealso{
-\code{\link{get_departamentos}}, \code{\link{get_provincias}},
-\code{\link{get_distritos}}, \code{\link[sf]{read_sf}},
-\code{\link[sf]{st_make_valid}}
+\code{\link{get_centros_poblados_crecimiento}}, \code{\link{get_departamentos}},
+\code{\link[sf]{read_sf}}
 }

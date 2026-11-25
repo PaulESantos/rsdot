@@ -8,10 +8,11 @@ get_rsdot_catalog(dataset)
 }
 \arguments{
 \item{dataset}{Character. Dataset name (e.g. "departamentos", "provincias",
-"distritos", "aerodromos", "densidad_poblacional", "capitales",
-"centros_poblados", "red_vial_nacional", "red_vial_departamental",
+"distritos", "distritos_2025", "aerodromos", "densidad_poblacional",
+"capitales", "centros_poblados", "red_vial_nacional", "red_vial_departamental",
 "red_vial_vecinal", "ipress", "locales_educativos", "servicios_educativos",
-"cobertura_movil", "tiempo_desplazamiento", "peligros_\emph{", "riesgos_}").}
+"cobertura_movil", "centros_poblados_crecimiento", "tiempo_desplazamiento",
+"peligros_\emph{", "riesgos_}", "densidad_\emph{", "vab_ccpp_}", "flujos_*", "catastro_rural").}
 }
 \value{
 A data.frame with columns \code{departamento} (optional), \code{file_name}, \code{id_osf}, \code{pattern_shp} (optional).

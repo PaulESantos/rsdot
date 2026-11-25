@@ -30,23 +30,7 @@ file even if it exists in cache. Default \code{FALSE}.}
 }
 \value{
 An \code{sf} (simple feature) object with MULTILINESTRING geometry
-containing local road network information, including:
-\itemize{
-\item MULTILINESTRING geometry (road trajectory)
-\item \code{nombdep}: Department name
-\item \code{nombprov}: Province name
-\item \code{iddpto}: Department code
-\item \code{jerarq}: Route hierarchy (RV = Red Vecinal)
-\item \code{trayectori}: Description of the route trajectory
-\item \code{estado}: Numeric road status (1, 2, 3)
-\item \code{codruta}: Local route code (e.g., LO-517, CU-123)
-\item \code{superfic}: Surface type code (1-4)
-\item \code{longitud}: Segment length in kilometers
-\item \code{estado_l}: Descriptive status (Good, Regular, Bad)
-\item \code{superfic_l}: Surface type (Paved, Unpaved, Dirt, Track)
-}
-
-If multiple departments are requested, it returns a combined sf object.
+containing local road network information.
 }
 \description{
 Downloads and loads information on the Local Road Network updated by
@@ -58,234 +42,23 @@ province.
 }
 \details{
 The function downloads data from OSF (Open Science Framework) and stores it
-in cache during the R session. Data is in GeoPackage (.gpkg) format.
-
-\strong{Data Source:}
-\itemize{
-\item Source: PROVIAS DESCENTRALIZADO - Ministry of Transport and Communications
-\item Update: July 2022
-\item Legal basis: Supreme Decree 011-2016-MTC and amendments
-\item Level: Local or Rural Road Network (National Road System - SINAC)
-\item Application: Local road planning and rural connectivity analysis
-}
-
-\strong{Surface Classification:}
-\itemize{
-\item 1 = Paved
-\item 2 = Unpaved
-\item 3 = Dirt
-\item 4 = Track
-}
-
-\strong{Status Classification:}
-\itemize{
-\item 1 = Good
-\item 2 = Regular
-\item 3 = Bad
-}
-
-\strong{Local Road Network Characteristics:}
-Local or rural roads connect minor population centers, hamlets, and
-production areas with the departmental and national road networks.
-They are the responsibility of local governments (municipalities).
-
-\strong{Hierarchical Filtering:}
-Filters are applied in cascade:
-\enumerate{
-\item Specified departments are loaded first
-\item Then provinces are filtered (if specified)
-}
-
-Cache is stored in: \code{tools::R_user_dir("rsdot", which = "cache")/red_vial_vecinal/}
-
-\strong{NOTE:} Geometries are MULTILINESTRING type and represent the trajectories
-of local roads.
+in cache: \code{tools::R_user_dir("rsdot", which = "cache")/red_vial_vecinal/}.
 }
 \examples{
 \dontrun{
 # See available departments
 get_red_vial_vecinal()
 
-# Load local road network of a full department
+# Load local roads of Cusco
 vias_cusco <- get_red_vial_vecinal(departamento = "CUSCO")
-
-# Filter by specific province
-vias_cusco_prov <- get_red_vial_vecinal(
-  departamento = "CUSCO",
-  provincia = "CUSCO"
-)
-
-# Load multiple departments
-vias_sur <- get_red_vial_vecinal(
-  departamento = c("CUSCO", "PUNO", "AREQUIPA")
-)
-
-# Visualization with ggplot2
-library(ggplot2)
-library(dplyr)
-
-# Map of local road network by surface type
-ggplot(vias_cusco) +
-  geom_sf(aes(color = superfic_l), linewidth = 0.6) +
-  scale_color_manual(
-    values = c(
-      "Pavimentado" = "darkblue",
-      "Afirmado" = "darkgreen",
-      "Sin afirmar" = "orange",
-      "Trocha" = "brown"
-    ),
-    name = "Surface Type"
-  ) +
-  labs(
-    title = "Local Road Network of Cusco",
-    subtitle = "By Surface Type - PROVIAS 2022",
-    caption = "Source: PROVIAS DESCENTRALIZADO | Visor - SDOT"
-  ) +
-  theme_minimal()
-
-# Map by conservation status
-ggplot(vias_cusco) +
-  geom_sf(aes(color = estado_l), linewidth = 0.8) +
-  scale_color_manual(
-    values = c(
-      "Bueno" = "darkgreen",
-      "Regular" = "orange",
-      "Malo" = "red"
-    ),
-    name = "Status"
-  ) +
-  labs(
-    title = "Conservation Status of the Local Road Network",
-    subtitle = "Department of Cusco",
-    caption = "Source: PROVIAS DESCENTRALIZADO | Visor - SDOT"
-  ) +
-  theme_minimal()
-
-# Length analysis by surface type
-vias_cusco |>
-  st_drop_geometry() |>
-  group_by(superfic_l) |>
-  summarise(
-    total_km = sum(longitud, na.rm = TRUE),
-    n_tramos = n(),
-    km_promedio = mean(longitud, na.rm = TRUE)
-  ) |>
-  arrange(desc(total_km))
-
-# Analysis by status and surface
-vias_cusco |>
-  st_drop_geometry() |>
-  group_by(estado_l, superfic_l) |>
-  summarise(
-    longitud_total = sum(longitud, na.rm = TRUE),
-    .groups = "drop"
-  ) |>
-  arrange(desc(longitud_total))
-
-# Filter roads in bad condition needing intervention
-vias_mal_estado <- vias_cusco |>
-  filter(estado_l == "Malo")
-
-# Analysis by province
-vias_cusco |>
-  st_drop_geometry() |>
-  group_by(nombprov) |>
-  summarise(
-    longitud_total = sum(longitud, na.rm = TRUE),
-    n_rutas = n_distinct(codruta),
-    km_trocha = sum(longitud[superfic_l == "Trocha"], na.rm = TRUE),
-    pct_trocha = (km_trocha / longitud_total) * 100,
-    .groups = "drop"
-  ) |>
-  arrange(desc(longitud_total))
-
-# Bar chart: km by province
-vias_prov_summary <- vias_cusco |>
-  st_drop_geometry() |>
-  group_by(nombprov) |>
-  summarise(total_km = sum(longitud, na.rm = TRUE), .groups = "drop") |>
-  arrange(desc(total_km)) |>
-  head(10)
-
-ggplot(vias_prov_summary, aes(x = reorder(nombprov, total_km), y = total_km)) +
-  geom_col(fill = "steelblue") +
-  coord_flip() +
-  labs(
-    title = "Top 10 Provinces with Largest Local Road Network",
-    subtitle = "Department of Cusco",
-    x = "Province",
-    y = "Total Length (km)",
-    caption = "Source: PROVIAS DESCENTRALIZADO"
-  ) +
-  theme_minimal()
-
-# Surface analysis by province
-vias_cusco |>
-  st_drop_geometry() |>
-  group_by(nombprov, superfic_l) |>
-  summarise(km = sum(longitud, na.rm = TRUE), .groups = "drop") |>
-  pivot_wider(names_from = superfic_l, values_from = km, values_fill = 0) |>
-  arrange(desc(Trocha))
-
-# Filter only paved or unpaved roads
-vias_mejoradas <- vias_cusco |>
-  filter(superfic_l \%in\% c("Pavimentado", "Afirmado"))
-
-# General statistics
-vias_cusco |>
-  st_drop_geometry() |>
-  summarise(
-    longitud_total = sum(longitud, na.rm = TRUE),
-    n_rutas = n_distinct(codruta),
-    n_provincias = n_distinct(nombprov),
-    km_trocha = sum(longitud[superfic_l == "Trocha"], na.rm = TRUE),
-    pct_trocha = (km_trocha / longitud_total) * 100,
-    km_afirmado = sum(longitud[superfic_l == "Afirmado"], na.rm = TRUE),
-    pct_afirmado = (km_afirmado / longitud_total) * 100,
-    km_mal_estado = sum(longitud[estado_l == "Malo"], na.rm = TRUE),
-    pct_mal_estado = (km_mal_estado / longitud_total) * 100
-  )
-
-# Comparison between provinces
-vias_cusco |>
-  st_drop_geometry() |>
-  group_by(nombprov) |>
-  summarise(
-    total_km = sum(longitud, na.rm = TRUE),
-    pct_bueno = sum(longitud[estado_l == "Bueno"], na.rm = TRUE) / total_km * 100,
-    pct_regular = sum(longitud[estado_l == "Regular"], na.rm = TRUE) / total_km * 100,
-    pct_malo = sum(longitud[estado_l == "Malo"], na.rm = TRUE) / total_km * 100,
-    .groups = "drop"
-  ) |>
-  arrange(desc(total_km))
-
-# Visualize a specific province
-vias_prov <- vias_cusco |>
-  filter(nombprov == "CUSCO")
-
-ggplot(vias_prov) +
-  geom_sf(aes(color = estado_l), linewidth = 1) +
-  scale_color_manual(
-    values = c("Bueno" = "green", "Regular" = "orange", "Malo" = "red")
-  ) +
-  labs(
-    title = "Local Road Network - Province of Cusco",
-    subtitle = "Conservation Status",
-    color = "Status"
-  ) +
-  theme_minimal()
 }
 
 }
 \references{
 PROVIAS DESCENTRALIZADO - MTC. Base Cartográfica de la Red Vial Vecinal 2022.
-
-Supreme Decree 011-2016-MTC - Route Classifier of the National Road System (SINAC).
-
 DEMARCA OSF Repository: \url{https://osf.io/qy4j6/}
 }
 \seealso{
-\code{\link{get_red_vial_departamental}}, \code{\link{get_red_vial_nacional}},
-\code{\link{get_departamentos}}, \code{\link{get_provincias}},
-\code{\link[sf]{read_sf}}
+\code{\link{get_red_vial_nacional}}, \code{\link{get_red_vial_departamental}},
+\code{\link{get_departamentos}}, \code{\link[sf]{read_sf}}
 }

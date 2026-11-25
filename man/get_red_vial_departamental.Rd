@@ -30,23 +30,7 @@ file even if it exists in cache. Default \code{FALSE}.}
 }
 \value{
 An \code{sf} (simple feature) object with MULTILINESTRING geometry
-containing departmental road network information, including:
-\itemize{
-\item MULTILINESTRING geometry (road trajectory)
-\item \code{nombdep}: Department name
-\item \code{nombprov}: Province name
-\item \code{trayectori}: Description of the route trajectory
-\item \code{iddpto}: Department code
-\item \code{jerarq}: Route hierarchy (RD = Red Departamental)
-\item \code{estado}: Numeric road status (1, 2, 3, 4)
-\item \code{codruta}: Route code (e.g., PI-102, CU-105)
-\item \code{superfic}: Surface type code (1-4)
-\item \code{longitud}: Segment length in kilometers
-\item \code{estado_l}: Descriptive status (GOOD, REGULAR, BAD)
-\item \code{superfic_l}: Surface type (PAVED, UNPAVED, DIRT, TRACK)
-}
-
-If multiple departments are requested, it returns a combined sf object.
+containing departmental road network information.
 }
 \description{
 Downloads and loads information on the Departmental Road Network updated by
@@ -58,176 +42,23 @@ province.
 }
 \details{
 The function downloads data from OSF (Open Science Framework) and stores it
-in cache during the R session. Data is in GeoPackage (.gpkg) format.
-
-\strong{Data Source:}
-\itemize{
-\item Source: PROVIAS NACIONAL - Ministry of Transport and Communications
-\item Update: July 2022
-\item Legal basis: Supreme Decree 011-2016-MTC and amendments
-\item Level: Departmental Road Network
-\item Application: Road planning and territorial connectivity analysis
-}
-
-\strong{Surface Classification:}
-\itemize{
-\item 1 = PAVED
-\item 2 = UNPAVED
-\item 3 = DIRT
-\item 4 = TRACK
-}
-
-\strong{Status Classification:}
-\itemize{
-\item 1 = GOOD
-\item 2 = REGULAR
-\item 3 = BAD
-\item 4 = VERY BAD
-}
-
-\strong{Hierarchical Filtering:}
-Filters are applied in cascade:
-\enumerate{
-\item Specified departments are loaded first
-\item Then provinces are filtered (if specified)
-}
-
-Cache is stored in: \code{tools::R_user_dir("rsdot", which = "cache")/red_vial_departamental/}
-
-\strong{NOTE:} Geometries are MULTILINESTRING type and represent the trajectories
-of departmental roads.
+in cache: \code{tools::R_user_dir("rsdot", which = "cache")/red_vial_departamental/}.
 }
 \examples{
 \dontrun{
 # See available departments
 get_red_vial_departamental()
 
-# Load road network of a full department
+# Load road network for Cusco
 vias_cusco <- get_red_vial_departamental(departamento = "CUSCO")
-
-# Filter by specific province
-vias_cusco_prov <- get_red_vial_departamental(
-  departamento = "CUSCO",
-  provincia = "CUSCO"
-)
-
-# Load multiple departments
-vias_sur <- get_red_vial_departamental(
-  departamento = c("CUSCO", "PUNO", "AREQUIPA")
-)
-
-# Visualization with ggplot2
-library(ggplot2)
-library(dplyr)
-
-# Map of road network by surface type
-ggplot(vias_cusco) +
-  geom_sf(aes(color = superfic_l), linewidth = 0.8) +
-  scale_color_manual(
-    values = c(
-      "PAVIMENTADO" = "darkblue",
-      "AFIRMADO" = "darkgreen",
-      "SIN AFIRMAR" = "orange",
-      "TROCHA" = "brown"
-    ),
-    name = "Surface Type"
-  ) +
-  labs(
-    title = "Departmental Road Network of Cusco",
-    subtitle = "By Surface Type - PROVIAS 2022",
-    caption = "Source: PROVIAS NACIONAL | Visor - SDOT"
-  ) +
-  theme_minimal()
-
-# Map by conservation status
-ggplot(vias_cusco) +
-  geom_sf(aes(color = estado_l), linewidth = 1) +
-  scale_color_manual(
-    values = c(
-      "BUENO" = "darkgreen",
-      "REGULAR" = "orange",
-      "MALO" = "red"
-    ),
-    name = "Status"
-  ) +
-  labs(
-    title = "Conservation Status of the Road Network",
-    subtitle = "Department of Cusco",
-    caption = "Source: PROVIAS NACIONAL | Visor - SDOT"
-  ) +
-  theme_minimal()
-
-# Length analysis by surface type
-vias_cusco |>
-  st_drop_geometry() |>
-  group_by(superfic_l) |>
-  summarise(
-    total_km = sum(longitud, na.rm = TRUE),
-    n_tramos = n(),
-    km_promedio = mean(longitud, na.rm = TRUE)
-  ) |>
-  arrange(desc(total_km))
-
-# Analysis by status and surface
-vias_cusco |>
-  st_drop_geometry() |>
-  group_by(estado_l, superfic_l) |>
-  summarise(
-    longitud_total = sum(longitud, na.rm = TRUE),
-    .groups = "drop"
-  ) |>
-  arrange(desc(longitud_total))
-
-# Filter paved roads in good condition
-vias_buenas <- vias_cusco |>
-  filter(superfic_l == "PAVIMENTADO", estado_l == "BUENO")
-
-# Analysis by province
-vias_cusco |>
-  st_drop_geometry() |>
-  group_by(nombprov) |>
-  summarise(
-    longitud_total = sum(longitud, na.rm = TRUE),
-    n_rutas = n_distinct(codruta),
-    .groups = "drop"
-  ) |>
-  arrange(desc(longitud_total))
-
-# Visualize a specific province
-vias_prov <- vias_cusco |>
-  filter(nombprov == "CUSCO")
-
-ggplot(vias_prov) +
-  geom_sf(aes(color = codruta), linewidth = 1.2) +
-  labs(
-    title = "Road Network of the Province of Cusco",
-    subtitle = "Route Codes",
-    caption = "Source: PROVIAS NACIONAL"
-  ) +
-  theme_minimal() +
-  theme(legend.position = "right")
-
-# General statistics
-vias_cusco |>
-  st_drop_geometry() |>
-  summarise(
-    longitud_total = sum(longitud, na.rm = TRUE),
-    n_rutas = n_distinct(codruta),
-    n_provincias = n_distinct(nombprov),
-    km_pavimentado = sum(longitud[superfic_l == "PAVIMENTADO"], na.rm = TRUE),
-    pct_pavimentado = (km_pavimentado / longitud_total) * 100
-  )
 }
 
 }
 \references{
-PROVIAS NACIONAL - MTC. Base Cartográfica de la Red Vial Nacional 2022.
-
-Supreme Decree 011-2016-MTC - Route Classifier of the National Road System (SINAC).
-
+PROVIAS NACIONAL - MTC. Base Cartográfica de la Red Vial Departamental 2022.
 DEMARCA OSF Repository: \url{https://osf.io/qy4j6/}
 }
 \seealso{
-\code{\link{get_departamentos}}, \code{\link{get_provincias}},
+\code{\link{get_red_vial_nacional}}, \code{\link{get_departamentos}},
 \code{\link[sf]{read_sf}}
 }

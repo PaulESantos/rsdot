@@ -34,26 +34,7 @@ file even if it exists in cache. Default \code{FALSE}.}
 }
 \value{
 An \code{sf} (simple feature) object with POINT type geometry containing
-information on population centers and their growth rate, including:
-\itemize{
-\item POINT geometry (coordinates of the population center)
-\item \code{nro}: Identification number
-\item \code{codccpp}: Population center code
-\item \code{ubigeo}: UBIGEO code of the district
-\item \code{dep}: Department name
-\item \code{prov}: Province name
-\item \code{distrito}: District name
-\item \code{centro_pob}: Population center name
-\item \code{pob_2007}: Population in the 2007 census
-\item \code{pob_2017}: Population in the 2017 census
-\item \code{tasa}: Average annual growth rate (\%)
-\item \code{capital}: Capital type (Departmental, Provincial, Distrital, Not a capital)
-\item \code{region}: Natural region (Coast, Highland, Jungle)
-\item \code{urb_rural}: Urban/rural classification
-\item \code{tc_catg}: Growth rate category (POSITIVE, NEGATIVE)
-}
-
-If multiple departments are requested, it returns a combined sf object.
+information on population centers and their growth rate.
 }
 \description{
 Downloads and loads information on population centers with their average annual
@@ -64,137 +45,23 @@ province, and district.
 }
 \details{
 The function downloads data from OSF (Open Science Framework) and stores it
-in cache during the R session. Data is in GeoPackage (.gpkg) format.
-
-\strong{Data Methodology:}
-\itemize{
-\item Source: INEI Population Censuses 2007 and 2017
-\item Level: Population center
-\item Variable: Average annual intercensal growth rate
-\item Application: Territorial analysis for district creations
-}
-
-\strong{Hierarchical Filtering:}
-Filters are applied in cascade:
-\enumerate{
-\item Specified departments are loaded first
-\item Then provinces are filtered (if specified)
-\item Finally, districts are filtered (if specified)
-}
-
-Cache is stored in: \code{tools::R_user_dir("rsdot", which = "cache")/centros_poblados/}
-
-\strong{NOTE:} Geometries are POINT type and represent the location of each population center.
+in cache: \code{tools::R_user_dir("rsdot", which = "cache")/densidad_crecimiento_pob_ccpp/}.
 }
 \examples{
 \dontrun{
 # See available departments
 get_centros_poblados_crecimiento()
 
-# Load population centers of a full department
+# Load population growth rate for Cusco
 ccpp_cusco <- get_centros_poblados_crecimiento(departamento = "CUSCO")
-
-# Filter by specific province
-ccpp_prov_cusco <- get_centros_poblados_crecimiento(
-  departamento = "CUSCO",
-  provincia = "CUSCO"
-)
-
-# Filter by specific district
-ccpp_wanchaq <- get_centros_poblados_crecimiento(
-  departamento = "CUSCO",
-  provincia = "CUSCO",
-  distrito = "WANCHAQ"
-)
-
-# Load multiple departments
-ccpp_sur <- get_centros_poblados_crecimiento(
-  departamento = c("CUSCO", "PUNO", "AREQUIPA")
-)
-
-# Visualization with ggplot2
-library(ggplot2)
-library(dplyr)
-
-# Map of population centers by growth category
-ggplot(ccpp_cusco) +
-  geom_sf(aes(color = tc_catg, size = pob_2017), alpha = 0.6) +
-  scale_color_manual(
-    values = c("POSITIVO" = "darkgreen", "NEGATIVO" = "darkred"),
-    name = "Growth"
-  ) +
-  scale_size_continuous(
-    name = "Population 2017",
-    range = c(0.5, 5)
-  ) +
-  labs(
-    title = "Population Centers of the Department of Cusco",
-    subtitle = "Population Growth Rate 2007-2017",
-    caption = "Source: INEI | Visor - SDOT"
-  ) +
-  theme_minimal()
-
-# Filter population centers by characteristics
-ccpp_urbanos <- ccpp_cusco |>
-  filter(urb_rural == "URBANA")
-
-ccpp_capitales <- ccpp_cusco |>
-  filter(capital != "No es capital")
-
-# Population centers with highest growth
-top_crecimiento <- ccpp_cusco |>
-  arrange(desc(tasa)) |>
-  head(10)
-
-ggplot(top_crecimiento) +
-  geom_sf(aes(size = tasa, color = tasa)) +
-  scale_color_gradient(low = "yellow", high = "red", name = "Rate (\%)") +
-  scale_size_continuous(range = c(3, 10), name = "Rate (\%)") +
-  geom_sf_text(
-    aes(label = centro_pob),
-    size = 2.5,
-    nudge_y = 0.05
-  ) +
-  labs(
-    title = "Top 10 Population Centers with Highest Growth",
-    subtitle = "Department of Cusco (2007-2017)",
-    caption = "Source: INEI | Visor - SDOT"
-  ) +
-  theme_minimal()
-
-# Analysis by natural region
-ccpp_cusco |>
-  group_by(region, tc_catg) |>
-  summarise(
-    n_centros = n(),
-    pob_total_2017 = sum(pob_2017, na.rm = TRUE),
-    tasa_promedio = mean(tasa, na.rm = TRUE),
-    .groups = "drop"
-  )
-
-# Urban vs rural comparison
-ggplot(ccpp_cusco) +
-  geom_boxplot(aes(x = urb_rural, y = tasa, fill = urb_rural)) +
-  scale_fill_brewer(palette = "Set2") +
-  labs(
-    title = "Distribution of Growth Rates",
-    subtitle = "By urban and rural area - Cusco",
-    x = "Classification",
-    y = "Growth Rate (\%)",
-    caption = "Source: INEI | Visor - SDOT"
-  ) +
-  theme_minimal() +
-  theme(legend.position = "none")
 }
 
 }
 \references{
 INEI. National Population and Housing Censuses 2007 and 2017.
-
 DEMARCA OSF Repository: \url{https://osf.io/qy4j6/}
 }
 \seealso{
-\code{\link{get_densidad_poblacional}}, \code{\link{get_departamentos}},
-\code{\link{get_provincias}}, \code{\link{get_distritos}},
-\code{\link[sf]{read_sf}}
+\code{\link{get_centros_poblados}}, \code{\link{get_densidad_poblacional}},
+\code{\link{get_departamentos}}, \code{\link[sf]{read_sf}}
 }

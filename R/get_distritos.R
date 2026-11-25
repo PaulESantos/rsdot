@@ -1,7 +1,7 @@
 #' Get District Census Limits of Peru
 #'
-#' Downloads and loads the official district limits from INEI (2023) from the
-#' DEMARCA OSF repository. Implements persistent caching to optimize repeated
+#' Downloads and loads the official district limits from INEI (2023 or 2025 update)
+#' from the DEMARCA OSF repository. Implements persistent caching to optimize repeated
 #' downloads and keeps the console clean during execution.
 #'
 #' @param distrito Character vector. Name(s) of the district(s) to filter.
@@ -14,10 +14,13 @@
 #' @param departamento Character vector. Name of the department to filter
 #'   all its districts (e.g., "CUSCO"). If specified, it returns all the
 #'   districts of the indicated department. Case-insensitive.
+#' @param ano Numeric or character. Year of the district limits: \code{2023} (default)
+#'   or \code{2025} (updated boundary layer).
 #' @param show_progress Logical. If \code{TRUE} (default), shows informative
 #'   messages about download progress. If \code{FALSE}, executes silently.
 #' @param force_update Logical. If \code{TRUE}, forces a new download of the
 #'   file even if it exists in cache. Default \code{FALSE} to leverage cached data.
+#' @param ... Additional arguments passed to internal functions.
 #'
 #' @return An \code{sf} (simple feature) object with the geometry of the requested
 #'   districts, including their geographic and administrative attributes.
@@ -25,7 +28,7 @@
 #' @details
 #' The function downloads data directly from OSF (Open Science Framework)
 #' and stores it in the user's cache directory (`tools::R_user_dir("rsdot", "cache")`).
-#' The data corresponds to the official INEI 2023 census limits.
+#' The data corresponds to the official INEI census limits (2023 or 2025 update).
 #'
 #' The function automatically handles special character encoding (accents, ñ)
 #' to ensure compatibility across different operating systems.
@@ -42,108 +45,25 @@
 #'
 #' @examples
 #' \dontrun{
-#' # Load all districts of Peru
+#' # Load all districts of Peru (2023)
 #' distritos_peru <- get_distritos()
+#'
+#' # Load 2025 districts update
+#' distritos_2025 <- get_distritos_2025()
 #'
 #' # Load a specific district
 #' wanchaq <- get_distritos(distrito = "Wanchaq")
 #'
 #' # Load all districts of a province
 #' distritos_cusco <- get_distritos(provincia = "Cusco")
-#'
-#' # Load all districts of a department
-#' distritos_puno <- get_distritos(departamento = "Puno")
-#'
-#' # Load multiple specific districts
-#' distritos_centrales <- get_distritos(
-#'   distrito = c("CUSCO", "WANCHAQ", "SANTIAGO")
-#' )
-#'
-#' # Combine filters: districts of a specific province
-#' costa_lima <- get_distritos(
-#'   provincia = "CAÑETE",
-#'   departamento = "LIMA"
-#' )
-#'
-#' # Full hierarchical filter
-#' distrito_especifico <- get_distritos(
-#'   distrito = "SAN SEBASTIÁN",
-#'   provincia = "CUSCO",
-#'   departamento = "CUSCO"
-#' )
-#'
-#' # Force data update
-#' distritos_updated <- get_distritos(force_update = TRUE)
-#'
-#' # Silent execution
-#' callao <- get_distritos(provincia = "CALLAO", show_progress = FALSE)
-#'
-#' # Visualization with ggplot2
-#' library(ggplot2)
-#'
-#' # Map of all districts in the province of Cusco
-#' ggplot(distritos_cusco) +
-#'   geom_sf(aes(fill = nombdist), color = "white", linewidth = 0.2) +
-#'   labs(
-#'     title = "Districts of the Province of Cusco",
-#'     subtitle = "INEI 2023 Census Limits",
-#'     fill = "District",
-#'     caption = "Source: INEI | Visor - SDOT"
-#'   ) +
-#'   scale_fill_brewer(palette = "Paired") +
-#'   theme_minimal() +
-#'   theme(
-#'     legend.position = "right",
-#'     legend.key.size = unit(0.4, "cm")
-#'   )
-#'
-#' # Map of a specific district
-#' ggplot(wanchaq) +
-#'   geom_sf(fill = "#FFA07A", color = "darkred", linewidth = 1.5) +
-#'   labs(
-#'     title = "District of Wanchaq",
-#'     subtitle = "Province and Department of Cusco",
-#'     caption = "Source: INEI | Visor - SDOT"
-#'   ) +
-#'   theme_minimal()
-#'
-#' # Map of districts in Cañete
-#' ggplot(costa_lima) +
-#'   geom_sf(aes(fill = nombdist), color = "white", linewidth = 0.3) +
-#'   labs(
-#'     title = "Districts of the Province of Cañete",
-#'     fill = "District",
-#'     caption = "Source: INEI | Visor - SDOT"
-#'   ) +
-#'   theme_minimal() +
-#'   theme(legend.position = "bottom")
-#'
-#' # Map of central districts with labels
-#' ggplot(distritos_centrales) +
-#'   geom_sf(aes(fill = nombdist), color = "white", linewidth = 0.5) +
-#'   geom_sf_text(aes(label = nombdist), size = 3, fontface = "bold") +
-#'   labs(
-#'     title = "Central Districts of Cusco",
-#'     fill = "District",
-#'     caption = "Source: INEI | Visor - SDOT"
-#'   ) +
-#'   scale_fill_manual(
-#'     values = c(
-#'       "CUSCO" = "#FF6B6B", "WANCHAQ" = "#4ECDC4",
-#'       "SANTIAGO" = "#45B7D1"
-#'     )
-#'   ) +
-#'   theme_minimal() +
-#'   theme(legend.position = "bottom")
 #' }
 #'
 #' @seealso
-#' \code{\link{get_departamentos}}, \code{\link{get_provincias}},
 #' \code{\link[sf]{read_sf}}, \code{\link[sf]{st_geometry}}
 #'
 #' @references
-#' INEI (2023). District Census Limits of Peru.
-#' DEMARCA Repository: \url{https://osf.io/j9ax8/}
+#' INEI (2023/2025). District Census Limits of Peru.
+#' SDOT DEMARCA PERU VISOR Repository: \url{https://osf.io/qy4j6/overview}
 #'
 #' @export
 #' @importFrom sf read_sf
@@ -151,8 +71,10 @@
 get_distritos <- function(distrito = NULL,
                           provincia = NULL,
                           departamento = NULL,
+                          ano = 2023,
                           show_progress = TRUE,
-                          force_update = FALSE) {
+                          force_update = FALSE,
+                          ...) {
   # ==========================================================================
   # 1. PARAMETER VALIDATION
   # ==========================================================================
@@ -192,7 +114,8 @@ get_distritos <- function(distrito = NULL,
   # 2. DATA ACQUISITION (GENERIC)
   # ==========================================================================
 
-  catalog <- get_rsdot_catalog("distritos")
+  catalog_key <- if (as.character(ano) %in% c("2025")) "distritos_2025" else "distritos"
+  catalog <- get_rsdot_catalog(catalog_key)
 
   datos_sf <- download_and_read_spatial_data(
     osf_id = catalog$id_osf,
@@ -341,4 +264,10 @@ get_distritos <- function(distrito = NULL,
   }
 
   return(datos_sf)
+}
+
+#' @rdname get_distritos
+#' @export
+get_distritos_2025 <- function(...) {
+  get_distritos(..., ano = 2025)
 }

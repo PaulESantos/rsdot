@@ -34,24 +34,7 @@ file even if it exists in cache. Default \code{FALSE}.}
 }
 \value{
 An \code{sf} (simple feature) object with POINT type geometry
-containing population center information, including:
-\itemize{
-\item \code{viv}: Total de viviendas
-\item \code{viv_part}: Viviendas particulares
-\item \code{viv_part_o}: Viviendas particulares ocupadas
-\item \code{viv_part_1}: Viviendas particulares con 1 o más ocupantes
-\item \code{pob_viv_pa}: Población en viviendas particulares
-\item \code{y}: Latitud (grados decimales)
-\item \code{x}: Longitud (grados decimales)
-\item \code{fuente}: Fuente de la información
-\item \code{revision}: Información de revisión
-\item \code{cap}: Indicador de capital
-\item \code{capital}: Tipo de capital si aplica
-\item \code{iddpto}: ID del departamento
-\item \code{idprov}: ID de la provincia
-}
-
-Si se solicitan múltiples departamentos, retorna un objeto sf combinado.
+containing population center information.
 }
 \description{
 Downloads and loads information on population centers of Peru from the
@@ -63,17 +46,7 @@ at the departmental, provincial, and district levels, with POINT type geometry.
 La función descarga datos desde OSF (Open Science Framework) y los almacena
 en caché durante la sesión de R. Los datos están en formato GeoPackage (.gpkg).
 
-\strong{IMPORTANTE - Ubicación Referencial:}
-La ubicación de los centros poblados es referencial. Las coordenadas pueden
-diferir de las registradas en otras bases de datos oficiales o levantamientos
-de campo específicos. Se recomienda validar las ubicaciones para estudios que
-requieran precisión espacial.
-
-El caché se almacena en: \code{tools::R_user_dir("rsdot", which = "cache")/centros_poblados/}
-
-\strong{NOTA:} Las geometrías son tipo POINT y representan la ubicación aproximada
-de los centros poblados según el Censo 2017. El sistema de coordenadas es
-WGS 84 (EPSG:4326).
+Cache is stored in: \code{tools::R_user_dir("rsdot", which = "cache")/centros_poblados/}
 }
 \examples{
 \dontrun{
@@ -82,90 +55,11 @@ get_centros_poblados()
 
 # Cargar centros poblados de un departamento
 cp_tacna <- get_centros_poblados(departamento = "TACNA")
-
-# Cargar múltiples departamentos
-cp_sur <- get_centros_poblados(
-  departamento = c("TACNA", "MOQUEGUA")
-)
-
-# Filtrar por provincia
-cp_cusco_prov <- get_centros_poblados(
-  departamento = "CUSCO",
-  provincia = "CUSCO"
-)
-
-# Visualización con ggplot2
-library(ggplot2)
-library(dplyr)
-
-# Clasificar por tamaño poblacional
-cp_tacna <- cp_tacna |>
-  mutate(
-    categoria = case_when(
-      pob >= 5000 ~ "Grande (5000+)",
-      pob >= 1000 ~ "Mediano (1000-4999)",
-      pob >= 500 ~ "Pequeño (500-999)",
-      TRUE ~ "Muy pequeño (<500)"
-    )
-  )
-
-# Mapa de centros poblados por tamaño
-ggplot(cp_tacna) +
-  geom_sf(aes(color = categoria, size = pob), alpha = 0.6) +
-  scale_size_continuous(range = c(0.5, 5)) +
-  scale_color_brewer(palette = "Spectral", direction = -1) +
-  labs(
-    title = "Centros Poblados de Tacna",
-    subtitle = "Clasificados por Tamaño - Censo 2017",
-    color = "Categoría",
-    size = "Población",
-    caption = "Fuente: INEI | Visor - SDOT"
-  ) +
-  theme_minimal()
-
-# Análisis de vivienda
-cp_tacna |>
-  st_drop_geometry() |>
-  filter(viv > 0) |>
-  summarise(
-    centros = n(),
-    pob_total = sum(pob, na.rm = TRUE),
-    viv_total = sum(viv, na.rm = TRUE),
-    pob_por_vivienda = pob_total / viv_total,
-    tasa_ocupacion = sum(viv_part_o) / sum(viv_part) * 100
-  )
-
-# Distribución por distrito
-cp_tacna |>
-  st_drop_geometry() |>
-  group_by(nombdist) |>
-  summarise(
-    n_centros = n(),
-    poblacion = sum(pob, na.rm = TRUE),
-    viviendas = sum(viv, na.rm = TRUE)
-  ) |>
-  arrange(desc(poblacion))
-
-# Análisis de densidad de vivienda
-cp_tacna |>
-  st_drop_geometry() |>
-  filter(viv > 0) |>
-  mutate(pob_por_viv = pob / viv) |>
-  summarise(
-    min = min(pob_por_viv),
-    q1 = quantile(pob_por_viv, 0.25),
-    mediana = median(pob_por_viv),
-    promedio = mean(pob_por_viv),
-    q3 = quantile(pob_por_viv, 0.75),
-    max = max(pob_por_viv)
-  )
 }
 
 }
 \references{
-INEI. Censo de Población y Vivienda 2017. Instituto Nacional de Estadística e
-Informática.
-
+INEI. Censo de Población y Vivienda 2017. Instituto Nacional de Estadística e Informática.
 Visor SDOT: \url{https://geosdot.servicios.gob.pe/visor/}
 }
 \seealso{

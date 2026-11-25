@@ -65,22 +65,6 @@ Allows stepwise filtering by department, province, and district.
 The function downloads data from OSF (Open Science Framework) and stores it
 in cache during the R session. Data is in GeoPackage (.gpkg) format.
 
-\strong{Data Source:}
-\itemize{
-\item Source: Ministry of Transport and Communications (MTC)
-\item Year: 2022
-\item Level: Airfield/Airport/Heliport
-\item Application: Territorial planning and connectivity analysis
-}
-
-\strong{Hierarchical Filtering:}
-Filters are applied in cascade:
-\enumerate{
-\item Specified departments are loaded first
-\item Then provinces are filtered (if specified)
-\item Finally, districts are filtered (if specified)
-}
-
 Cache is stored in: \code{tools::R_user_dir("rsdot", which = "cache")/aerodromos/}
 
 \strong{NOTE:} Geometries are POINT type and represent the location of each airfield.
@@ -98,80 +82,11 @@ aero_prov_cusco <- get_aerodromos(
   departamento = "CUSCO",
   provincia = "CUSCO"
 )
-
-# Filter by specific district
-aero_san_sebastian <- get_aerodromos(
-  departamento = "CUSCO",
-  provincia = "CUSCO",
-  distrito = "SAN SEBASTIAN"
-)
-
-# Load multiple departments
-aero_sur <- get_aerodromos(
-  departamento = c("CUSCO", "PUNO", "AREQUIPA")
-)
-
-# Visualization with ggplot2
-library(ggplot2)
-library(dplyr)
-
-# Map of airfields by type
-ggplot(aero_cusco) +
-  geom_sf(aes(color = tipo, shape = tipo), size = 3) +
-  scale_color_manual(
-    values = c(
-      "AEROPUERTO INTERNACIONAL" = "darkred",
-      "AERODROMO" = "darkblue",
-      "HELIPUERTO" = "darkgreen"
-    ),
-    name = "Type"
-  ) +
-  labs(
-    title = "Airfields of the Department of Cusco",
-    subtitle = "Updated 2022 - MTC",
-    caption = "Source: MTC | Visor - SDOT"
-  ) +
-  theme_minimal()
-
-# Airfields by ownership type
-aero_cusco |>
-  group_by(tipo, titular) |>
-  summarise(n = n(), .groups = "drop") |>
-  arrange(desc(n))
-
-# Filter operational public airfields
-aero_publicos <- aero_cusco |>
-  filter(titular == "PUBLICA", estado == "OPERATIVO")
-
-# View airfields by administrator
-aero_cusco |>
-  filter(!is.na(administ)) |>
-  group_by(administ) |>
-  summarise(n = n(), .groups = "drop") |>
-  arrange(desc(n))
-
-# Map of airfields with labels
-ggplot(aero_cusco) +
-  geom_sf(aes(color = tipo), size = 4) +
-  geom_sf_text(
-    aes(label = nombre),
-    size = 2.5,
-    nudge_y = 0.1,
-    check_overlap = TRUE
-  ) +
-  scale_color_brewer(palette = "Set1", name = "Type") +
-  labs(
-    title = "Airfields of Cusco",
-    subtitle = "MTC 2022",
-    caption = "Source: MTC | Visor - SDOT"
-  ) +
-  theme_minimal()
 }
 
 }
 \references{
 Ministry of Transport and Communications (MTC). Airfields of Peru 2022.
-
 DEMARCA OSF Repository: \url{https://osf.io/qy4j6/}
 }
 \seealso{

@@ -2,7 +2,9 @@
 % Please edit documentation in R/get_riesgos.R
 \name{get_riesgos}
 \alias{get_riesgos}
-\title{Get Natural Risks Spatial Data of Peru}
+\alias{get_evaluacion_riesgos}
+\alias{get_zonas_riesgos_no_mitigable}
+\title{Get Disaster Risk Spatial Data of Peru}
 \usage{
 get_riesgos(
   tipo = NULL,
@@ -10,8 +12,13 @@ get_riesgos(
   provincia = NULL,
   distrito = NULL,
   show_progress = TRUE,
-  force_update = FALSE
+  force_update = FALSE,
+  ...
 )
+
+get_evaluacion_riesgos(...)
+
+get_zonas_riesgos_no_mitigable(...)
 }
 \arguments{
 \item{tipo}{Character. The type of risk layer to retrieve. Valid options:
@@ -31,13 +38,15 @@ Case-insensitive. If \code{NULL}, lists available departments for the selected t
 \item{show_progress}{Logical. If \code{TRUE} (default), shows informative messages.}
 
 \item{force_update}{Logical. If \code{TRUE}, forces a new download of files. Default \code{FALSE}.}
+
+\item{...}{Additional arguments passed to internal functions or wrapper methods.}
 }
 \value{
 An \code{sf} (simple feature) object representing the requested risk layer.
 }
 \description{
-Downloads and loads spatial data of natural risks (risk evaluations, non-mitigatable
-risk areas, etc.) prepared by SDOT-PCM.
+Downloads and loads spatial data of disaster risk assessments and non-mitigable
+risk zones prepared by SDOT-PCM and CENEPRED.
 }
 \details{
 Cache is stored under subdirectories of \code{tools::R_user_dir("rsdot", which = "cache")/}.
@@ -47,8 +56,8 @@ Cache is stored under subdirectories of \code{tools::R_user_dir("rsdot", which =
 # List available types
 get_riesgos()
 
-# Load non-mitigatable risk areas for Cusco
-nm_cusco <- get_riesgos(tipo = "no_mitigable", departamento = "CUSCO")
+# Load non-mitigable risk zones for Cusco
+r_cusco <- get_riesgos(tipo = "no_mitigable", departamento = "CUSCO")
 }
 
 }

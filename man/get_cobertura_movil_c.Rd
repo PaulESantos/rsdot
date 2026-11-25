@@ -42,185 +42,32 @@ file even if it exists in cache. Default \code{FALSE}.}
 }
 \value{
 An \code{sf} (simple feature) object with POINT geometry containing
-mobile coverage information, including:
-
-\strong{Population Center Identification:}
-\itemize{
-\item \code{ubigeo}: Ubigeo code of the population center
-\item \code{nom_dep}: Department name
-\item \code{nom_prov}: Province name
-\item \code{nom_dist}: District name
-\item \code{nomccpp}: Population center name
-}
-
-\strong{Mobile Network Technologies} (values: 1 = available, 0 = not available):
-\itemize{
-\item \code{2g}: 2G technology declared by the operator at population center level
-\item \code{3g}: 3G technology declared by the operator at population center level
-\item \code{4g}: 4G technology declared by the operator at population center level
-\item \code{5g}: 5G technology declared by the operator at population center level
-}
-
-\strong{Communication Services} (values: 1 = available, 0 = not available):
-\itemize{
-\item \code{voz}: Voice service provided by the operator at population center level
-\item \code{sms}: Short message service (SMS) provided by the operator at population center level
-\item \code{mms}: Multimedia message service (MMS) provided by the operator at population center level
-\item \code{internet}: Internet service provided by the operator at population center level
-}
-
-\strong{Other Indicators:}
-\itemize{
-\item \code{y_latitud}: Latitude of the population center
-\item \code{x_longitud}: Longitude of the population center
-\item \code{emoperador}: Operator presence indicator
-\item \code{layer}: Source layer
-}
-
-\strong{Velocidad de internet móvil} (valores: 1 = disponible, 0 = no disponible):
-\itemize{
-\item \code{hasta1mbps}: Servicio de acceso a internet móvil con velocidad
-de hasta 1 Mbps brindado por la empresa operadora
-\item \code{masde1mbps}: Servicio de acceso a internet móvil con velocidad
-de más de 1 Mbps brindado por la empresa operadora
-}
-
-\strong{Infraestructura - Estaciones base:}
-\itemize{
-\item \code{canteb2g}: Cantidad de estaciones base que pueden brindar
-servicio de cobertura móvil con tecnología 2G al centro poblado
-\item \code{canteb3g}: Cantidad de estaciones base que pueden brindar
-servicio de cobertura móvil con tecnología 3G al centro poblado
-\item \code{canteb4g}: Cantidad de estaciones base que pueden brindar
-servicio de cobertura móvil con tecnología 4G al centro poblado
-\item \code{canteb5g}: Cantidad de estaciones base que pueden brindar
-servicio de cobertura móvil con tecnología 5G al centro poblado
-}
-
-Si se solicitan múltiples departamentos, retorna un objeto sf combinado.
+mobile coverage information.
 }
 \description{
 Downloads and loads information on mobile coverage by population center
 from the DEMARCA OSF repository. Data includes binary information
-(YES/NO) on the existence of 2G, 3G, and 4G coverage for each population
+(YES/NO) on the existence of 2G, 3G, 4G, and 5G coverage for each population
 center according to the SDOT Viewer.
 }
 \details{
 La función descarga datos desde OSF (Open Science Framework) y los almacena
-en caché durante la sesión de R. Los datos están en formato GeoPackage (.gpkg).
-
-\strong{Fuente de los datos:}
-\itemize{
-\item Fuente: Ministerio de Transportes y Comunicaciones (MTC) / OSIPTEL
-\item Nivel: Centro poblado
-\item Aplicación: Análisis de brecha digital y planificación de telecomunicaciones
-}
-
-\strong{Interpretación de variables binarias:}
-
-Las variables de tecnología (2G, 3G, 4G, 5G), servicios (VOZ, SMS, MMS) y
-velocidad (hasta1mbps, masde1mbps) son declaradas por las empresas operadoras
-y toman únicamente valores de 0 o 1:
-\itemize{
-\item \strong{Valor 1}: El centro poblado cuenta con la tecnología/servicio
-\item \strong{Valor 0}: El centro poblado NO cuenta con la tecnología/servicio
-}
-
-\strong{Tecnologías de red móvil:}
-\itemize{
-\item \strong{2G (GSM)}: Segunda generación - servicios básicos de voz y SMS
-\item \strong{3G (UMTS/HSPA)}: Tercera generación - datos móviles básicos,
-navegación web limitada
-\item \strong{4G (LTE)}: Cuarta generación - banda ancha móvil, streaming
-de video, aplicaciones en tiempo real
-\item \strong{5G}: Quinta generación - ultra banda ancha, baja latencia,
-IoT masivo
-}
-
-\strong{Estaciones base:}
-
-Las variables canteb2g, canteb3g, canteb4g y canteb5g indican la cantidad
-de estaciones base (antenas) que pueden brindar servicio de cobertura móvil
-con cada tecnología al centro poblado. Un mayor número de estaciones base
-generalmente indica mejor calidad de señal y capacidad de red.
-
-\strong{Filtrado jerárquico:}
-Los filtros se aplican en cascada:
-\enumerate{
-\item Primero se cargan los departamentos especificados
-\item Luego se filtran las provincias (si se especifican)
-\item Finalmente se filtran los distritos (si se especifican)
-}
-
-El caché se almacena en: \code{tools::R_user_dir("rsdot", which = "cache")/cobertura_movil/}
-
-\strong{NOTA:} Las geometrías son tipo POINT (puntos) y representan la ubicación
-de cada centro poblado con información de cobertura.
+en caché: \code{tools::R_user_dir("rsdot", which = "cache")/cobertura_movil/}.
+Los datos están en formato GeoPackage (.gpkg).
 }
 \examples{
 \dontrun{
 # Ver departamentos disponibles
-get_cobertura_movil_c()
+get_cobertura_movil()
 
-# Cargar cobertura de un departamento completo
-cob_cusco <- get_cobertura_movil_c(departamento = "CUSCO")
-
-# Filtrar por provincia específica
-cob_prov_cusco <- get_cobertura_movil_c(
-  departamento = "CUSCO",
-  provincia = "CUSCO"
-)
-
-# Filtrar por distrito específico
-cob_san_sebastian <- get_cobertura_movil_c(
-  departamento = "CUSCO",
-  provincia = "CUSCO",
-  distrito = "SAN SEBASTIAN"
-)
-
-# Cargar múltiples departamentos
-cob_sur <- get_cobertura_movil_c(
-  departamento = c("CUSCO", "PUNO", "AREQUIPA")
-)
-
-# Visualización con ggplot2
-library(ggplot2)
-library(dplyr)
-
-# Mapa de cobertura 4G
-ggplot(cob_cusco) +
-  geom_sf(aes(color = factor(`4g`)), size = 1, alpha = 0.6) +
-  scale_color_manual(
-    values = c("0" = "red", "1" = "darkgreen"),
-    labels = c("0" = "Sin cobertura", "1" = "Con cobertura"),
-    name = "Cobertura 4G"
-  ) +
-  labs(
-    title = "Cobertura 4G en Centros Poblados de Cusco",
-    subtitle = "MTC / OSIPTEL",
-    caption = "Fuente: MTC | Visor - SDOT"
-  ) +
-  theme_minimal()
-
-# Resumen de cobertura por tecnología
-cob_cusco |>
-  sf::st_drop_geometry() |>
-  summarise(
-    total_ccpp = n(),
-    con_2g = sum(`2g`),
-    con_3g = sum(`3g`),
-    con_4g = sum(`4g`),
-    con_5g = sum(`5g`),
-    pct_4g = round(sum(`4g`) / n() * 100, 1)
-  )
+# Cargar cobertura móvil de Cusco
+cob_cusco <- get_cobertura_movil(departamento = "CUSCO")
 }
 
 }
 \references{
-Ministerio de Transportes y Comunicaciones (MTC). Cobertura de Servicio Móvil
-por Centros Poblados.
-
-OSIPTEL - Organismo Supervisor de Inversión Privada en Telecomunicaciones.
+Ministerio de Transportes y Comunicaciones (MTC) / OSIPTEL.
+DEMARCA OSF Repository: \url{https://osf.io/qy4j6/}
 }
 \seealso{
 \code{\link{get_departamentos}}, \code{\link{get_provincias}},

@@ -30,289 +30,33 @@ file even if it exists in cache. Default \code{FALSE}.}
 }
 \value{
 An \code{sf} (simple feature) object with POINT geometry containing
-educational service information, including:
-
-\strong{Service Identification:}
-\itemize{
-\item POINT geometry (educational service coordinates)
-\item \code{cod_mod}: Modular code of the educational service (unique
-identifier assigned by MINEDU)
-\item \code{anexo}: Annex number of the educational service (0 if it is
-the main headquarters)
-\item \code{cen_edu}: Name of the educational center or institution
-\item \code{codinst}: Institution code (RUC or internal code)
-}
-
-\strong{Educational Level and Modality:}
-\itemize{
-\item \code{d_niv_mod}: Educational service level and modality
-\item \code{d_forma}: Form of care:
-\itemize{
-\item ESCOLARIZADO: Classroom-based education
-\item NO ESCOLARIZADO: Non-classroom programs (PRONOEI, etc.)
-\item NO APLICA: Not applicable
-}
-}
-
-\strong{Management and Dependency:}
-\itemize{
-\item \code{d_gestion}: Management type:
-\itemize{
-\item PÚBLICA DE GESTIÓN DIRECTA: Directly administered by the State
-\item PÚBLICA DE GESTIÓN PRIVADA: Public but privately administered
-(agreements)
-\item PRIVADA: Private administration
-}
-\item \code{d_ges_dep}: Specific management dependency
-\item \code{d_dreugel}: DRE or UGEL of administrative dependency
-}
-
-\strong{Service Characteristics:}
-\itemize{
-\item \code{d_cod_car}: Teacher characteristic based on number of grades
-in charge:
-\itemize{
-\item POLIDOCENTE COMPLETO: One teacher per grade/section
-\item POLIDOCENTE MULTIGRADO: Teachers attend several grades
-\item UNIDOCENTE: A single teacher for all grades
-\item NO APLICA: Does not correspond to the educational level
-\item NO DISPONIBLE: Not available
-}
-\item \code{d_tipssexo}: Service type based on students' sex:
-\itemize{
-\item MIXTO: Attends both sexes
-\item VARONES: Males only
-\item MUJERES: Females only
-\item NO APLICA: Not applicable
-}
-\item \code{d_tipoprog}: Program type (for non-classroom services)
-\item \code{d_cod_tur}: Service shift
-}
-
-\strong{Geographic Location:}
-\itemize{
-\item \code{departamen}: Department name
-\item \code{provincia}: Province name
-\item \code{nlat_ie}: Educational service latitude (Y coordinate)
-\item \code{nlong_ie}: Educational service longitude (X coordinate)
-}
-
-If multiple departments are requested, it returns a combined sf object.
+educational services information.
 }
 \description{
 Downloads and loads information on educational services in Peru, prepared by
-the Ministry of Education (MINEDU). An educational service is a set of
-educational activities designed and organized to achieve a learning
-objective. Data includes POINT type geometry and information on educational
-level, modality, management, shift, and service characteristics.
-Allows stepwise filtering by department, province, and district.
+the Ministry of Education (MINEDU). Data includes POINT type geometry and
+detailed programmatic, level, and enrollment attributes for each service. Updated to 2024.
+Allows stepwise filtering by department and province.
 }
 \details{
 The function downloads data from OSF (Open Science Framework) and stores it
-in cache during the R session. Data is in GeoPackage (.gpkg) format.
-
-\strong{Data Source:}
-\itemize{
-\item Source: Ministry of Education (MINEDU)
-\item Registration: Educational Institutions Registry
-\item Level: Educational service
-\item Application: Educational offer analysis, educational policy
-planning, and coverage studies by level and modality
-}
-
-\strong{Difference between educational facility and educational service:}
-\itemize{
-\item \strong{Educational Facility}: Physical infrastructure (property) where
-services operate. See \code{\link{get_locales_educativos}}.
-\item \strong{Educational Service}: Pedagogical management unit that provides
-a specific level or modality of education. A facility may house
-multiple educational services.
-}
-
-\strong{Peruvian Educational System - Levels and Modalities:}
-
-\strong{Regular Basic Education (EBR):}
-\itemize{
-\item \strong{Initial}: Nursery (0-2 years), Kindergarten (3-5 years)
-\item \strong{Primary}: 6 grades (6-11 years)
-\item \strong{Secondary}: 5 grades (12-16 years)
-}
-
-\strong{Classification by teacher characteristic (d_cod_car):}
-\itemize{
-\item \strong{Full Polidocente}: Each section has its own teacher.
-Typical in urban areas.
-\item \strong{Multigrade Polidocente}: Several teachers who attend more than
-one grade each.
-\strong{Unidocente}: A single teacher attends all grades.
-Frequent in rural areas with low enrollment.
-}
-
-\strong{Hierarchical Filtering:}
-Filters are applied in cascade:
-\enumerate{
-\item Specified departments are loaded first
-\item Then provinces are filtered (if specified)
-}
-
-Cache is stored in: \code{tools::R_user_dir("rsdot", which = "cache")/servicios_educativos/}
-
-\strong{NOTE:} Geometries are POINT type and represent the location
-of each educational service.
+in cache: \code{tools::R_user_dir("rsdot", which = "cache")/servicios_educativos/}.
 }
 \examples{
 \dontrun{
 # See available departments
 get_servicios_educativos()
 
-# Load educational services of a full department
+# Load educational services for Cusco
 serv_cusco <- get_servicios_educativos(departamento = "CUSCO")
-
-# Filter by specific province
-serv_prov_cusco <- get_servicios_educativos(
-  departamento = "CUSCO",
-  provincia = "CUSCO"
-)
-
-# Filter by specific province
-serv_prov_urubamba <- get_servicios_educativos(
-  departamento = "CUSCO",
-  provincia = "URUBAMBA"
-)
-
-# Load multiple departments
-serv_sur <- get_servicios_educativos(
-  departamento = c("CUSCO", "PUNO", "AREQUIPA")
-)
-
-# Visualization with ggplot2
-library(ggplot2)
-library(dplyr)
-
-# Map of educational services by level
-serv_cusco |>
-  filter(d_niv_mod \%in\% c("PRIMARIA", "SECUNDARIA", "INICIAL - JARDÍN")) |>
-  ggplot() +
-  geom_sf(aes(color = d_niv_mod), size = 1, alpha = 0.6) +
-  scale_color_brewer(palette = "Set1", name = "Level") +
-  labs(
-    title = "Educational Services by Level - Cusco",
-    subtitle = "Regular Basic Education",
-    caption = "Source: MINEDU - Educational Institutions Registry"
-  ) +
-  theme_minimal()
-
-# Summary by level and modality
-serv_cusco |>
-  sf::st_drop_geometry() |>
-  count(d_niv_mod, sort = TRUE)
-
-# Summary by management type
-serv_cusco |>
-  sf::st_drop_geometry() |>
-  count(d_gestion, sort = TRUE)
-
-# Public vs private services
-serv_cusco |>
-  sf::st_drop_geometry() |>
-  count(d_ges_dep, sort = TRUE)
-
-# Filter only initial education
-initial_serv <- serv_cusco |>
-  filter(grepl("INICIAL", d_niv_mod))
-
-# Filter public secondary services
-public_secondary_serv <- serv_cusco |>
-  filter(
-    d_niv_mod == "SECUNDARIA",
-    d_gestion == "PÚBLICA DE GESTIÓN DIRECTA"
-  )
-
-# Analysis of unidocente schools (rural)
-unidocente_serv <- serv_cusco |>
-  filter(d_cod_car == "UNIDOCENTE")
-
-# Map of unidocente schools
-ggplot(unidocente_serv) +
-  geom_sf(color = "darkred", size = 1.5, alpha = 0.7) +
-  labs(
-    title = "Unidocente Educational Services - Cusco",
-    subtitle = "One teacher for all grades",
-    caption = "Source: MINEDU"
-  ) +
-  theme_minimal()
-
-# Analysis by UGEL
-serv_cusco |>
-  sf::st_drop_geometry() |>
-  count(d_dreugel, sort = TRUE)
-
-# Distribution by attendance shift
-serv_cusco |>
-  sf::st_drop_geometry() |>
-  count(d_cod_tur, sort = TRUE)
-
-# Non-classroom services (PRONOEI, etc.)
-non_classroom_serv <- serv_cusco |>
-  filter(d_forma == "NO ESCOLARIZADO")
-
-# Coverage analysis by province and level
-coverage <- serv_cusco |>
-  sf::st_drop_geometry() |>
-  filter(d_niv_mod \%in\% c("PRIMARIA", "SECUNDARIA")) |>
-  group_by(provincia, d_niv_mod) |>
-  summarise(
-    total_services = n(),
-    pct_public = round(
-      sum(d_gestion == "PÚBLICA DE GESTIÓN DIRECTA") / n() * 100, 1
-    ),
-    .groups = "drop"
-  ) |>
-  tidyr::pivot_wider(
-    names_from = d_niv_mod,
-    values_from = c(total_services, pct_public)
-  )
-
-# Comparative map public vs private
-serv_cusco |>
-  filter(d_niv_mod == "SECUNDARIA") |>
-  mutate(
-    management_type = ifelse(
-      grepl("PÚBLICA", d_gestion), "Public", "Private"
-    )
-  ) |>
-  ggplot() +
-  geom_sf(aes(color = management_type), size = 2, alpha = 0.6) +
-  scale_color_manual(
-    values = c("Public" = "darkblue", "Private" = "darkred"),
-    name = "Management"
-  ) +
-  labs(
-    title = "Secondary Services by Management Type - Cusco",
-    caption = "Source: MINEDU"
-  ) +
-  theme_minimal()
-
-# CETPRO - Technical productive education
-cetpro <- serv_cusco |>
-  filter(grepl("TÉCNICO PRODUCTIVA", d_niv_mod))
-
-# Higher institutes
-higher_institutes <- serv_cusco |>
-  filter(grepl("SUPERIOR", d_niv_mod))
 }
 
 }
 \references{
-Ministry of Education of Peru (MINEDU). Educational Institutions and
-Educational Programs Registry.
-
-ESCALE - Statistics of Educational Quality: \url{https://escale.minedu.gob.pe/}
-
+MINEDU - ESCALE. Padrón de Instituciones Educativas 2024.
 DEMARCA OSF Repository: \url{https://osf.io/qy4j6/}
 }
 \seealso{
 \code{\link{get_locales_educativos}}, \code{\link{get_departamentos}},
-\code{\link{get_provincias}}, \code{\link{get_distritos}},
 \code{\link[sf]{read_sf}}
 }

@@ -9,6 +9,7 @@ reference:
       - get_departamentos
       - get_provincias
       - get_distritos
+      - get_distritos_2025
       - get_capitales
       - get_centros_poblados
 
@@ -35,6 +36,29 @@ reference:
       - get_ccpp_tasa_crecimiento
       - get_tiempos_desplazamiento
 
+  - title: Economic and Housing Densities
+    desc: Density grids for commerce, markets, financial institutions, real estate, housing, and gross value added (VAB).
+    contents:
+      - get_densidad_actividades
+      - get_densidad_comercio
+      - get_densidad_mercados
+      - get_densidad_financiero
+      - get_densidad_inmobiliario
+      - get_densidad_viviendas
+      - get_vab_ccpp
+
+  - title: Territorial Mobility and Commuting Flows
+    desc: Inter-district mobility and daily commuting flows for workers and students.
+    contents:
+      - get_flujos_movilidad
+      - get_flujos_estudiantes
+      - get_flujos_trabajadores
+
+  - title: Rural Cadastre and Property Boundaries
+    desc: Rural cadastral parcels and property titling boundaries (MIDAGRI).
+    contents:
+      - get_catastro_rural
+
   - title: Telecommunications
     desc: Mobile phone and data coverage (2G, 3G, 4G, 5G) by population center.
     contents:
@@ -45,7 +69,15 @@ reference:
     desc: Exposure areas, critical flood points, mass movement zones, and risk assessments.
     contents:
       - get_peligros
+      - get_puntos_criticos
+      - get_tramos_criticos
+      - get_zonas_criticas
+      - get_areas_inundacion
+      - get_areas_movimientos_masa
+      - get_inventario_inundaciones
       - get_riesgos
+      - get_evaluacion_riesgos
+      - get_zonas_riesgos_no_mitigable
 
   - title: Catalog Discovery and Maintenance Utilities
     desc: Tools for catalog discovery, update verification, and cache management.

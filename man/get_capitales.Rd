@@ -112,39 +112,6 @@ ggplot(capitales_cusco) +
     caption = "Source: INEI | Visor - SDOT"
   ) +
   theme_minimal()
-
-# Population analysis by capital type
-capitales_cusco |>
-  st_drop_geometry() |>
-  group_by(capital) |>
-  summarise(
-    n = n(),
-    pob_total = sum(pob, na.rm = TRUE),
-    pob_promedio = mean(pob, na.rm = TRUE),
-    pob_mediana = median(pob, na.rm = TRUE)
-  ) |>
-  arrange(capital)
-
-# Most populated capitals
-capitales_cusco |>
-  st_drop_geometry() |>
-  arrange(desc(pob)) |>
-  select(nombdist, cen_pob, pob, capital) |>
-  head(10)
-
-# Filter only provincial capitals
-caps_prov <- capitales_cusco |>
-  filter(capital == 2)
-
-# Analysis by province
-capitales_cusco |>
-  st_drop_geometry() |>
-  group_by(nombprov) |>
-  summarise(
-    n_capitales = n(),
-    pob_total = sum(pob, na.rm = TRUE)
-  ) |>
-  arrange(desc(pob_total))
 }
 
 }

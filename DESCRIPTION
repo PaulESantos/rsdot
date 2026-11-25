@@ -1,24 +1,22 @@
 Package: rsdot
 Title: Programmatic Access to Spatial Data from 'SDOT-PCM' Peru
-Version: 0.1.0
+Version: 0.2.0
 Authors@R: 
     person("Paul Efren", "Santos Andrade", 
            email = "paulefrens@gmail.com", 
            role = c("aut", "cre", "cph"),
            comment = c(ORCID = "0000-0002-6635-0375"))
-Author: Paul Efren Santos Andrade [aut, cre, cph] (<https://orcid.org/0000-0002-6635-0375>)
-Maintainer: Paul Efren Santos Andrade <paulefrens@gmail.com>
 Description: Provides programmatic access to official geographic information from the
     Secretariat of Demarcation and Territorial Organization ('SDOT') of the
     Presidency of the Council of Ministers ('PCM') of Peru. Facilitates the download,
     reading, and manipulation in 'R' of vector layers on geographic modeling,
     National Institute of Statistics and Informatics ('INEI') census limits,
-    population centers, infrastructure, risks, and hazards.
+    population centers, infrastructure, risks, hazards, economic activities,
+    mobility flows, and rural cadastre.
     IMPORTANT: 'INEI' census limit information is referential and does not 
     constitute official territorial limits nor has legal demarcatory effect.
 License: MIT + file LICENSE
 Encoding: UTF-8
-LazyData: true
 Depends:
     R (>= 4.1.0)
 Imports: 
@@ -40,4 +38,4 @@ Config/testthat/edition: 3
 Roxygen: list(markdown = TRUE)
 URL: https://github.com/PaulESantos/rsdot, https://paulesantos.github.io/rsdot/
 BugReports: https://github.com/PaulESantos/rsdot/issues
-Config/roxygen2/version: 8.1.0
+Config/roxygen2/version: 8.1.1

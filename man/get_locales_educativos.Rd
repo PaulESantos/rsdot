@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_locales_educativos.R
 \name{get_locales_educativos}
 \alias{get_locales_educativos}
-\title{Get Educational Facilities of Peru}
+\title{Get Educational Venues of Peru}
 \usage{
 get_locales_educativos(
   departamento = NULL,
@@ -34,240 +34,33 @@ file even if it exists in cache. Default \code{FALSE}.}
 }
 \value{
 An \code{sf} (simple feature) object with POINT geometry containing
-educational facility information, including:
-
-\strong{Facility Identification:}
-\itemize{
-\item POINT geometry (facility coordinates)
-\item \code{codlocal}: Unique educational facility code assigned by MINEDU
-\item \code{servicios}: List of educational services (educational institutions)
-operating in the facility, including name, level, and modality. A single
-facility may house multiple educational services (e.g., initial, primary,
-and secondary)
-\item \code{dir_cen}: Educational facility address
-}
-
-\strong{Geographic Location:}
-\itemize{
-\item \code{localidad}: Name of the locality where the facility is located
-\item \code{codcp_inei}: Population center code according to INEI
-\item \code{codccpp}: Population center code (alternative)
-\item \code{centro_pob}: Population center name
-\item \code{departamen}: Department name
-\item \code{provincia}: Province name
-\item \code{distrito}: District name
-}
-
-\strong{Facility Characteristics:}
-\itemize{
-\item \code{area_censo}: Census area where the facility is located:
-\itemize{
-\item URBANA: Urban zone
-\item RURAL: Rural zone
-}
-}
-
-\strong{Coordinates:}
-\itemize{
-\item \code{nlat_ie}: Educational facility latitude (Y coordinate)
-\item \code{nlong_ie}: Educational facility longitude (X coordinate)
-}
-
-If multiple departments are requested, it returns a combined sf object.
+educational venues information.
 }
 \description{
-Downloads and loads information on educational facilities in Peru, prepared
-by the Ministry of Education (MINEDU). An educational facility is a property
-where one or more educational establishments (educational services) operate.
-Data includes POINT type geometry and information on educational services
-operating at each facility, location, and census area.
+Downloads and loads information on educational venues in Peru, prepared by
+the Ministry of Education (MINEDU). Data includes POINT type geometry and
+detailed physical and operational attributes for each venue. Updated to 2024.
 Allows stepwise filtering by department, province, and district.
 }
 \details{
 The function downloads data from OSF (Open Science Framework) and stores it
-in cache during the R session. Data is in GeoPackage (.gpkg) format.
-
-\strong{Data Source:}
-\itemize{
-\item Source: Ministry of Education (MINEDU)
-\item Registration: Educational Institutions Registry
-\item Level: Educational facility
-\item Application: Education coverage analysis, school infrastructure
-planning, and accessibility studies
-}
-
-\strong{Key Concepts:}
-
-\strong{Educational Facility vs Educational Institution:}
-\itemize{
-\item \strong{Educational Facility}: Physical infrastructure (property) where
-educational services operate. A facility may house multiple
-educational institutions.
-\item \strong{Educational Service/Institution}: Operating unit of the
-educational system that provides a specific type of education (initial,
-primary, secondary, CETPRO, etc.)
-}
-
-\strong{Educational Levels and Modalities in Peru:}
-\itemize{
-\item \strong{Regular Basic Education (EBR)}:
-\itemize{
-\item Initial (0-5 years): Nursery, Kindergarten
-\item Primary (6-11 years)
-\item Secondary (12-16 years)
-}
-\item \strong{Alternative Basic Education (EBA)}: For persons who did not
-timely access EBR
-\item \strong{Special Basic Education (EBE)}: For persons with
-disabilities or gifted talent
-\item \strong{Technical-Productive Education (CETPRO)}: Technical training
-and vocational training
-\item \strong{Higher Education}: Institutes and schools of pedagogical,
-technological, and artistic higher education
-}
-
-\strong{Interpretation of the servicios field:}
-
-The \code{servicios} field contains a text string with all educational services
-operating in the facility, separated by commas. Each service includes the
-name of the institution and its level/modality in parentheses.
-
-Example: "501330 (PRIMARIA), 501330 (SECUNDARIA)" indicates that primary and
-secondary levels of IE 501330 operate in that facility.
-
-\strong{Hierarchical Filtering:}
-Filters are applied in cascade:
-\enumerate{
-\item Specified departments are loaded first
-\item Then provinces are filtered (if specified)
-\item Finally districts are filtered (if specified)
-}
-
-Cache is stored in: \code{tools::R_user_dir("rsdot", which = "cache")/locales_educativos/}
-
-\strong{NOTE:} Geometries are POINT type and represent the location
-of each educational facility.
+in cache: \code{tools::R_user_dir("rsdot", which = "cache")/locales_educativos/}.
 }
 \examples{
 \dontrun{
 # See available departments
 get_locales_educativos()
 
-# Load educational facilities of a full department
+# Load educational venues for Cusco
 locales_cusco <- get_locales_educativos(departamento = "CUSCO")
-
-# Filter by specific province
-locales_prov_cusco <- get_locales_educativos(
-  departamento = "CUSCO",
-  provincia = "CUSCO"
-)
-
-# Filter by specific district
-locales_wanchaq <- get_locales_educativos(
-  departamento = "CUSCO",
-  provincia = "CUSCO",
-  distrito = "WANCHAQ"
-)
-
-# Load multiple departments
-locales_sur <- get_locales_educativos(
-  departamento = c("CUSCO", "PUNO", "AREQUIPA")
-)
-
-# Visualization with ggplot2
-library(ggplot2)
-library(dplyr)
-
-# Map of educational facilities by census area
-ggplot(locales_cusco) +
-  geom_sf(aes(color = area_censo), size = 1, alpha = 0.6) +
-  scale_color_manual(
-    values = c("URBANA" = "darkblue", "RURAL" = "darkgreen"),
-    name = "Area"
-  ) +
-  labs(
-    title = "Educational Facilities of the Department of Cusco",
-    subtitle = "Ministry of Education",
-    caption = "Source: MINEDU - Educational Institutions Registry"
-  ) +
-  theme_minimal()
-
-# Summary by census area
-locales_cusco |>
-  sf::st_drop_geometry() |>
-  count(area_censo)
-
-# Distribution by district
-locales_cusco |>
-  sf::st_drop_geometry() |>
-  count(distrito, sort = TRUE) |>
-  head(10)
-
-# Filter facilities with initial level
-initial_locales <- locales_cusco |>
-  filter(grepl("INICIAL", servicios, ignore.case = TRUE))
-
-# Filter facilities with secondary
-secondary_locales <- locales_cusco |>
-  filter(grepl("SECUNDARIA", servicios, ignore.case = TRUE))
-
-# Facilities with multiple levels (initial + primary + secondary)
-complete_locales <- locales_cusco |>
-  filter(
-    grepl("INICIAL", servicios) &
-      grepl("PRIMARIA", servicios) &
-      grepl("SECUNDARIA", servicios)
-  )
-
-# Coverage analysis by province
-province_coverage <- locales_cusco |>
-  sf::st_drop_geometry() |>
-  group_by(provincia) |>
-  summarise(
-    total_locales = n(),
-    urban_locales = sum(area_censo == "URBANA"),
-    rural_locales = sum(area_censo == "RURAL"),
-    pct_rural = round(sum(area_censo == "RURAL") / n() * 100, 1),
-    .groups = "drop"
-  ) |>
-  arrange(desc(total_locales))
-
-# Map of rural facilities
-locales_cusco |>
-  filter(area_censo == "RURAL") |>
-  ggplot() +
-  geom_sf(color = "darkgreen", size = 0.8, alpha = 0.5) +
-  labs(
-    title = "Rural Educational Facilities - Cusco",
-    subtitle = "MINEDU",
-    caption = "Source: MINEDU - Educational Institutions Registry"
-  ) +
-  theme_minimal()
-
-# Count educational services per facility
-locales_cusco |>
-  sf::st_drop_geometry() |>
-  mutate(
-    n_servicios = stringr::str_count(servicios, "\\\\(")
-  ) |>
-  count(n_servicios, name = "n_locales")
-
-# Search facilities by institution name
-emblematic_locales <- locales_cusco |>
-  filter(grepl("INCA GARCILASO|CLORINDA MATTO", servicios, ignore.case = TRUE))
 }
 
 }
 \references{
-Ministry of Education of Peru (MINEDU). Educational Institutions and
-Educational Programs Registry.
-
-ESCALE - Statistics of Educational Quality: \url{https://escale.minedu.gob.pe/}
-
+MINEDU - ESCALE. Padrón de Locales Educativos 2024.
 DEMARCA OSF Repository: \url{https://osf.io/qy4j6/}
 }
 \seealso{
-\code{\link{get_departamentos}}, \code{\link{get_provincias}},
-\code{\link{get_distritos}}, \code{\link{get_centros_poblados}},
+\code{\link{get_servicios_educativos}}, \code{\link{get_departamentos}},
 \code{\link[sf]{read_sf}}
 }

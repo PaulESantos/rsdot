@@ -34,76 +34,7 @@ file even if it exists in cache. Default \code{FALSE}.}
 }
 \value{
 An \code{sf} (simple feature) object with POINT geometry containing
-IPRESS information, including:
-
-\strong{Establishment Identification:}
-\itemize{
-\item POINT geometry (establishment coordinates)
-\item \code{cod_unic_e}: Unique establishment code (RENIPRESS)
-\item \code{nom_esta}: Health establishment name
-\item \code{dir_esta}: Full address of the establishment
-\item \code{num_tele}: Contact phone number
-}
-
-\strong{Type and Classification:}
-\itemize{
-\item \code{cod_tipo_e}: Establishment type code
-\item \code{des_tipo_e}: Establishment type description:
-\itemize{
-\item 1 = Health establishment without inpatient care
-\item 2 = Health establishment with inpatient care
-\item 3 = Supporting medical service
-\item 4 = Flexible offer
-\item 5 = Therapeutic communities
-}
-\item \code{cod_clas_e}: Establishment classification code
-\item \code{des_clas_e}: Classification description (e.g., Health posts,
-Health centers, Hospitals, Clinics, Doctor's offices, etc.)
-}
-
-\strong{Administering Institution:}
-\itemize{
-\item \code{cod_inst_d}: Administering institution code
-\item \code{des_inst_d}: Administering institution description
-}
-
-\strong{Geographic Location:}
-\itemize{
-\item \code{cod_ubig_e}: Establishment ubigeo code
-\item \code{nombdep}: Department name
-\item \code{nombprov}: Province name
-\item \code{nombdist}: District name
-\item \code{val_lati}: Establishment latitude
-\item \code{val_long}: Establishment longitude
-}
-
-\strong{Categorization and Operation:}
-\itemize{
-\item \code{cod_cate}: Establishment category code (e.g., I-1,
-I-2, I-3, I-4, II-1, II-2, II-E, III-1, III-2, III-E)
-\item \code{doc_cate}: Categorization resolution document
-\item \code{fec_inic_o}: Operations start date
-\item \code{des_hora_e}: Establishment operating hours
-\item \code{cod_cond_e}: Establishment condition (e.g., ACTIVE, INACTIVE)
-}
-
-\strong{Health Network:}
-\itemize{
-\item \code{cod_auto_s}: Health authority code
-\item \code{des_auto_s}: Health authority description (region)
-\item \code{cod_reds}: Health network code
-\item \code{des_reds}: Health network name
-\item \code{cod_micr_r}: Micro-network code
-\item \code{des_micr_r}: Micro-network name
-}
-
-\strong{Representative Data:}
-\itemize{
-\item \code{cod_nruc}: Institution RUC number
-\item \code{nom_repr_l}: Legal representative name
-}
-
-If multiple departments are requested, it returns a combined sf object.
+IPRESS information.
 }
 \description{
 Downloads and loads information on Health Service Provider Institutions
@@ -115,188 +46,20 @@ Allows stepwise filtering by department, province, and district.
 }
 \details{
 The function downloads data from OSF (Open Science Framework) and stores it
-in cache during the R session. Data is in GeoPackage (.gpkg) format.
-
-\strong{Data Source:}
-\itemize{
-\item Source: National Health Superintendence (SUSALUD)
-\item Registration: RENIPRESS (National IPRESS Registry)
-\item Update year: 2024
-\item Level: Health establishment
-\item Application: Analysis of access to health services, health
-planning, and epidemiological studies
-}
-
-\strong{Health Establishment Categorization System in Peru:}
-
-Categorization determines the resolutive capacity of the establishment:
-\itemize{
-\item \strong{First level (I-1 to I-4)}: Basic and preventive care
-\itemize{
-\item I-1: Health post (nursing technician)
-\item I-2: Health post (health professional)
-\item I-3: Health center without inpatient care
-\item I-4: Health center with inpatient care
-}
-\item \strong{Second level (II-1, II-2, II-E)}: Specialized care
-\itemize{
-\item II-1: Hospital I
-\item II-2: Hospital II
-\item II-E: Specialized hospital
-}
-\item \strong{Third level (III-1, III-2, III-E)}: High specialization
-\itemize{
-\item III-1: Hospital III
-\item III-2: Specialized institute
-\item III-E: High complexity specialized institute
-}
-}
-
-\strong{IPRESS Types:}
-\enumerate{
-\item \strong{Establishments without inpatient care}: Offices, health
-posts, medical centers, polyclinics
-\item \strong{Establishments with inpatient care}: Hospitals, clinics,
-health centers with beds
-\item \strong{Supporting medical services}: Laboratories, image
-diagnostic centers, blood banks, clinical pathology
-}
-
-\strong{Hierarchical Filtering:}
-Filters are applied in cascade:
-\enumerate{
-\item Specified departments are loaded first
-\item Then provinces are filtered (if specified)
-\item Finally districts are filtered (if specified)
-}
-
-Cache is stored in: \code{tools::R_user_dir("rsdot", which = "cache")/ipress/}
-
-\strong{NOTE:} Geometries are POINT type and represent the location
-of each health establishment.
+in cache: \code{tools::R_user_dir("rsdot", which = "cache")/ipress/}.
 }
 \examples{
 \dontrun{
 # See available departments
 get_ipress()
 
-# Load IPRESS of a full department
+# Load IPRESS for Cusco
 ipress_cusco <- get_ipress(departamento = "CUSCO")
-
-# Filter by specific province
-ipress_prov_cusco <- get_ipress(
-  departamento = "CUSCO",
-  provincia = "CUSCO"
-)
-
-# Filter by specific district
-ipress_wanchaq <- get_ipress(
-  departamento = "CUSCO",
-  provincia = "CUSCO",
-  distrito = "WANCHAQ"
-)
-
-# Load multiple departments
-ipress_sur <- get_ipress(
-  departamento = c("CUSCO", "PUNO", "AREQUIPA")
-)
-
-# Visualization with ggplot2
-library(ggplot2)
-library(dplyr)
-
-# Map of IPRESS by establishment type
-ggplot(ipress_cusco) +
-  geom_sf(aes(color = des_tipo_e), size = 1.5, alpha = 0.7) +
-  scale_color_brewer(palette = "Set1", name = "Type") +
-  labs(
-    title = "Health Service Provider Institutions - Cusco",
-    subtitle = "SUSALUD 2024",
-    caption = "Source: SUSALUD - RENIPRESS"
-  ) +
-  theme_minimal()
-
-# Summary by establishment type
-ipress_cusco |>
-  sf::st_drop_geometry() |>
-  count(des_tipo_e, sort = TRUE)
-
-# Summary by administering institution
-ipress_cusco |>
-  sf::st_drop_geometry() |>
-  count(des_inst_d, sort = TRUE)
-
-# Filter active public establishments
-ipress_publicos <- ipress_cusco |>
-  filter(
-    des_inst_d == "GOBIERNO REGIONAL",
-    cod_cond_e == "ACTIVO"
-  )
-
-# Analysis by category
-ipress_cusco |>
-  sf::st_drop_geometry() |>
-  count(cod_cate, sort = TRUE) |>
-  head(10)
-
-# Map of hospitals and clinics (establishments with inpatient care)
-ipress_cusco |>
-  filter(cod_tipo_e == "2") |>
-  ggplot() +
-  geom_sf(aes(color = des_inst_d), size = 3) +
-  scale_color_brewer(palette = "Dark2", name = "Administrator") +
-  labs(
-    title = "Health Establishments with Inpatient Care - Cusco",
-    subtitle = "Hospitals and Clinics",
-    caption = "Source: SUSALUD - RENIPRESS 2024"
-  ) +
-  theme_minimal()
-
-# Coverage analysis by district
-cobertura_distrito <- ipress_cusco |>
-  sf::st_drop_geometry() |>
-  group_by(nombdist) |>
-  summarise(
-    total_ipress = n(),
-    con_internamiento = sum(cod_tipo_e == "2"),
-    sin_internamiento = sum(cod_tipo_e == "1"),
-    supporting_services = sum(cod_tipo_e == "3"),
-    .groups = "drop"
-  ) |>
-  arrange(desc(total_ipress))
-
-# Distribution by health network
-ipress_cusco |>
-  sf::st_drop_geometry() |>
-  filter(!is.na(des_reds)) |>
-  count(des_reds, sort = TRUE)
-
-# Map of establishments by category (first level)
-ipress_cusco |>
-  filter(grepl("^I-", cod_cate)) |>
-  ggplot() +
-  geom_sf(aes(color = cod_cate), size = 2, alpha = 0.7) +
-  scale_color_viridis_d(name = "Category") +
-  labs(
-    title = "First Level Establishments - Cusco",
-    subtitle = "Categories I-1 to I-4",
-    caption = "Source: SUSALUD - RENIPRESS 2024"
-  ) +
-  theme_minimal()
-
-# Search establishments by name
-regional_hospitals <- ipress_cusco |>
-  filter(grepl("REGIONAL|HOSPITAL", nom_esta, ignore.case = TRUE))
 }
 
 }
 \references{
-National Health Superintendence (SUSALUD). National Registry of Health
-Service Provider Institutions (RENIPRESS) 2024.
-
-Ministry of Health of Peru. Technical Standard for Categorization of
-Health Establishments.
-
+National Health Superintendence (SUSALUD). National Registry of Health Service Provider Institutions (RENIPRESS) 2024.
 DEMARCA OSF Repository: \url{https://osf.io/qy4j6/}
 }
 \seealso{
