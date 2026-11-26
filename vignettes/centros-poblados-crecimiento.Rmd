@@ -1,10 +1,10 @@
 ---
 title: "Análisis de Crecimiento Poblacional en Centros Poblados del Perú"
 author: "Paul Efren Santos Andrade"
-date: "2026-11-24"
+date: "2026-11-25"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{centros-poblados-crecimiento}
+  %\VignetteIndexEntry{Análisis de Crecimiento Poblacional en Centros Poblados del Perú}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -352,7 +352,10 @@ ccpp_cusco |>
   )
 ```
 
-![Centros poblados del departamento de Cusco coloreados por categoría de crecimiento (positivo/negativo)](fig-ccp-map-basic-1.png)
+<div class="figure">
+<img src="fig-ccp-map-basic-1.png" alt="Centros poblados del departamento de Cusco coloreados por categoría de crecimiento (positivo/negativo)" width="100%" />
+<p class="caption">Centros poblados del departamento de Cusco coloreados por categoría de crecimiento (positivo/negativo)</p>
+</div>
 
 ### Centros poblados urbanos
 
@@ -387,7 +390,10 @@ ccpp_urbanos |>
   theme_minimal()
 ```
 
-![Centros poblados urbanos con gradiente de color según tasa de crecimiento](fig-ccp-map-urban-1.png)
+<div class="figure">
+<img src="fig-ccp-map-urban-1.png" alt="Centros poblados urbanos con gradiente de color según tasa de crecimiento" width="100%" />
+<p class="caption">Centros poblados urbanos con gradiente de color según tasa de crecimiento</p>
+</div>
 
 ### Top 20 por población
 
@@ -429,7 +435,10 @@ ggplot(top_poblados) +
   theme_minimal()
 ```
 
-![Los 20 centros poblados más grandes de Cusco](fig-ccp-map-top20-1.png)
+<div class="figure">
+<img src="fig-ccp-map-top20-1.png" alt="Los 20 centros poblados más grandes de Cusco" width="100%" />
+<p class="caption">Los 20 centros poblados más grandes de Cusco</p>
+</div>
 
 ### Boxplot por clasificación urbano-rural
 
@@ -449,7 +458,10 @@ ggplot(ccpp_cusco, aes(x = urb_rural, y = tasa, fill = urb_rural)) +
   theme(legend.position = "none")
 ```
 
-![Distribución de tasas de crecimiento por clasificación urbano/rural](fig-ccp-boxplot-urban-1.png)
+<div class="figure">
+<img src="fig-ccp-boxplot-urban-1.png" alt="Distribución de tasas de crecimiento por clasificación urbano/rural" width="100%" />
+<p class="caption">Distribución de tasas de crecimiento por clasificación urbano/rural</p>
+</div>
 
 ### Histograma de tasas
 
@@ -471,7 +483,10 @@ ggplot(ccpp_cusco, aes(x = tasa, fill = tc_catg)) +
   theme_minimal()
 ```
 
-![Distribución de frecuencias de las tasas de crecimiento](fig-ccp-histogram-1.png)
+<div class="figure">
+<img src="fig-ccp-histogram-1.png" alt="Distribución de frecuencias de las tasas de crecimiento" width="100%" />
+<p class="caption">Distribución de frecuencias de las tasas de crecimiento</p>
+</div>
 
 ### Evolución poblacional 2007-2017
 
@@ -501,7 +516,10 @@ ccpp_cusco |>
   theme_minimal()
 ```
 
-![Relación entre población 2007 y 2017 (escala logarítmica)](fig-ccp-scatter-1.png)
+<div class="figure">
+<img src="fig-ccp-scatter-1.png" alt="Relación entre población 2007 y 2017 (escala logarítmica)" width="100%" />
+<p class="caption">Relación entre población 2007 y 2017 (escala logarítmica)</p>
+</div>
 
 **Interpretación**: Los puntos por encima de la línea diagonal representan centros poblados que crecieron, mientras que los puntos por debajo perdieron población.
 
@@ -545,7 +563,10 @@ ggplot() +
   theme_minimal()
 ```
 
-![Centros poblados sobre límites distritales de Cusco](fig-ccp-integration-1.png)
+<div class="figure">
+<img src="fig-ccp-integration-1.png" alt="Centros poblados sobre límites distritales de Cusco" width="100%" />
+<p class="caption">Centros poblados sobre límites distritales de Cusco</p>
+</div>
 
 ## Análisis agregado por distrito
 
@@ -610,7 +631,10 @@ ggplot(distritos_con_datos) +
   theme_minimal()
 ```
 
-![Número de centros poblados por distrito en Cusco](fig-ccp-choropleth-map-1.png)
+<div class="figure">
+<img src="fig-ccp-choropleth-map-1.png" alt="Número de centros poblados por distrito en Cusco" width="100%" />
+<p class="caption">Número de centros poblados por distrito en Cusco</p>
+</div>
 
 ## Casos de uso avanzados
 

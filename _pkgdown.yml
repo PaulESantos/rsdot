@@ -1,6 +1,66 @@
 url: https://paulesantos.github.io/rsdot/
+
+home:
+  title: rsdot - Datos Espaciales de SDOT-PCM (Perú)
+  description: Acceso programático en R a 35 capas espaciales oficiales de la Secretaría de Demarcación y Organización Territorial (SDOT-PCM) del Perú.
+
+authors:
+  Paul Efren Santos Andrade:
+    href: https://orcid.org/0000-0002-6635-0375
+
 template:
   bootstrap: 5
+  bslib:
+    font_scale: 1.0
+    base_font:
+      google: "Jost"
+    code_font:
+      google: "Overpass Mono"
+    heading_font:
+      google: "Abhaya Libre"
+    bg: "#fcfbf9"
+    fg: "#231F20"
+    primary: "#272b30"
+    secondary: "#BED4E2"
+    link-color: "#437597"
+    info: "#BED4E2"
+    headings-color: "#336688"
+    navbar-bg: "#fcfbf9"
+    navbar-light-color: "#272b30"
+    navbar-light-hover-color: "#336688"
+  opengraph:
+    image:
+      src: man/figures/rsdot_logo.png
+      alt: "Logo del paquete rsdot en R"
+
+navbar:
+  type: light
+  bg: "#fcfbf9"
+  structure:
+    left: [home, intro, reference, articles, news]
+    right: [search, github]
+  components:
+    intro:
+      text: "Novedades 0.2.0"
+      href: articles/modelamiento-economico-movilidad.html
+    articles:
+      text: Artículos
+      menu:
+        - text: "Guías Temáticas (Español)"
+        - text: Modelamiento, Flujos y Límites 2025
+          href: articles/modelamiento-economico-movilidad.html
+        - text: Peligros Naturales, Riesgos y Catastro
+          href: articles/peligros-riesgos-catastro.html
+        - text: Sistema de Centros Poblados
+          href: articles/sistema_centros_poblados.html
+        - text: Crecimiento Poblacional en CCPP
+          href: articles/centros-poblados-crecimiento.html
+        - text: Infraestructura de Transporte
+          href: articles/infraestructura_transporte.html
+        - text: -------
+        - text: "English Documentation"
+        - text: Quick Overview (English)
+          href: articles/rsdot-overview-en.html
 
 reference:
   - title: Census Limits and Territorial Organization
@@ -33,7 +93,6 @@ reference:
     contents:
       - get_densidad_poblacional
       - get_centros_poblados_crecimiento
-      - get_ccpp_tasa_crecimiento
       - get_tiempos_desplazamiento
 
   - title: Economic and Housing Densities

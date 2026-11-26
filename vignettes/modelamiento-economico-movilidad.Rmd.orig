@@ -13,8 +13,10 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.width = 7,
-  fig.height = 5,
+  fig.width = 8,
+  fig.height = 5.5,
+  dpi = 180,
+  out.width = "100%",
   fig.path = "fig-mod-",
   warning = FALSE,
   message = FALSE

@@ -1,7 +1,7 @@
 ---
 title: "Modelamiento Territorial, Flujos de Movilidad y Límites 2025"
 author: "Paul Efren Santos Andrade"
-date: "2026-11-24"
+date: "2026-11-25"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Modelamiento Territorial, Flujos de Movilidad y Límites 2025}
@@ -70,7 +70,10 @@ ggplot(tumbes_2025) +
   )
 ```
 
-![plot of chunk plot-distritos-2025](fig-mod-plot-distritos-2025-1.png)
+<div class="figure">
+<img src="fig-mod-plot-distritos-2025-1.png" alt="plot of chunk plot-distritos-2025" width="100%" />
+<p class="caption">plot of chunk plot-distritos-2025</p>
+</div>
 
 ## 2. Modelamiento Geográfico: Densidades y VAB
 
@@ -171,4 +174,7 @@ ggplot(tiempos_callao) +
   )
 ```
 
-![plot of chunk plot-tiempos-callao](fig-mod-plot-tiempos-callao-1.png)
+<div class="figure">
+<img src="fig-mod-plot-tiempos-callao-1.png" alt="plot of chunk plot-tiempos-callao" width="100%" />
+<p class="caption">plot of chunk plot-tiempos-callao</p>
+</div>

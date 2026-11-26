@@ -213,7 +213,10 @@ ggplot(capitales_cusco) +
   )
 ```
 
-![plot of chunk mapa-jerarquia](fig-sis-mapa-jerarquia-1.png)
+<div class="figure">
+<img src="fig-sis-mapa-jerarquia-1.png" alt="plot of chunk mapa-jerarquia" width="100%" />
+<p class="caption">plot of chunk mapa-jerarquia</p>
+</div>
 
 ---
 
@@ -361,7 +364,10 @@ ggplot(cp_clasificados) +
   )
 ```
 
-![plot of chunk mapa-sistema-completo](fig-sis-mapa-sistema-completo-1.png)
+<div class="figure">
+<img src="fig-sis-mapa-sistema-completo-1.png" alt="plot of chunk mapa-sistema-completo" width="100%" />
+<p class="caption">plot of chunk mapa-sistema-completo</p>
+</div>
 
 ### Análisis de Concentración Urbana vs Rural
 
@@ -516,7 +522,10 @@ ggplot() +
   )
 ```
 
-![plot of chunk mapa-sistema-integrado](fig-sis-mapa-sistema-integrado-1.png)
+<div class="figure">
+<img src="fig-sis-mapa-sistema-integrado-1.png" alt="plot of chunk mapa-sistema-integrado" width="100%" />
+<p class="caption">plot of chunk mapa-sistema-integrado</p>
+</div>
 
 ---
 
@@ -593,7 +602,10 @@ ggplot(cp_densidad %>% st_drop_geometry(),
   theme(legend.position = "none")
 ```
 
-![plot of chunk densidad-habitacional](fig-sis-densidad-habitacional-1.png)
+<div class="figure">
+<img src="fig-sis-densidad-habitacional-1.png" alt="plot of chunk densidad-habitacional" width="100%" />
+<p class="caption">plot of chunk densidad-habitacional</p>
+</div>
 
 ---
 
@@ -727,7 +739,10 @@ ggplot(dispersos %>% st_drop_geometry(), aes(x = pob)) +
   theme_minimal()
 ```
 
-![plot of chunk patron-dispersion](fig-sis-patron-dispersion-1.png)
+<div class="figure">
+<img src="fig-sis-patron-dispersion-1.png" alt="plot of chunk patron-dispersion" width="100%" />
+<p class="caption">plot of chunk patron-dispersion</p>
+</div>
 
 ---
 

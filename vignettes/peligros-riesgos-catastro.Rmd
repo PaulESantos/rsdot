@@ -1,7 +1,7 @@
 ---
 title: "Peligros Naturales, Riesgos de Desastres y Catastro Rural"
 author: "Paul Efren Santos Andrade"
-date: "2026-11-24"
+date: "2026-11-25"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Peligros Naturales, Riesgos de Desastres y Catastro Rural}
@@ -86,7 +86,10 @@ ggplot() +
   )
 ```
 
-![plot of chunk plot-peligros](fig-pel-plot-peligros-1.png)
+<div class="figure">
+<img src="fig-pel-plot-peligros-1.png" alt="plot of chunk plot-peligros" width="100%" />
+<p class="caption">plot of chunk plot-peligros</p>
+</div>
 
 ## 2. Riesgos de Desastres
 

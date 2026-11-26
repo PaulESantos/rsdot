@@ -117,7 +117,10 @@ ggplot(vias_nac_cusco) +
   )
 ```
 
-![plot of chunk viz_nacional](fig-tra-viz_nacional-1.png)
+<div class="figure">
+<img src="fig-tra-viz_nacional-1.png" alt="plot of chunk viz_nacional" width="100%" />
+<p class="caption">plot of chunk viz_nacional</p>
+</div>
 
 ``` r
 
@@ -144,7 +147,10 @@ ggplot(vias_nac_cusco) +
   theme_minimal()
 ```
 
-![plot of chunk viz_nacional](fig-tra-viz_nacional-2.png)
+<div class="figure">
+<img src="fig-tra-viz_nacional-2.png" alt="plot of chunk viz_nacional" width="100%" />
+<p class="caption">plot of chunk viz_nacional</p>
+</div>
 
 ## Red Vial Departamental
 
@@ -211,7 +217,10 @@ ggplot(vias_dep_cusco) +
   theme_minimal()
 ```
 
-![plot of chunk viz_departamental](fig-tra-viz_departamental-1.png)
+<div class="figure">
+<img src="fig-tra-viz_departamental-1.png" alt="plot of chunk viz_departamental" width="100%" />
+<p class="caption">plot of chunk viz_departamental</p>
+</div>
 
 ### Filtrado por provincia
 
@@ -235,7 +244,10 @@ ggplot(vias_prov_cusco) +
   theme_minimal()
 ```
 
-![plot of chunk filtro_provincia](fig-tra-filtro_provincia-1.png)
+<div class="figure">
+<img src="fig-tra-filtro_provincia-1.png" alt="plot of chunk filtro_provincia" width="100%" />
+<p class="caption">plot of chunk filtro_provincia</p>
+</div>
 
 ## Red Vial Vecinal
 
@@ -345,7 +357,10 @@ ggplot(vias_vec_cusco) +
   theme_minimal()
 ```
 
-![plot of chunk viz_vecinal](fig-tra-viz_vecinal-1.png)
+<div class="figure">
+<img src="fig-tra-viz_vecinal-1.png" alt="plot of chunk viz_vecinal" width="100%" />
+<p class="caption">plot of chunk viz_vecinal</p>
+</div>
 
 ## Aeródromos
 
@@ -409,7 +424,10 @@ ggplot(aero_cusco) +
   theme_minimal()
 ```
 
-![plot of chunk viz_aerodromos](fig-tra-viz_aerodromos-1.png)
+<div class="figure">
+<img src="fig-tra-viz_aerodromos-1.png" alt="plot of chunk viz_aerodromos" width="100%" />
+<p class="caption">plot of chunk viz_aerodromos</p>
+</div>
 
 ``` r
 
@@ -430,7 +448,10 @@ ggplot(aero_cusco) +
   theme_minimal()
 ```
 
-![plot of chunk viz_aerodromos](fig-tra-viz_aerodromos-2.png)
+<div class="figure">
+<img src="fig-tra-viz_aerodromos-2.png" alt="plot of chunk viz_aerodromos" width="100%" />
+<p class="caption">plot of chunk viz_aerodromos</p>
+</div>
 
 ## Análisis Integrado
 
@@ -502,7 +523,10 @@ ggplot(comparacion, aes(x = Red, y = Longitud_km, fill = Red)) +
   theme(legend.position = "none")
 ```
 
-![plot of chunk viz_comparacion](fig-tra-viz_comparacion-1.png)
+<div class="figure">
+<img src="fig-tra-viz_comparacion-1.png" alt="plot of chunk viz_comparacion" width="100%" />
+<p class="caption">plot of chunk viz_comparacion</p>
+</div>
 
 ### Mapa integrado de infraestructura
 
@@ -565,7 +589,10 @@ ggplot() +
   )
 ```
 
-![plot of chunk mapa_integrado](fig-tra-mapa_integrado-1.png)
+<div class="figure">
+<img src="fig-tra-mapa_integrado-1.png" alt="plot of chunk mapa_integrado" width="100%" />
+<p class="caption">plot of chunk mapa_integrado</p>
+</div>
 
 ## Análisis Multidepartamental
 
@@ -616,7 +643,10 @@ ggplot(vias_sur) +
   theme_minimal()
 ```
 
-![plot of chunk viz_regional](fig-tra-viz_regional-1.png)
+<div class="figure">
+<img src="fig-tra-viz_regional-1.png" alt="plot of chunk viz_regional" width="100%" />
+<p class="caption">plot of chunk viz_regional</p>
+</div>
 
 ``` r
 
@@ -643,7 +673,10 @@ vias_sur |>
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-![plot of chunk viz_regional](fig-tra-viz_regional-2.png)
+<div class="figure">
+<img src="fig-tra-viz_regional-2.png" alt="plot of chunk viz_regional" width="100%" />
+<p class="caption">plot of chunk viz_regional</p>
+</div>
 
 ## Análisis de Accesibilidad
 
