@@ -23,6 +23,7 @@ Los datos provienen de:
 ## Instalación y carga de paquetes
 
 ``` r
+
 # Cargar paquetes necesarios
 library(rsdot)
 library(sf)
@@ -40,6 +41,7 @@ Para conocer qué departamentos están disponibles, ejecuta la función sin
 argumentos:
 
 ``` r
+
 get_centros_poblados_crecimiento()
 ```
 
@@ -50,10 +52,12 @@ Esto mostrará una lista de los 25 departamentos del Perú disponibles.
 Carguemos los datos de centros poblados del departamento de Cusco:
 
 ``` r
+
 ccpp_cusco <- get_centros_poblados_crecimiento(departamento = "CUSCO")
 ```
 
 ``` r
+
 # Explorar la estructura de los datos
 glimpse(ccpp_cusco)
 #> Rows: 837
@@ -103,6 +107,7 @@ Los datos incluyen las siguientes variables:
 Podemos filtrar los datos por provincia:
 
 ``` r
+
 ccpp_prov_cusco <- get_centros_poblados_crecimiento(
   departamento = "CUSCO",
   provincia = "CUSCO"
@@ -117,6 +122,7 @@ nrow(ccpp_prov_cusco)
 Para obtener centros poblados de un distrito específico:
 
 ``` r
+
 ccpp_anta <- get_centros_poblados_crecimiento(
   departamento = "CUSCO",
   provincia = "ANTA"
@@ -128,6 +134,7 @@ ccpp_anta <- get_centros_poblados_crecimiento(
 La función permite cargar varios departamentos simultáneamente:
 
 ``` r
+
 ccpp_sur <- get_centros_poblados_crecimiento(
   departamento = c("CUSCO", "PUNO", "AREQUIPA")
 )
@@ -152,6 +159,7 @@ ccpp_sur |>
 ### Estadísticas básicas
 
 ``` r
+
 # Resumen de tasas de crecimiento
 summary(ccpp_cusco$tasa)
 #>    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
@@ -159,13 +167,14 @@ summary(ccpp_cusco$tasa)
 
 # Resumen de población 2017
 summary(ccpp_cusco$pob_2017)
-#>    Length     Class      Mode 
-#>       837 character character
+#>    Length  N.unique   N.blank Min.nchar Max.nchar 
+#>       837       412         0         3         7
 ```
 
 ### Centros poblados con crecimiento negativo
 
 ``` r
+
 ccpp_negativo <- ccpp_cusco |>
   filter(tc_catg == "NEGATIVO")
 
@@ -178,6 +187,7 @@ cat("Tasa promedio:", round(mean(ccpp_negativo$tasa), 2), "%\n")
 ### Top 10 por crecimiento
 
 ``` r
+
 # Centros poblados con mayor crecimiento
 top_crecimiento <- ccpp_cusco |>
   arrange(desc(tasa)) |>
@@ -202,6 +212,7 @@ print(top_crecimiento)
 ```
 
 ``` r
+
 # Centros poblados con mayor decrecimiento
 top_decrecimiento <- ccpp_cusco |>
   arrange(tasa) |>
@@ -230,6 +241,7 @@ print(top_decrecimiento)
 ### Por tipo de capital
 
 ``` r
+
 ccpp_cusco |>
   st_drop_geometry() |>
   mutate(
@@ -255,6 +267,7 @@ ccpp_cusco |>
 ### Por clasificación urbano-rural
 
 ``` r
+
 ccpp_cusco |>
   st_drop_geometry() |>
   mutate(
@@ -278,6 +291,7 @@ ccpp_cusco |>
 ### Por región natural
 
 ``` r
+
 ccpp_cusco |>
   st_drop_geometry() |>
   mutate(
@@ -305,6 +319,7 @@ ccpp_cusco |>
 ### Mapa de centros poblados por categoría de crecimiento
 
 ``` r
+
 ccpp_cusco |>
   mutate(
     pob_2007 = as.numeric(str_remove(pob_2007, ",")),
@@ -335,8 +350,7 @@ ccpp_cusco |>
 ```
 
 ![Centros poblados del departamento de Cusco coloreados por categoría de
-crecimiento
-(positivo/negativo)](centros-poblados-crecimiento_files/figure-html/map-basic-1.png)
+crecimiento (positivo/negativo)](fig-ccp-map-basic-1.png)
 
 Centros poblados del departamento de Cusco coloreados por categoría de
 crecimiento (positivo/negativo)
@@ -344,6 +358,7 @@ crecimiento (positivo/negativo)
 ### Centros poblados urbanos
 
 ``` r
+
 ccpp_urbanos <- ccpp_cusco |> filter(urb_rural == "URBANA")
 
 ccpp_urbanos |>
@@ -374,7 +389,7 @@ ccpp_urbanos |>
 ```
 
 ![Centros poblados urbanos con gradiente de color según tasa de
-crecimiento](centros-poblados-crecimiento_files/figure-html/map-urban-1.png)
+crecimiento](fig-ccp-map-urban-1.png)
 
 Centros poblados urbanos con gradiente de color según tasa de
 crecimiento
@@ -382,6 +397,7 @@ crecimiento
 ### Top 20 por población
 
 ``` r
+
 top_poblados <- ccpp_cusco |>
   mutate(
     pob_2007 = as.numeric(str_remove(pob_2007, ",")),
@@ -418,14 +434,14 @@ ggplot(top_poblados) +
   theme_minimal()
 ```
 
-![Los 20 centros poblados más grandes de
-Cusco](centros-poblados-crecimiento_files/figure-html/map-top20-1.png)
+![Los 20 centros poblados más grandes de Cusco](fig-ccp-map-top20-1.png)
 
 Los 20 centros poblados más grandes de Cusco
 
 ### Boxplot por clasificación urbano-rural
 
 ``` r
+
 ggplot(ccpp_cusco, aes(x = urb_rural, y = tasa, fill = urb_rural)) +
   geom_boxplot(alpha = 0.7, outlier.alpha = 0.3) +
   scale_fill_brewer(palette = "Set2") +
@@ -441,13 +457,14 @@ ggplot(ccpp_cusco, aes(x = urb_rural, y = tasa, fill = urb_rural)) +
 ```
 
 ![Distribución de tasas de crecimiento por clasificación
-urbano/rural](centros-poblados-crecimiento_files/figure-html/boxplot-urban-1.png)
+urbano/rural](fig-ccp-boxplot-urban-1.png)
 
 Distribución de tasas de crecimiento por clasificación urbano/rural
 
 ### Histograma de tasas
 
 ``` r
+
 ggplot(ccpp_cusco, aes(x = tasa, fill = tc_catg)) +
   geom_histogram(bins = 50, alpha = 0.7) +
   scale_fill_manual(
@@ -465,13 +482,14 @@ ggplot(ccpp_cusco, aes(x = tasa, fill = tc_catg)) +
 ```
 
 ![Distribución de frecuencias de las tasas de
-crecimiento](centros-poblados-crecimiento_files/figure-html/histogram-1.png)
+crecimiento](fig-ccp-histogram-1.png)
 
 Distribución de frecuencias de las tasas de crecimiento
 
 ### Evolución poblacional 2007-2017
 
 ``` r
+
 ccpp_cusco |>
   mutate(
     pob_2007 = as.numeric(str_remove(pob_2007, ",")),
@@ -497,7 +515,7 @@ ccpp_cusco |>
 ```
 
 ![Relación entre población 2007 y 2017 (escala
-logarítmica)](centros-poblados-crecimiento_files/figure-html/scatter-1.png)
+logarítmica)](fig-ccp-scatter-1.png)
 
 Relación entre población 2007 y 2017 (escala logarítmica)
 
@@ -513,6 +531,7 @@ Una de las ventajas del paquete `rsdot` es que permite integrar
 fácilmente diferentes capas de información espacial:
 
 ``` r
+
 # Obtener límites distritales
 distritos_cusco <- get_distritos(departamento = "CUSCO")
 
@@ -546,7 +565,7 @@ ggplot() +
 ```
 
 ![Centros poblados sobre límites distritales de
-Cusco](centros-poblados-crecimiento_files/figure-html/integration-1.png)
+Cusco](fig-ccp-integration-1.png)
 
 Centros poblados sobre límites distritales de Cusco
 
@@ -555,6 +574,7 @@ Centros poblados sobre límites distritales de Cusco
 ### Calcular estadísticas por distrito
 
 ``` r
+
 ccpp_por_distrito <- ccpp_cusco |>
   mutate(
     pob_2007 = as.numeric(str_remove(pob_2007, ",")),
@@ -592,6 +612,7 @@ head(ccpp_por_distrito, 10)
 ### Mapa coroplético por distrito
 
 ``` r
+
 # Unir estadísticas con geometrías
 distritos_con_datos <- distritos_cusco |>
   left_join(ccpp_por_distrito, by = c("nombdist" = "distrito"))
@@ -612,7 +633,7 @@ ggplot(distritos_con_datos) +
 ```
 
 ![Número de centros poblados por distrito en
-Cusco](centros-poblados-crecimiento_files/figure-html/choropleth-map-1.png)
+Cusco](fig-ccp-choropleth-map-1.png)
 
 Número de centros poblados por distrito en Cusco
 
@@ -621,6 +642,7 @@ Número de centros poblados por distrito en Cusco
 ### Identificar áreas de alta concentración poblacional
 
 ``` r
+
 # Centros poblados con más de 5,000 habitantes
 grandes_centros <- ccpp_cusco |>
   mutate(pob_2017 = as.numeric(str_remove(pob_2017, ","))) |>
@@ -637,6 +659,7 @@ Los centros poblados con crecimiento positivo sostenido pueden ser
 candidatos para análisis de creación distrital:
 
 ``` r
+
 candidatos <- ccpp_cusco |>
   mutate(
     pob_2007 = as.numeric(str_remove(pob_2007, ",")),
@@ -670,6 +693,7 @@ head(candidatos, 10)
 ### Comparación entre capitales y no capitales
 
 ``` r
+
 ccpp_cusco |>
   mutate(
     es_capital = ifelse(capital == "No es capital", "No", "Sí"),
@@ -698,6 +722,7 @@ Al trabajar con población, es importante convertir las variables
 numéricas correctamente:
 
 ``` r
+
 # Convertir población de character a numeric
 ccpp_clean <- ccpp_cusco |>
   mutate(
@@ -711,6 +736,7 @@ ccpp_clean <- ccpp_cusco |>
 Para análisis por región o tipo:
 
 ``` r
+
 # Filtrar por múltiples condiciones
 ccpp_sierra_urbano <- ccpp_cusco |>
   filter(
@@ -724,6 +750,7 @@ ccpp_sierra_urbano <- ccpp_cusco |>
 Guardar los datos procesados para uso posterior:
 
 ``` r
+
 # Exportar a GeoPackage
 st_write(ccpp_cusco, "centros_poblados_cusco.gpkg", delete_dsn = TRUE)
 
@@ -738,6 +765,7 @@ ccpp_cusco |>
 La función almacena automáticamente los datos descargados:
 
 ``` r
+
 # Primera ejecución: descarga desde OSF
 ccpp1 <- get_centros_poblados_crecimiento(departamento = "CUSCO")
 

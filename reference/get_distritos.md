@@ -1,8 +1,9 @@
-# Obtener Límites Censales Distritales del Perú
+# Get District Census Limits of Peru
 
-Descarga y carga los límites distritales oficiales del INEI (2023) desde
-el repositorio OSF de DEMARCA. Implementa caché de sesión para optimizar
-descargas repetidas y mantiene la consola limpia durante la ejecución.
+Downloads and loads the official district limits from INEI (2023 or 2025
+update) from the DEMARCA OSF repository. Implements persistent caching
+to optimize repeated downloads and keeps the console clean during
+execution.
 
 ## Usage
 
@@ -11,81 +12,89 @@ get_distritos(
   distrito = NULL,
   provincia = NULL,
   departamento = NULL,
+  ano = 2023,
   show_progress = TRUE,
-  force_update = FALSE
+  force_update = FALSE,
+  ...
 )
+
+get_distritos_2025(...)
 ```
 
 ## Arguments
 
 - distrito:
 
-  Character vector. Nombre(s) del/los distrito(s) a filtrar. Puede ser
-  un único distrito (ej: "WANCHAQ") o múltiples distritos (ej:
-  c("CUSCO", "WANCHAQ", "SANTIAGO")). No distingue entre mayúsculas y
-  minúsculas. Si es `NULL`, no filtra por distrito.
+  Character vector. Name(s) of the district(s) to filter. Can be a
+  single district (e.g., "WANCHAQ") or multiple districts (e.g.,
+  c("CUSCO", "WANCHAQ", "SANTIAGO")). Case-insensitive. If `NULL`, no
+  filtering is performed by district.
 
 - provincia:
 
-  Character vector. Nombre de la provincia para filtrar todos sus
-  distritos (ej: "CUSCO"). Si se especifica, retorna todos los distritos
-  de la provincia indicada. No distingue entre mayúsculas y minúsculas.
+  Character vector. Name of the province to filter all its districts
+  (e.g., "CUSCO"). If specified, it returns all the districts of the
+  indicated province. Case-insensitive.
 
 - departamento:
 
-  Character vector. Nombre del departamento para filtrar todos sus
-  distritos (ej: "CUSCO"). Si se especifica, retorna todos los distritos
-  del departamento indicado. No distingue entre mayúsculas y minúsculas.
+  Character vector. Name of the department to filter all its districts
+  (e.g., "CUSCO"). If specified, it returns all the districts of the
+  indicated department. Case-insensitive.
+
+- ano:
+
+  Numeric or character. Year of the district limits: `2023` (default) or
+  `2025` (updated boundary layer).
 
 - show_progress:
 
-  Logical. Si `TRUE` (por defecto), muestra mensajes informativos sobre
-  el progreso de la descarga. Si `FALSE`, ejecuta de forma silenciosa.
+  Logical. If `TRUE` (default), shows informative messages about
+  download progress. If `FALSE`, executes silently.
 
 - force_update:
 
-  Logical. Si `TRUE`, fuerza una nueva descarga del archivo incluso si
-  existe en caché. Por defecto `FALSE` para aprovechar datos en caché.
+  Logical. If `TRUE`, forces a new download of the file even if it
+  exists in cache. Default `FALSE` to leverage cached data.
+
+- ...:
+
+  Additional arguments passed to internal functions.
 
 ## Value
 
-Un objeto `sf` (simple feature) con la geometría de los distritos
-solicitados, incluyendo sus atributos geográficos y administrativos.
+An `sf` (simple feature) object with the geometry of the requested
+districts, including their geographic and administrative attributes.
 
 ## Details
 
-La función descarga los datos directamente desde OSF (Open Science
-Framework) y los almacena en un directorio temporal de caché durante la
-sesión de R. Los datos corresponden a los límites censales oficiales del
-INEI 2023.
+The function downloads data directly from OSF (Open Science Framework)
+and stores it in the user's cache directory
+(`tools::R_user_dir("rsdot", "cache")`). The data corresponds to the
+official INEI census limits (2023 or 2025 update).
 
-El caché se almacena en: `tempdir()/DEMARCA_cache/`
+The function automatically handles special character encoding (accents,
+ñ) to ensure compatibility across different operating systems.
 
-La función maneja automáticamente la codificación de caracteres
-especiales (tildes, ñ) para asegurar compatibilidad entre diferentes
-sistemas operativos.
+Filters can be combined hierarchically:
 
-Los filtros se pueden combinar jerárquicamente:
+- Department only: returns all districts in the department
 
-- Solo departamento: retorna todos los distritos del departamento
+- Department + province: returns all districts in that province
 
-- Departamento + provincia: retorna todos los distritos de esa provincia
+- Department + province + district: returns specific districts
 
-- Departamento + provincia + distrito: retorna distritos específicos
+- District only: returns that district from anywhere in Peru
 
-- Solo distrito: retorna ese distrito de cualquier parte del Perú
-
-Fuente de datos: Repositorio DEMARCA en OSF (<https://osf.io/j9ax8/>)
+Data source: DEMARCA Repository on OSF (<https://osf.io/j9ax8/>)
 
 ## References
 
-INEI (2023). Límites Censales Distritales del Perú. Repositorio DEMARCA:
-<https://osf.io/j9ax8/>
+INEI (2023/2025). District Census Limits of Peru. SDOT DEMARCA PERU
+VISOR Repository: <https://osf.io/qy4j6/overview>
 
 ## See also
 
-[`get_departamentos`](https://paulesantos.github.io/rsdot/reference/get_departamentos.md),
-[`get_provincias`](https://paulesantos.github.io/rsdot/reference/get_provincias.md),
 [`read_sf`](https://r-spatial.github.io/sf/reference/st_read.html),
 [`st_geometry`](https://r-spatial.github.io/sf/reference/st_geometry.html)
 
@@ -93,97 +102,16 @@ INEI (2023). Límites Censales Distritales del Perú. Repositorio DEMARCA:
 
 ``` r
 if (FALSE) { # \dontrun{
-# Cargar todos los distritos del Perú
+# Load all districts of Peru (2023)
 distritos_peru <- get_distritos()
 
-# Cargar un distrito específico
+# Load 2025 districts update
+distritos_2025 <- get_distritos_2025()
+
+# Load a specific district
 wanchaq <- get_distritos(distrito = "Wanchaq")
 
-# Cargar todos los distritos de una provincia
+# Load all districts of a province
 distritos_cusco <- get_distritos(provincia = "Cusco")
-
-# Cargar todos los distritos de un departamento
-distritos_puno <- get_distritos(departamento = "Puno")
-
-# Cargar múltiples distritos específicos
-distritos_centrales <- get_distritos(
-  distrito = c("CUSCO", "WANCHAQ", "SANTIAGO")
-)
-
-# Combinar filtros: distritos de una provincia específica
-costa_lima <- get_distritos(
-  provincia = "CAÑETE",
-  departamento = "LIMA"
-)
-
-# Filtro jerárquico completo
-distrito_especifico <- get_distritos(
-  distrito = "SAN SEBASTIÁN",
-  provincia = "CUSCO",
-  departamento = "CUSCO"
-)
-
-# Forzar actualización de datos
-distritos_actualizados <- get_distritos(force_update = TRUE)
-
-# Ejecución silenciosa
-callao <- get_distritos(provincia = "CALLAO", show_progress = FALSE)
-
-# Visualización con ggplot2
-library(ggplot2)
-
-# Mapa de todos los distritos de la provincia de Cusco
-ggplot(distritos_cusco) +
-  geom_sf(aes(fill = nombdist), color = "white", linewidth = 0.2) +
-  labs(
-    title = "Distritos de la Provincia de Cusco",
-    subtitle = "Límites Censales INEI 2023",
-    fill = "Distrito",
-    caption = "Fuente: INEI | Visor - SDOT"
-  ) +
-  scale_fill_brewer(palette = "Paired") +
-  theme_minimal() +
-  theme(
-    legend.position = "right",
-    legend.key.size = unit(0.4, "cm")
-  )
-
-# Mapa de un distrito específico
-ggplot(wanchaq) +
-  geom_sf(fill = "#FFA07A", color = "darkred", linewidth = 1.5) +
-  labs(
-    title = "Distrito de Wanchaq",
-    subtitle = "Provincia y Departamento de Cusco",
-    caption = "Fuente: INEI | Visor - SDOT"
-  ) +
-  theme_minimal()
-
-# Mapa de distritos de Cañete
-ggplot(costa_lima) +
-  geom_sf(aes(fill = nombdist), color = "white", linewidth = 0.3) +
-  labs(
-    title = "Distritos de la Provincia de Cañete",
-    subtitle = "Departamento de Lima",
-    fill = "Distrito",
-    caption = "Fuente: INEI | Visor - SDOT"
-  ) +
-  theme_minimal() +
-  theme(legend.position = "bottom")
-
-# Mapa de distritos centrales con etiquetas
-ggplot(distritos_centrales) +
-  geom_sf(aes(fill = nombdist), color = "white", linewidth = 0.5) +
-  geom_sf_text(aes(label = nombdist), size = 3, fontface = "bold") +
-  labs(
-    title = "Distritos Centrales de Cusco",
-    fill = "Distrito",
-    caption = "Fuente: INEI | Visor - SDOT"
-  ) +
-  scale_fill_manual(
-    values = c("CUSCO" = "#FF6B6B", "WANCHAQ" = "#4ECDC4",
-               "SANTIAGO" = "#45B7D1")
-  ) +
-  theme_minimal() +
-  theme(legend.position = "bottom")
 } # }
 ```

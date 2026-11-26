@@ -1,9 +1,8 @@
-# Obtener Límites Censales Provinciales del Perú
+# Get Provincial Census Limits of Peru
 
-Descarga y carga los límites provinciales oficiales del INEI (2023)
-desde el repositorio OSF de DEMARCA. Implementa caché de sesión para
-optimizar descargas repetidas y mantiene la consola limpia durante la
-ejecución.
+Downloads and loads the official provincial limits from INEI (2023) from
+the DEMARCA OSF repository. Implements persistent caching to optimize
+repeated downloads and keeps the console clean during execution.
 
 ## Usage
 
@@ -20,52 +19,48 @@ get_provincias(
 
 - provincia:
 
-  Character vector. Nombre(s) de la(s) provincia(s) a filtrar. Puede ser
-  una única provincia (ej: "URUBAMBA") o múltiples provincias (ej:
-  c("CAÑETE", "CHINCHA")). No distingue entre mayúsculas y minúsculas.
-  Si es `NULL`, no filtra por provincia.
+  Character vector. Name(s) of the province(s) to filter. Can be a
+  single province (e.g., "URUBAMBA") or multiple provinces (e.g.,
+  c("CAÑETE", "CHINCHA")). Case-insensitive. If `NULL`, no filtering is
+  performed by province.
 
 - departamento:
 
-  Character vector. Nombre del departamento para filtrar todas sus
-  provincias (ej: "CUSCO"). Si se especifica, retorna todas las
-  provincias del departamento indicado. No distingue entre mayúsculas y
-  minúsculas.
+  Character vector. Name of the department to filter all its provinces
+  (e.g., "CUSCO"). If specified, it returns all the provinces of the
+  indicated department. Case-insensitive.
 
 - show_progress:
 
-  Logical. Si `TRUE` (por defecto), muestra mensajes informativos sobre
-  el progreso de la descarga. Si `FALSE`, ejecuta de forma silenciosa.
+  Logical. If `TRUE` (default), shows informative messages about
+  download progress. If `FALSE`, executes silently.
 
 - force_update:
 
-  Logical. Si `TRUE`, fuerza una nueva descarga del archivo incluso si
-  existe en caché. Por defecto `FALSE` para aprovechar datos en caché.
+  Logical. If `TRUE`, forces a new download of the file even if it
+  exists in cache. Default `FALSE` to leverage cached data.
 
 ## Value
 
-Un objeto `sf` (simple feature) con la geometría de las provincias
-solicitadas, incluyendo sus atributos geográficos y administrativos.
+An `sf` (simple feature) object with the geometry of the requested
+provinces, including their geographic and administrative attributes.
 
 ## Details
 
-La función descarga los datos directamente desde OSF (Open Science
-Framework) y los almacena en un directorio temporal de caché durante la
-sesión de R. Los datos corresponden a los límites censales oficiales del
-INEI 2023.
+The function downloads data directly from OSF (Open Science Framework)
+and stores it in the user's cache directory
+(`tools::R_user_dir("rsdot", "cache")`). The data corresponds to the
+official INEI 2023 census limits.
 
-El caché se almacena en: `tempdir()/DEMARCA_cache/`
+The function automatically corrects character encoding issues
+(especially Ñ and accents) in the original data.
 
-La función corrige automáticamente problemas de codificación de
-caracteres (especialmente Ñ y tildes) en los datos originales para
-asegurar compatibilidad entre diferentes sistemas operativos.
-
-Fuente de datos: Repositorio DEMARCA en OSF (<https://osf.io/t36aj/>)
+Data source: DEMARCA Repository on OSF (<https://osf.io/t36aj/>)
 
 ## References
 
-INEI (2023). Límites Censales Provinciales del Perú. Repositorio
-DEMARCA: <https://osf.io/t36aj/>
+INEI (2023). Provincial Census Limits of Peru. DEMARCA Repository:
+<https://osf.io/t36aj/>
 
 ## See also
 
@@ -77,70 +72,46 @@ DEMARCA: <https://osf.io/t36aj/>
 
 ``` r
 if (FALSE) { # \dontrun{
-# Cargar todas las provincias del Perú
+# Load all provinces of Peru
 provincias_peru <- get_provincias()
 
-# Cargar una provincia específica
+# Load a specific province
 urubamba <- get_provincias(provincia = "Urubamba")
 
-# Cargar todas las provincias de un departamento
+# Load all provinces of a department
 provincias_cusco <- get_provincias(departamento = "Cusco")
 
-# Cargar múltiples provincias específicas
+# Load multiple specific provinces
 sur_chico <- get_provincias(
   provincia = c("CAÑETE", "CHINCHA", "PISCO")
 )
 
-# Combinar filtros: provincias específicas de un departamento
+# Combine filters: specific provinces of a department
 costa_lima <- get_provincias(
   provincia = c("CAÑETE", "YAUYOS"),
   departamento = "LIMA"
 )
 
-# Forzar actualización de datos
-provincias_actualizadas <- get_provincias(force_update = TRUE)
+# Force data update
+provincias_updated <- get_provincias(force_update = TRUE)
 
-# Ejecución silenciosa
+# Silent execution
 pasco <- get_provincias(departamento = "PASCO", show_progress = FALSE)
 
-# Visualización con ggplot2
+# Visualization with ggplot2
 library(ggplot2)
 
-# Mapa de todas las provincias de Cusco
+# Map of all provinces in Cusco
 ggplot(provincias_cusco) +
   geom_sf(aes(fill = nombprov), color = "white", linewidth = 0.3) +
   labs(
-    title = "Provincias del Departamento de Cusco",
-    subtitle = "Límites Censales INEI 2023",
-    fill = "Provincia",
-    caption = "Fuente: INEI | Visor - SDOT"
+    title = "Provinces of the Department of Cusco",
+    subtitle = "INEI 2023 Census Limits",
+    fill = "Province",
+    caption = "Source: INEI | Visor - SDOT"
   ) +
   scale_fill_viridis_d(option = "plasma") +
   theme_minimal() +
   theme(legend.position = "right")
-
-# Mapa de una provincia específica
-ggplot(urubamba) +
-  geom_sf(fill = "lightblue", color = "darkblue", linewidth = 1) +
-  labs(
-    title = "Provincia de Urubamba",
-    subtitle = "Departamento de Cusco - INEI 2023",
-    caption = "Fuente: INEI | Visor - SDOT"
-  ) +
-  theme_minimal()
-
-# Mapa de provincias de la costa sur
-ggplot(sur_chico) +
-  geom_sf(aes(fill = nombprov), color = "white", linewidth = 0.5) +
-  labs(
-    title = "Provincias de la Costa Sur",
-    fill = "Provincia",
-    caption = "Fuente: INEI | Visor - SDOT"
-  ) +
-  scale_fill_manual(values = c("CHINCHA" = "#FF6B6B",
-                                 "PISCO" = "#4ECDC4",
-                                 "CAÑETE" = "#45B7D1")) +
-  theme_minimal() +
-  theme(legend.position = "bottom")
 } # }
 ```

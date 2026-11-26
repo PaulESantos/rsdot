@@ -1,4 +1,4 @@
 # License
 
     YEAR: 2026
-    COPYRIGHT HOLDER: Paul Efren
+    COPYRIGHT HOLDER: Paul Efren Santos Andrade

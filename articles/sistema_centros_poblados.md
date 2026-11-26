@@ -61,6 +61,7 @@ Ambas funciones utilizan datos georreferenciados del Censo 2017,
 accesibles a través de la plataforma **VIsor SDOT** de la PCM.
 
 ``` r
+
 library(rsdot)
 library(ggplot2)
 library(dplyr)
@@ -87,6 +88,7 @@ El campo `capital` indica la jerarquía administrativa:
 ### Uso Básico
 
 ``` r
+
 # Obtener todas las capitales de Cusco
 capitales_cusco <- get_capitales(departamento = "CUSCO")
 
@@ -117,6 +119,7 @@ summary(capitales_cusco$pob)
 ### Análisis por Jerarquía
 
 ``` r
+
 # Clasificar capitales por tipo
 capitales_cusco %>%
   st_drop_geometry() %>%
@@ -145,6 +148,7 @@ capitales_cusco %>%
 ### Identificar Capitales Provinciales
 
 ``` r
+
 # Las capitales provinciales son centros urbanos importantes
 capitales_prov <- capitales_cusco %>%
   filter(capital == 2)
@@ -173,6 +177,7 @@ capitales_prov %>%
 ### Visualización de la Jerarquía Administrativa
 
 ``` r
+
 # Crear categorías para visualización
 capitales_cusco <- capitales_cusco %>%
   mutate(
@@ -217,7 +222,9 @@ ggplot(capitales_cusco) +
   )
 ```
 
-![](sistema_centros_poblados_files/figure-html/mapa-jerarquia-1.png)
+![plot of chunk mapa-jerarquia](fig-sis-mapa-jerarquia-1.png)
+
+plot of chunk mapa-jerarquia
 
 ------------------------------------------------------------------------
 
@@ -249,6 +256,7 @@ La función proporciona información detallada sobre:
 ### Uso Básico
 
 ``` r
+
 # Obtener centros poblados de Tacna (departamento pequeño para ejemplo)
 cp_tacna <- get_centros_poblados(departamento = "TACNA")
 
@@ -286,6 +294,7 @@ cat("Viviendas totales:", format(sum(cp_tacna$viv, na.rm = TRUE), big.mark = ","
 Siguiendo los criterios del INEI para clasificación urbano-rural:
 
 ``` r
+
 # Clasificar centros poblados según tamaño
 cp_clasificados <- cp_tacna %>%
   mutate(
@@ -341,6 +350,7 @@ print(distribucion)
 ### Visualización del Sistema de Asentamientos
 
 ``` r
+
 # Mapa del sistema completo de asentamientos
 ggplot(cp_clasificados) +
   geom_sf(aes(color = categoria, size = pob), alpha = 0.6) +
@@ -367,11 +377,15 @@ ggplot(cp_clasificados) +
   )
 ```
 
-![](sistema_centros_poblados_files/figure-html/mapa-sistema-completo-1.png)
+![plot of chunk
+mapa-sistema-completo](fig-sis-mapa-sistema-completo-1.png)
+
+plot of chunk mapa-sistema-completo
 
 ### Análisis de Concentración Urbana vs Rural
 
 ``` r
+
 # Clasificación urbano-rural según INEI (> 2000 hab = urbano)
 cp_tacna_ur <- cp_tacna %>%
   mutate(
@@ -421,6 +435,7 @@ cat("- Pero concentran el",
 ### Comparar Capitales con su Contexto Poblacional
 
 ``` r
+
 # Obtener datos completos de Cusco
 capitales <- get_capitales(departamento = "CUSCO")
 centros <- get_centros_poblados(departamento = "CUSCO")
@@ -471,6 +486,7 @@ print(comparacion)
 ### Visualización del Sistema Completo
 
 ``` r
+
 # Mapa que muestra la jerarquía completa del sistema de asentamientos
 ggplot() +
   # Primero: asentamientos dispersos y pequeños (fondo)
@@ -519,7 +535,10 @@ ggplot() +
   )
 ```
 
-![](sistema_centros_poblados_files/figure-html/mapa-sistema-integrado-1.png)
+![plot of chunk
+mapa-sistema-integrado](fig-sis-mapa-sistema-integrado-1.png)
+
+plot of chunk mapa-sistema-integrado
 
 ------------------------------------------------------------------------
 
@@ -528,6 +547,7 @@ ggplot() +
 ### Características Habitacionales por Tipo de Asentamiento
 
 ``` r
+
 # Análisis de vivienda por tipo de asentamiento
 vivienda_stats <- centros %>%
   st_drop_geometry() %>%
@@ -564,6 +584,7 @@ print(vivienda_stats)
 ### Densidad Habitacional
 
 ``` r
+
 # Análisis de densidad habitacional
 cp_densidad <- centros %>%
   filter(viv > 0) %>%
@@ -594,7 +615,10 @@ ggplot(cp_densidad %>% st_drop_geometry(),
   theme(legend.position = "none")
 ```
 
-![](sistema_centros_poblados_files/figure-html/densidad-habitacional-1.png)
+![plot of chunk
+densidad-habitacional](fig-sis-densidad-habitacional-1.png)
+
+plot of chunk densidad-habitacional
 
 ------------------------------------------------------------------------
 
@@ -603,6 +627,7 @@ ggplot(cp_densidad %>% st_drop_geometry(),
 ### Distribución de Asentamientos por Distrito
 
 ``` r
+
 # Análisis por distrito
 dist_stats <- centros %>%
   st_drop_geometry() %>%
@@ -643,6 +668,7 @@ print(dist_stats)
 ### 1. Análisis de Accesibilidad a Servicios
 
 ``` r
+
 # Ejemplo: Calcular distancia de asentamientos rurales a centros urbanos
 library(sf)
 
@@ -672,6 +698,7 @@ summary(rurales_con_dist$distancia_km)
 ### 2. Jerarquía Urbana Regional
 
 ``` r
+
 # Análisis de jerarquía urbana usando regla rango-tamaño
 centros_urbanos <- centros %>%
   filter(pob >= 2000) %>%
@@ -707,6 +734,7 @@ print(top_urbanos)
 ### 3. Patrón de Dispersión Rural
 
 ``` r
+
 # Análisis del patrón de asentamientos rurales dispersos
 dispersos <- centros %>%
   filter(pob < 150)
@@ -724,7 +752,9 @@ ggplot(dispersos %>% st_drop_geometry(), aes(x = pob)) +
   theme_minimal()
 ```
 
-![](sistema_centros_poblados_files/figure-html/patron-dispersion-1.png)
+![plot of chunk patron-dispersion](fig-sis-patron-dispersion-1.png)
+
+plot of chunk patron-dispersion
 
 ------------------------------------------------------------------------
 

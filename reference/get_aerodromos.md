@@ -1,10 +1,10 @@
-# Obtener Aeródromos del Perú
+# Get Airfields of Peru
 
-Descarga y carga la información de aeródromos del Perú actualizado al
-año 2022, elaborado por el Ministerio de Transportes y Comunicaciones.
-Los datos incluyen geometría tipo POINT e información sobre aeropuertos,
-aeródromos y helipuertos. Permite filtrado escalonado por departamento,
-provincia y distrito.
+Downloads and loads information on airfields in Peru updated to the year
+2022, prepared by the Ministry of Transport and Communications (MTC).
+Data includes POINT type geometry and information on airports,
+airfields, and heliports. Allows stepwise filtering by department,
+province, and district.
 
 ## Usage
 
@@ -22,107 +22,85 @@ get_aerodromos(
 
 - departamento:
 
-  Character vector. Nombre(s) del/los departamento(s) a descargar.
-  Opciones válidas: "AMAZONAS", "ANCASH", "APURIMAC", "AREQUIPA",
-  "AYACUCHO", "CAJAMARCA", "CUSCO", "HUANUCO", "ICA", "JUNIN", "LA
-  LIBERTAD", "LAMBAYEQUE", "LIMA", "LORETO", "MADRE DE DIOS",
-  "MOQUEGUA", "PASCO", "PIURA", "PUNO", "SAN MARTIN", "TACNA", "TUMBES",
-  "UCAYALI". No distingue entre mayúsculas y minúsculas. Si es `NULL`,
-  muestra la lista de departamentos disponibles.
+  Character vector. Name(s) of the department(s) to download. Valid
+  options: "AMAZONAS", "ANCASH", "APURIMAC", "AREQUIPA", "AYACUCHO",
+  "CAJAMARCA", "CUSCO", "HUANUCO", "ICA", "JUNIN", "LA LIBERTAD",
+  "LAMBAYEQUE", "LIMA", "LORETO", "MADRE DE DIOS", "MOQUEGUA", "PASCO",
+  "PIURA", "PUNO", "SAN MARTIN", "TACNA", "TUMBES", "UCAYALI".
+  Case-insensitive. If `NULL`, shows the list of available departments.
 
 - provincia:
 
-  Character vector. Nombre(s) de la(s) provincia(s) para filtrar dentro
-  del/los departamento(s) especificado(s). Opcional.
+  Character vector. Name(s) of the province(s) to filter within the
+  specified department(s). Optional.
 
 - distrito:
 
-  Character vector. Nombre(s) del/los distrito(s) para filtrar dentro de
-  la(s) provincia(s) especificada(s). Opcional.
+  Character vector. Name(s) of the district(s) to filter within the
+  specified province(s). Optional.
 
 - show_progress:
 
-  Logical. Si `TRUE` (por defecto), muestra mensajes informativos sobre
-  el progreso de la descarga. Si `FALSE`, ejecuta de forma silenciosa.
+  Logical. If `TRUE` (default), shows informative messages about
+  download progress. If `FALSE`, executes silently.
 
 - force_update:
 
-  Logical. Si `TRUE`, fuerza una nueva descarga del archivo incluso si
-  existe en caché. Por defecto `FALSE`.
+  Logical. If `TRUE`, forces a new download of the file even if it
+  exists in cache. Default `FALSE`.
 
 ## Value
 
-Un objeto `sf` (simple feature) con geometría tipo POINT que contiene
-información de los aeródromos, incluyendo:
+An `sf` (simple feature) object with POINT type geometry containing
+airfield information, including:
 
-- Geometría POINT (coordenadas del aeródromo)
+- POINT geometry (airfield coordinates)
 
-- `nombre`: Nombre del aeródromo
+- `nombre`: Airfield name
 
-- `label`: Etiqueta descriptiva completa
+- `label`: Full descriptive label
 
-- `tipo`: Tipo de instalación (AEROPUERTO INTERNACIONAL, AERODROMO,
-  HELIPUERTO)
+- `tipo`: Type of facility (INTERNATIONAL AIRPORT, AIRFIELD, HELIPORT)
 
-- `codidep`: Código del departamento
+- `codidep`: Department code
 
-- `nombdep`: Nombre del departamento
+- `nombdep`: Department name
 
-- `nombprov`: Nombre de la provincia
+- `nombprov`: Province name
 
-- `nombdist`: Nombre del distrito
+- `nombdist`: District name
 
-- `escala`: Escala del aeródromo
+- `escala`: Airfield scale
 
-- `lat`: Latitud
+- `lat`: Latitude
 
-- `lon`: Longitud
+- `lon`: Longitude
 
-- `estado`: Estado operativo (OPERATIVO, etc.)
+- `estado`: Operating status (OPERATIONAL, etc.)
 
-- `administ`: Entidad administradora
+- `administ`: Managing entity
 
-- `jerarquia`: Jerarquía (NACIONAL, etc.)
+- `jerarquia`: Hierarchy (NATIONAL, etc.)
 
-- `titular`: Tipo de titularidad (PUBLICA, PRIVADA)
+- `titular`: Ownership type (PUBLIC, PRIVATE)
 
-Si se solicitan múltiples departamentos, retorna un objeto sf combinado.
+If multiple departments are requested, it returns a combined sf object.
 
 ## Details
 
-La función descarga datos desde OSF (Open Science Framework) y los
-almacena en caché durante la sesión de R. Los datos están en formato
-GeoPackage (.gpkg).
+The function downloads data from OSF (Open Science Framework) and stores
+it in cache during the R session. Data is in GeoPackage (.gpkg) format.
 
-**Fuente de los datos:**
+Cache is stored in:
+`tools::R_user_dir("rsdot", which = "cache")/aerodromos/`
 
-- Fuente: Ministerio de Transportes y Comunicaciones (MTC)
-
-- Año: 2022
-
-- Nivel: Aeródromo/Aeropuerto/Helipuerto
-
-- Aplicación: Planificación territorial y análisis de conectividad
-
-**Filtrado jerárquico:** Los filtros se aplican en cascada:
-
-1.  Primero se cargan los departamentos especificados
-
-2.  Luego se filtran las provincias (si se especifican)
-
-3.  Finalmente se filtran los distritos (si se especifican)
-
-El caché se almacena en: `tempdir()/DEMARCA_cache/aerodromos/`
-
-**NOTA:** Las geometrías son tipo POINT (puntos) y representan la
-ubicación de cada aeródromo.
+**NOTE:** Geometries are POINT type and represent the location of each
+airfield.
 
 ## References
 
-Ministerio de Transportes y Comunicaciones (MTC). Aeródromos del Perú
-2022.
-
-Repositorio DEMARCA en OSF: <https://osf.io/qy4j6/>
+Ministry of Transport and Communications (MTC). Airfields of Peru 2022.
+DEMARCA OSF Repository: <https://osf.io/qy4j6/>
 
 ## See also
 
@@ -135,84 +113,16 @@ Repositorio DEMARCA en OSF: <https://osf.io/qy4j6/>
 
 ``` r
 if (FALSE) { # \dontrun{
-# Ver departamentos disponibles
+# See available departments
 get_aerodromos()
 
-# Cargar aeródromos de un departamento completo
+# Load airfields of a full department
 aero_cusco <- get_aerodromos(departamento = "CUSCO")
 
-# Filtrar por provincia específica
+# Filter by specific province
 aero_prov_cusco <- get_aerodromos(
   departamento = "CUSCO",
   provincia = "CUSCO"
 )
-
-# Filtrar por distrito específico
-aero_san_sebastian <- get_aerodromos(
-  departamento = "CUSCO",
-  provincia = "CUSCO",
-  distrito = "SAN SEBASTIAN"
-)
-
-# Cargar múltiples departamentos
-aero_sur <- get_aerodromos(
-  departamento = c("CUSCO", "PUNO", "AREQUIPA")
-)
-
-# Visualización con ggplot2
-library(ggplot2)
-library(dplyr)
-
-# Mapa de aeródromos por tipo
-ggplot(aero_cusco) +
-  geom_sf(aes(color = tipo, shape = tipo), size = 3) +
-  scale_color_manual(
-    values = c(
-      "AEROPUERTO INTERNACIONAL" = "darkred",
-      "AERODROMO" = "darkblue",
-      "HELIPUERTO" = "darkgreen"
-    ),
-    name = "Tipo"
-  ) +
-  labs(
-    title = "Aeródromos del Departamento de Cusco",
-    subtitle = "Actualizado 2022 - MTC",
-    caption = "Fuente: MTC | Visor - SDOT"
-  ) +
-  theme_minimal()
-
-# Aeródromos por tipo de titularidad
-aero_cusco |>
-  group_by(tipo, titular) |>
-  summarise(n = n(), .groups = "drop") |>
-  arrange(desc(n))
-
-# Filtrar aeródromos operativos públicos
-aero_publicos <- aero_cusco |>
-  filter(titular == "PUBLICA", estado == "OPERATIVO")
-
-# Visualizar aeródromos por administrador
-aero_cusco |>
-  filter(!is.na(administ)) |>
-  group_by(administ) |>
-  summarise(n = n(), .groups = "drop") |>
-  arrange(desc(n))
-
-# Mapa de aeródromos con etiquetas
-ggplot(aero_cusco) +
-  geom_sf(aes(color = tipo), size = 4) +
-  geom_sf_text(
-    aes(label = nombre),
-    size = 2.5,
-    nudge_y = 0.1,
-    check_overlap = TRUE
-  ) +
-  scale_color_brewer(palette = "Set1", name = "Tipo") +
-  labs(
-    title = "Aeródromos de Cusco",
-    subtitle = "MTC 2022",
-    caption = "Fuente: MTC | Visor - SDOT"
-  ) +
-  theme_minimal()
 } # }
 ```

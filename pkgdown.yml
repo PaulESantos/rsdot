@@ -1,11 +1,14 @@
-pandoc: 3.1.11
-pkgdown: 2.2.0
+pandoc: 3.8.3
+pkgdown: 2.2.1
 pkgdown_sha: ~
 articles:
   centros-poblados-crecimiento: centros-poblados-crecimiento.html
   infraestructura_transporte: infraestructura_transporte.html
+  modelamiento-economico-movilidad: modelamiento-economico-movilidad.html
+  peligros-riesgos-catastro: peligros-riesgos-catastro.html
+  rsdot-overview-en: rsdot-overview-en.html
   sistema_centros_poblados: sistema_centros_poblados.html
-last_built: 2026-01-15T04:37Z
+last_built: 2026-11-26T04:58Z
 urls:
   reference: https://paulesantos.github.io/rsdot/reference
   article: https://paulesantos.github.io/rsdot/articles

@@ -1,9 +1,9 @@
-# Obtener Límites Censales Departamentales del Perú
+# Get Departmental Census Limits of Peru
 
-Descarga y carga los límites departamentales oficiales del INEI (2023)
-desde el repositorio OSF de DEMARCA. Implementa caché de sesión para
-optimizar descargas repetidas y mantiene la consola limpia durante la
-ejecución.
+Downloads and loads the official departmental limits from INEI (2023)
+from the DEMARCA OSF repository. Implements persistent caching to
+optimize repeated downloads and keeps the console clean during
+execution.
 
 ## Usage
 
@@ -19,41 +19,39 @@ get_departamentos(
 
 - departamento:
 
-  Character vector. Nombre(s) del/los departamento(s) a filtrar. Puede
-  ser un único departamento (ej: "CUSCO") o múltiples departamentos (ej:
-  c("CUSCO", "PUNO")). No distingue entre mayúsculas y minúsculas. Si es
-  `NULL` (por defecto), retorna todos los departamentos del Perú.
+  Character vector. Name(s) of the department(s) to filter. Can be a
+  single department (e.g., "CUSCO") or multiple departments (e.g.,
+  c("CUSCO", "PUNO")). Case-insensitive. If `NULL` (default), returns
+  all departments of Peru.
 
 - show_progress:
 
-  Logical. Si `TRUE` (por defecto), muestra mensajes informativos sobre
-  el progreso de la descarga. Si `FALSE`, ejecuta de forma silenciosa.
+  Logical. If `TRUE` (default), shows informative messages about
+  download progress. If `FALSE`, executes silently.
 
 - force_update:
 
-  Logical. Si `TRUE`, fuerza una nueva descarga del archivo incluso si
-  existe en caché. Por defecto `FALSE` para aprovechar datos en caché.
+  Logical. If `TRUE`, forces a new download of the file even if it
+  exists in cache. Default `FALSE` to leverage cached data.
 
 ## Value
 
-Un objeto `sf` (simple feature) con la geometría de los departamentos
-solicitados, incluyendo sus atributos geográficos y administrativos.
+An `sf` (simple feature) object with the geometry of the requested
+departments, including their geographic and administrative attributes.
 
 ## Details
 
-La función descarga los datos directamente desde OSF (Open Science
-Framework) y los almacena en un directorio temporal de caché durante la
-sesión de R. Los datos corresponden a los límites censales oficiales del
-INEI 2023.
+The function downloads data directly from OSF (Open Science Framework)
+and stores it in the user's cache directory
+(`tools::R_user_dir("rsdot", "cache")`). The data corresponds to the
+official INEI 2023 census limits.
 
-El caché se almacena en: `tempdir()/DEMARCA_cache/`
-
-Fuente de datos: Repositorio DEMARCA en OSF (<https://osf.io/grhe3/>)
+Data source: DEMARCA Repository on OSF (<https://osf.io/grhe3/>)
 
 ## References
 
-INEI (2023). Límites Censales Departamentales del Perú. Repositorio
-VISOR SDOT DEMARCA PERU: <https://osf.io/qy4j6/overview>
+INEI (2023). Departmental Census Limits of Peru. SDOT DEMARCA PERU VISOR
+Repository: <https://osf.io/qy4j6/overview>
 
 ## See also
 
@@ -64,53 +62,33 @@ VISOR SDOT DEMARCA PERU: <https://osf.io/qy4j6/overview>
 
 ``` r
 if (FALSE) { # \dontrun{
-# Cargar todos los departamentos del Perú
+# Load all departments of Peru
 peru <- get_departamentos()
 
-# Cargar un departamento específico (no distingue mayúsculas/minúsculas)
+# Load a specific department (case-insensitive)
 cusco <- get_departamentos(departamento = "Cusco")
 
-# Cargar múltiples departamentos (región sur)
+# Load multiple departments (southern region)
 sur <- get_departamentos(
   departamento = c("PUNO", "TACNA", "MOQUEGUA", "AREQUIPA")
 )
 
-# Forzar actualización de datos
-peru_actualizado <- get_departamentos(force_update = TRUE)
+# Force data update
+peru_updated <- get_departamentos(force_update = TRUE)
 
-# Ejecución silenciosa
+# Silent execution
 lima <- get_departamentos(departamento = "LIMA", show_progress = FALSE)
 
-# Visualización con ggplot2
+# Visualization with ggplot2
 library(ggplot2)
 
 ggplot(peru) +
   geom_sf(fill = "#ff9999", color = "#e60000", linewidth = 1) +
   labs(
-    title = "Límites Censales Departamentales del Perú",
-    subtitle = "Límites Censales INEI 2023",
-    caption = "Fuente: INEI | Visor - SDOT"
+    title = "Departmental Census Limits of Peru",
+    subtitle = "INEI 2023 Census Limits",
+    caption = "Source: INEI | Visor - SDOT"
   ) +
   theme_minimal()
-
-ggplot(cusco) +
-  geom_sf(fill = "lightgreen", color = "darkgreen", linewidth = 1) +
-  labs(
-    title = "Departamento de Cusco",
-    subtitle = "Límites Censales INEI 2023",
-    caption = "Fuente: INEI | Visor - SDOT"
-  ) +
-  theme_minimal()
-
-ggplot(sur) +
-  geom_sf(aes(fill = nombdep), color = "white", linewidth = 0.5) +
-  labs(
-    title = "Macro Región Sur del Perú",
-    fill = "Departamento",
-    caption = "Fuente: INEI | Visor - SDOT"
-  ) +
-  scale_fill_brewer(palette = "Set3") +
-  theme_minimal() +
-  theme(legend.position = "bottom")
 } # }
 ```

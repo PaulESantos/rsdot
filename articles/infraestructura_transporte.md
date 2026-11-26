@@ -19,6 +19,7 @@ actualizados a julio 2022 según el Clasificador de Rutas (DS
 011-2016-MTC).
 
 ``` r
+
 library(rsdot)
 library(sf)
 library(dplyr)
@@ -34,6 +35,7 @@ y selva, así como las carreteras transversales.
 ### Carga de datos
 
 ``` r
+
 # Cargar red vial nacional de Cusco
 vias_nac_cusco <- get_red_vial_nacional(departamento = "CUSCO")
 
@@ -61,6 +63,7 @@ head(vias_nac_cusco)
 ### Análisis básico
 
 ``` r
+
 # Estadísticas generales
 vias_nac_cusco |>
   st_drop_geometry() |>
@@ -98,6 +101,7 @@ vias_nac_cusco |>
 ### Visualización
 
 ``` r
+
 # Mapa de red vial nacional por código de ruta
 ggplot(vias_nac_cusco) +
   geom_sf(aes(color = codruta), linewidth = 1.2) +
@@ -115,9 +119,12 @@ ggplot(vias_nac_cusco) +
   )
 ```
 
-![](infraestructura_transporte_files/figure-html/viz_nacional-1.png)
+![plot of chunk viz_nacional](fig-tra-viz_nacional-1.png)
+
+plot of chunk viz_nacional
 
 ``` r
+
 
 # Mapa por estado de conservación
 ggplot(vias_nac_cusco) +
@@ -142,7 +149,9 @@ ggplot(vias_nac_cusco) +
   theme_minimal()
 ```
 
-![](infraestructura_transporte_files/figure-html/viz_nacional-2.png)
+![plot of chunk viz_nacional](fig-tra-viz_nacional-2.png)
+
+plot of chunk viz_nacional
 
 ## Red Vial Departamental
 
@@ -152,6 +161,7 @@ centros poblados importantes dentro de cada departamento.
 ### Carga y análisis
 
 ``` r
+
 # Cargar red vial departamental
 vias_dep_cusco <- get_red_vial_departamental(departamento = "CUSCO")
 
@@ -190,6 +200,7 @@ print(analisis_prov)
 ### Visualización por tipo de superficie
 
 ``` r
+
 # Mapa por tipo de superficie
 ggplot(vias_dep_cusco) +
   geom_sf(aes(color = superfic_l), linewidth = 0.8) +
@@ -210,11 +221,14 @@ ggplot(vias_dep_cusco) +
   theme_minimal()
 ```
 
-![](infraestructura_transporte_files/figure-html/viz_departamental-1.png)
+![plot of chunk viz_departamental](fig-tra-viz_departamental-1.png)
+
+plot of chunk viz_departamental
 
 ### Filtrado por provincia
 
 ``` r
+
 # Cargar solo una provincia específica
 vias_prov_cusco <- get_red_vial_departamental(
   departamento = "CUSCO",
@@ -234,7 +248,9 @@ ggplot(vias_prov_cusco) +
   theme_minimal()
 ```
 
-![](infraestructura_transporte_files/figure-html/filtro_provincia-1.png)
+![plot of chunk filtro_provincia](fig-tra-filtro_provincia-1.png)
+
+plot of chunk filtro_provincia
 
 ## Red Vial Vecinal
 
@@ -244,6 +260,7 @@ zonas de producción. Es administrada por los gobiernos locales.
 ### Características de la red vecinal
 
 ``` r
+
 # Cargar red vial vecinal
 vias_vec_cusco <- get_red_vial_vecinal(departamento = "CUSCO")
 
@@ -289,6 +306,7 @@ vias_vec_cusco |>
 ### Identificación de prioridades
 
 ``` r
+
 # Identificar vías en mal estado por provincia
 vias_mal_estado <- vias_vec_cusco |>
   filter(estado_l == "Malo") |>
@@ -323,6 +341,7 @@ print(vias_mal_estado)
 ### Visualización
 
 ``` r
+
 # Mapa de red vecinal por estado
 ggplot(vias_vec_cusco) +
   geom_sf(aes(color = estado_l), linewidth = 0.6, alpha = 0.7) +
@@ -342,7 +361,9 @@ ggplot(vias_vec_cusco) +
   theme_minimal()
 ```
 
-![](infraestructura_transporte_files/figure-html/viz_vecinal-1.png)
+![plot of chunk viz_vecinal](fig-tra-viz_vecinal-1.png)
+
+plot of chunk viz_vecinal
 
 ## Aeródromos
 
@@ -352,6 +373,7 @@ en todo el Perú.
 ### Carga y exploración
 
 ``` r
+
 # Cargar aeródromos de Cusco
 aero_cusco <- get_aerodromos(departamento = "CUSCO")
 
@@ -379,6 +401,7 @@ aero_cusco |>
 ### Visualización
 
 ``` r
+
 # Mapa de aeródromos
 ggplot(aero_cusco) +
   geom_sf(aes(color = tipo, shape = tipo), size = 4) +
@@ -406,9 +429,12 @@ ggplot(aero_cusco) +
   theme_minimal()
 ```
 
-![](infraestructura_transporte_files/figure-html/viz_aerodromos-1.png)
+![plot of chunk viz_aerodromos](fig-tra-viz_aerodromos-1.png)
+
+plot of chunk viz_aerodromos
 
 ``` r
+
 
 # Mapa con etiquetas
 ggplot(aero_cusco) +
@@ -427,13 +453,16 @@ ggplot(aero_cusco) +
   theme_minimal()
 ```
 
-![](infraestructura_transporte_files/figure-html/viz_aerodromos-2.png)
+![plot of chunk viz_aerodromos](fig-tra-viz_aerodromos-2.png)
+
+plot of chunk viz_aerodromos
 
 ## Análisis Integrado
 
 ### Comparación entre redes viales
 
 ``` r
+
 # Cargar las tres redes
 vias_nacional <- get_red_vial_nacional(departamento = "CUSCO")
 vias_departamental <- get_red_vial_departamental(departamento = "CUSCO")
@@ -470,6 +499,7 @@ print(comparacion)
 ### Visualización comparativa
 
 ``` r
+
 # Gráfico de barras comparativo
 ggplot(comparacion, aes(x = Red, y = Longitud_km, fill = Red)) +
   geom_col() +
@@ -497,11 +527,14 @@ ggplot(comparacion, aes(x = Red, y = Longitud_km, fill = Red)) +
   theme(legend.position = "none")
 ```
 
-![](infraestructura_transporte_files/figure-html/viz_comparacion-1.png)
+![plot of chunk viz_comparacion](fig-tra-viz_comparacion-1.png)
+
+plot of chunk viz_comparacion
 
 ### Mapa integrado de infraestructura
 
 ``` r
+
 # Mapa con todas las redes y aeródromos
 ggplot() +
   # Red Nacional (base)
@@ -559,13 +592,16 @@ ggplot() +
   )
 ```
 
-![](infraestructura_transporte_files/figure-html/mapa_integrado-1.png)
+![plot of chunk mapa_integrado](fig-tra-mapa_integrado-1.png)
+
+plot of chunk mapa_integrado
 
 ## Análisis Multidepartamental
 
 ### Comparación entre departamentos del sur
 
 ``` r
+
 # Cargar red nacional de varios departamentos
 vias_sur <- get_red_vial_nacional(
   departamento = c("PUNO", "APURIMAC")
@@ -598,6 +634,7 @@ print(resumen_sur)
 ### Visualización regional
 
 ``` r
+
 # Mapa regional
 ggplot(vias_sur) +
   geom_sf(aes(color = nombdep), linewidth = 1) +
@@ -610,9 +647,12 @@ ggplot(vias_sur) +
   theme_minimal()
 ```
 
-![](infraestructura_transporte_files/figure-html/viz_regional-1.png)
+![plot of chunk viz_regional](fig-tra-viz_regional-1.png)
+
+plot of chunk viz_regional
 
 ``` r
+
 
 # Gráfico comparativo de estado
 vias_sur |>
@@ -637,13 +677,16 @@ vias_sur |>
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-![](infraestructura_transporte_files/figure-html/viz_regional-2.png)
+![plot of chunk viz_regional](fig-tra-viz_regional-2.png)
+
+plot of chunk viz_regional
 
 ## Análisis de Accesibilidad
 
 ### Conectividad aérea
 
 ``` r
+
 # Cargar aeródromos de múltiples departamentos
 aero_sur <- get_aerodromos(
   departamento = c("PUNO", "AREQUIPA", "APURIMAC")
@@ -675,6 +718,7 @@ nrow(aero_publicos)
 ### Caso 1: Planificación de rutas
 
 ``` r
+
 # Identificar la ruta principal entre Cusco y Lima
 # PE-3S es la carretera principal
 
@@ -698,6 +742,7 @@ ruta_principal |>
 ### Caso 2: Evaluación de necesidades de mantenimiento
 
 ``` r
+
 # Identificar tramos que requieren intervención urgente
 # (mal estado y alta importancia)
 
@@ -737,6 +782,7 @@ vias_prioritarias |>
 ### Caso 3: Análisis de inversión rural
 
 ``` r
+
 # Analizar el estado de la red vecinal
 # para priorizar inversiones
 
@@ -775,6 +821,7 @@ print(head(analisis_rural, 10))
 ### Guardar en formatos estándar
 
 ``` r
+
 # Exportar a GeoPackage
 st_write(
   vias_nacional,
